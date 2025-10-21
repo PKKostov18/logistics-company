@@ -4,6 +4,15 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Gradle ###
+.gradle/
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
 ### STS ###
 .apt_generated
 .classpath
