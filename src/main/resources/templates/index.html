@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Logistics Company</title>
+
+
+    <!-- Link to our custom CSS file -->
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+<body> <!-- Removed all classes -->
+
+<!--
+  1. Inject Header
+-->
+<div th:replace="~{layout/common-layout :: header}">
+    <!-- Placeholder -->
+</div>
+
+<!--
+  2. Inject Navigation
+-->
+<div th:replace="~{layout/common-layout :: navigation}">
+    <!-- Placeholder -->
+</div>
+
+<!-- ============================================= -->
+<!-- PAGE-SPECIFIC CONTENT                         -->
+<!-- ============================================= -->
+<main class="main-container"> <!-- Added new class -->
+
+    <h1 class="page-title">Welcome!</h1>
+
+    <p class="page-description"> <!-- Added new class -->
+        This is the main content for the homepage. The header, navigation, and footer
+        are loaded automatically from `common-layout.html`.
+    </p>
+
+    <div class="content-grid"> <!-- Added new class -->
+        <div class="card"> <!-- Added new class -->
+            <h2 class="card-title">Send a Package</h2> <!-- Added new class -->
+            <p class="card-description">Quick and easy shipping to an office or address.</p> <!-- Added new class -->
+            <a href="#" class="button button-primary">Start Now</a> <!-- Added new classes -->
+        </div>
+        <div class="card"> <!-- Added new class -->
+            <h2 class="card-title">Track a Package</h2> <!-- Added new class -->
+            <p class="card-description">Enter your tracking number to see the status.</p> <!-- Added new class -->
+            <a href="#" class="button button-secondary">Track</a> <!-- Added new classes -->
+        </div>
+    </div>
+
+</main>
+<!-- ============================================= -->
+<!-- END OF PAGE-SPECIFIC CONTENT                  -->
+<!-- ============================================= -->
+
+
+<!--
+  3. Inject Footer
+-->
+<div th:replace="~{layout/common-layout :: footer}">
+    <!-- Placeholder -->
+</div>
+
+</body>
+</html>
+

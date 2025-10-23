@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+<body>
+
+<!-- HEADER FRAGMENT -->
+
+<!-- 'th:fragment="header"' defines a reusable chunk named 'header'. -->
+<header th:fragment="header" class="bg-blue-800 text-white p-6 shadow-md">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold">Logistics Company</h1>
+        <p class="text-sm text-blue-200">Your reliable partner</p>
+    </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav th:fragment="navigation" class="bg-gray-100 border-b border-gray-300">
+    <div class="container mx-auto flex justify-between items-center p-4">
+
+        <!-- Main navigation links -->
+        <ul class="flex space-x-6">
+            <li>
+                <a th:href="@{/}" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+            </li>
+
+            <!-- TODO: These links will be role-based (e.g., th:if) -->
+            <li>
+                <a th:href="@{/parcels}" class="text-gray-700 hover:text-blue-600 font-medium">Parcels</a>
+            </li>
+            <li>
+                <a th:href="@{/offices}" class="text-gray-700 hover:text-blue-600 font-medium">Offices</a>
+            </li>
+        </ul>
+
+        <!-- Auth links -->
+        <ul class="flex space-x-4">
+            <li>
+                <a th:href="@{/login}" class="text-sm text-blue-600 hover:underline">Login</a>
+            </li>
+            <li>
+                <a th:href="@{/register}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Register</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- FOOTER FRAGMENT -->
+<footer th:fragment="footer" class="bg-gray-800 text-gray-400 p-6 mt-12">
+    <div class="container mx-auto text-center text-sm">
+        &copy; 2025 Logistics Company. All rights reserved.
+    </div>
+</footer>
+
+</body>
+</html>
+
