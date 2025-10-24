@@ -32,7 +32,7 @@
   gap: 1.5rem;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 875px) {
   .content-grid {
     grid-template-columns: repeat(2, 1fr);
   }

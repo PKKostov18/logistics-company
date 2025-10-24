@@ -189,16 +189,16 @@ body.dark .icon-moon { display: none; }
 .collapsible-menu {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
+  transition: max-height 0.3s ease-in-out, margin-top 0.3s ease-in-out;
 
   width: 100%;
   order: 4;
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 .collapsible-menu.is-open {
   max-height: 500px;
-  transition: max-height 0.3s ease-in-out;
+  transition: max-height 0.3s ease-in-out, margin-top 0.3s ease-in-out;
 }
 
 .nav-menu-list {
@@ -248,7 +248,7 @@ body.dark .icon-moon { display: none; }
   display: inline-flex;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 875px) {
   .nav-container {
     justify-content: flex-start;
   }
@@ -330,25 +330,6 @@ body.dark .icon-moon { display: none; }
   border-width: 0;
 }
 
-@media (min-width: 800px) {
-  .nav-container {
-    justify-content: flex-start;
-  }
-
-  .nav-controls {
-    display: none;
-  }
-
-  .collapsible-menu {
-    flex-grow: 1;
-    margin-left: 1.5rem;
-  }
-
-  .nav-menu-actions {
-    margin-left: 0;
-  }
-}
-
 .theme-icon {
   width: 2.0rem; !important;
   height: 2.0rem;
@@ -363,4 +344,3 @@ body.dark .icon-moon { display: none; }
   height: 100% !important;
   display: block;
 }
-
