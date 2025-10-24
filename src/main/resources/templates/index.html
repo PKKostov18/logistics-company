@@ -11,13 +11,9 @@
     <!-- 2. Page-Specific CSS (ONLY for this page) -->
     <link rel="stylesheet" th:href="@{/css/home.css}">
 
-    <!--
-      IMPORTANT: Inline script moved to the top of <body>
-      to prevent 'document.body' is null error.
-    -->
-
 </head>
 <body>
+<!-- Theme loader script -->
 <script>
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark');
@@ -27,10 +23,12 @@
 </script>
 
 
+<!-- Navigation Fragment -->
 <div th:replace="~{layout/common-layout :: navigation}">
-
+    <!-- This content will be replaced by the nav fragment -->
 </div>
 
+<!-- Main Page Content -->
 <main class="main-container">
 
     <h1 class="page-title">Welcome!</h1>
@@ -40,6 +38,7 @@
         are loaded automatically from `common-layout.html`.
     </p>
 
+    <!-- Content Grid -->
     <div class="content-grid">
         <div class="card">
             <h2 class="card-title">Send a Package</h2>
@@ -55,12 +54,16 @@
 
 </main>
 
+<!-- Footer Fragment -->
 <div th:replace="~{layout/common-layout :: footer}">
-
+    <!-- This content will be replaced by the footer fragment -->
 </div>
 
 
+<!-- JavaScript files -->
 <script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script> <!-- НОВИЯТ ФАЙЛ Е ДОБАВЕН ТУК -->
 
 </body>
 </html>
+
