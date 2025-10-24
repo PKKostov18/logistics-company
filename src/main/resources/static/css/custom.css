@@ -67,7 +67,7 @@ body {
 }
 
 .nav-container {
-  max-width: 1500px;
+  max-width: 85%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -187,14 +187,18 @@ body.dark .icon-moon { display: none; }
 }
 
 .collapsible-menu {
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+
   width: 100%;
   order: 4;
   margin-top: 1rem;
 }
 
 .collapsible-menu.is-open {
-  display: block;
+  max-height: 500px;
+  transition: max-height 0.3s ease-in-out;
 }
 
 .nav-menu-list {
@@ -256,6 +260,9 @@ body.dark .icon-moon { display: none; }
 
   .collapsible-menu {
     display: flex;
+    max-height: none;
+    overflow: visible;
+
     align-items: center;
     flex-grow: 1;
     justify-content: space-between;
@@ -356,3 +363,4 @@ body.dark .icon-moon { display: none; }
   height: 100% !important;
   display: block;
 }
+
