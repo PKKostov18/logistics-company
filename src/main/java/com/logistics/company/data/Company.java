@@ -1,5 +1,9 @@
 package com.logistics.company.data;
 
+import java.util.Set;
+import java.util.HashSet;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +25,9 @@ public class Company {
 
     @Column(name = "vat_number", nullable = false, unique = true)
     private String vatNumber;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true) //за предотвратяване на дублиране
+    private Set<Office> offices = new HashSet<>();
 
     public Company() {
     }
@@ -52,5 +59,13 @@ public class Company {
 
     public void setVatNumber(String vatNumber) {
         this.vatNumber = vatNumber;
+    }
+
+    public Set<Office> getOffices() {
+        return offices;
+    }
+
+    public void setOffices(Set<Office> offices) {
+        this.offices = offices;
     }
 }
