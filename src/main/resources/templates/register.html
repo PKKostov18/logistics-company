@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LogiTrace</title>
+
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/css/register.css}">
+
+</head>
+<body>
+<script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+</script>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container auth-page-container">
+    <div class="auth-layout">
+
+        <div class="auth-form-container">
+            <h1 class="form-title">Create Account</h1>
+
+            <form action="#" th:action="@{/register}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="button button-primary form-submit-button">Sign Up</button>
+            </form>
+
+            <p class="bottom-link">
+                Already have an account? <a th:href="@{/login}">Login</a>
+            </p>
+        </div>
+
+        <div class="auth-image-container">
+            <div class="image-text-content">
+                <h2>Join our fast-growing logistics network.</h2>
+                <p>Start shipping and tracking today.</p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>
+
