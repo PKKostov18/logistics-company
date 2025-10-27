@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -46,6 +48,9 @@ public class User {
     @CreationTimestamp // Автоматично попълва timestamp-a при създаване
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Customer customer;
 
     @ManyToMany(fetch = FetchType.EAGER) //EAGER, защото ролите ще вървят заедно с потребителя
     @JoinTable(
@@ -131,6 +136,14 @@ public class User {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Set<Role> getRoles() {
