@@ -49,8 +49,13 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    // Връзка с Customer
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Customer customer;
+
+    // Връзка с Employee
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Employee employee;
 
     @ManyToMany(fetch = FetchType.EAGER) //EAGER, защото ролите ще вървят заедно с потребителя
     @JoinTable(
@@ -142,10 +147,6 @@ public class User {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -153,4 +154,17 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
 }

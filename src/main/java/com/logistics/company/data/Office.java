@@ -8,7 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "offices")
@@ -24,6 +27,10 @@ public class Office {
 
     @Column(name = "address", nullable = false)
     private String address;
+
+    @OneToMany(mappedBy = "office")
+    private Set<Employee> employees = new HashSet<>();
+    // Set вместо List, защото не трябва да се дублират имената на офисите
 
     @ManyToOne(fetch = FetchType.LAZY) // LAZY, за да не се зарежда цялата информацията за компанията
                                        // от базата, освен ако изрично не я достъпим чрез гетъра
