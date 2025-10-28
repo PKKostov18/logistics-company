@@ -16,5 +16,6 @@ public class MainController {
         return "register";
     }
 
-
+    @GetMapping("/login")
+    public String showLoginPage() {return "login";}
 }
