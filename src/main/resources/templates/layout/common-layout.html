@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head-content"> <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
 <body>
 
 <nav class="sticky-nav" th:fragment="navigation">
