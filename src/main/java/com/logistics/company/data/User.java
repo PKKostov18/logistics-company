@@ -7,16 +7,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne; // Променена анотация
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+// Премахнати са import java.util.HashSet; и import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -49,35 +47,35 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    // Връзка с Customer
+    // Връзка с Customer (Без промяна)
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Customer customer;
 
-    // Връзка с Employee
+    // Връзка с Employee (Без промяна)
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Employee employee;
 
-    @ManyToMany(fetch = FetchType.EAGER) //EAGER, защото ролите ще вървят заедно с потребителя
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"), //FK към текущото entity (User)
-            inverseJoinColumns = @JoinColumn(name = "role_id") //FK към другото entity (Role)
-    )
-
-    private Set<Role> roles = new HashSet<>();
-    //Set вместо List, защото един потребител не може да има повече от еднa роля
+    // 🌟 Промяна за ManyToOne връзка с Role 🌟
+    // Един потребител има ЕДНА роля, но много потребители могат да имат ЕДНА и съща роля.
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     public User() {
     }
 
-    public User(String username, String passwordHash, String email, String firstName, String lastName, String phoneNumber) {
+    // Актуализиран конструктор
+    public User(String username, String passwordHash, String email, String firstName, String lastName, String phoneNumber, Role role) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.role = role;
     }
+
+    // ... останалите методи (гетъри и сетъри) ...
 
     public int getId() {
         return id;
@@ -147,12 +145,14 @@ public class User {
         return customer;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    // 🌟 Променен гетър за Role 🌟
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    // 🌟 Променен сетър за Role 🌟
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public void setCustomer(Customer customer) {
@@ -166,5 +166,4 @@ public class User {
     public void setEmployee(Employee employee) {
         this.employee = employee;
     }
-
 }
