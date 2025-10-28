@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - LogiTrace</title>
+    <title>Login - LogiTrace</title>
 
     <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
@@ -24,41 +24,32 @@
     <div class="auth-layout">
 
         <div class="auth-form-container">
-            <h1 class="form-title">Create Account</h1>
+            <h1 class="form-title">Login</h1>
 
             <form action="#" th:action="@{/login}" method="post">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
-                </div>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm your password" required>
-                </div>
-
-                <button type="submit" class="button button-primary form-submit-button">Sign Up</button>
+                <button type="submit" class="button button-primary form-submit-button">Login</button>
             </form>
 
             <p class="bottom-link">
-                Already have an account? <a th:href="@{/login}">Login</a>
+                Don't have an account? <a th:href="@{/register}">Sign Up</a>
             </p>
         </div>
 
         <div class="auth-image-container">
             <div class="image-text-content">
-                <h2>Join our fast-growing logistics network.</h2>
-                <p>Start shipping and tracking today.</p>
+                <h2>Welcome Back.</h2>
+                <p>Manage your shipments and track progress efficiently.</p>
             </div>
         </div>
 
@@ -72,4 +63,3 @@
 
 </body>
 </html>
-
