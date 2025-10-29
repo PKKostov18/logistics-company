@@ -5,8 +5,10 @@ target/
 !**/src/test/**/target/
 
 ### Gradle ###
+out
 .gradle/
 **/build/
+**/out/
 !src/**/build/
 gradle-app.setting
 !gradle-wrapper.jar
