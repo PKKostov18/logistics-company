@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "role_id")
     private int id;
 
-    @Enumerated(EnumType.STRING) // за съхранение на enum стойностите като текст
+    @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false, unique = true)
     private RoleType name;
 

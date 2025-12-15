@@ -30,10 +30,9 @@ public class Office {
 
     @OneToMany(mappedBy = "office")
     private Set<Employee> employees = new HashSet<>();
-    // Set вместо List, защото не трябва да се дублират имената на офисите
 
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY, за да не се зарежда цялата информацията за компанията
-                                       // от базата, освен ако изрично не я достъпим чрез гетъра
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 

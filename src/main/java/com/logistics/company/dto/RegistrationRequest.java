@@ -26,7 +26,6 @@ public class RegistrationRequest {
     @Size(min = 6, message = "Паролата трябва да е поне 6 символа.")
     private String password;
 
-    // Гетъри и Сетъри
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getFirstName() { return firstName; }

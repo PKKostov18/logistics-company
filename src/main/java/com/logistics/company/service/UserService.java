@@ -16,7 +16,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Уверете се, че имате UserRepository, подобен на RoleRepository
+
     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -26,7 +26,7 @@ public class UserService {
     @Transactional
     public User registerNewUser(RegistrationRequest registrationRequest) {
 
-        // 1. Проверка за съществуващи потребители (по потребителско име или email)
+
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Потребителското име вече е заето.");
         }
@@ -34,25 +34,25 @@ public class UserService {
             throw new IllegalArgumentException("Email адресът вече е регистриран.");
         }
 
-        // 2. Намиране на ролята CUSTOMER по подразбиране
+
         Role defaultRole = roleRepository.findByName(RoleType.CUSTOMER)
                 .orElseThrow(() -> new IllegalStateException("Роля 'CUSTOMER' не е намерена в базата данни."));
 
-        // 3. Кодиране на паролата
+
         String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
 
-        // 4. Създаване на нов User обект
+
         User newUser = new User(
                 registrationRequest.getUsername(),
-                encodedPassword, // Използваме кодираната парола
+                encodedPassword,
                 registrationRequest.getEmail(),
                 registrationRequest.getFirstName(),
                 registrationRequest.getLastName(),
                 registrationRequest.getPhoneNumber(),
-                defaultRole // Задаваме ролята CUSTOMER по подразбиране
+                defaultRole
         );
 
-        // 5. Запазване на потребителя
+
         return userRepository.save(newUser);
     }
 }

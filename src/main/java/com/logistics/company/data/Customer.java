@@ -15,10 +15,10 @@ public class Customer {
 
     @Id
     @Column(name = "customer_id")
-    private int id; // взима се от User обекта
+    private int id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @MapsId // стойността customer_id реферира към user_id (не се генерира нова)
+    @MapsId
     @JoinColumn(name = "customer_id")
     private User user;
 

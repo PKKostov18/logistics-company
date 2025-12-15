@@ -18,10 +18,10 @@
 
 .auth-form-container {
     padding: 3rem;
-    min-height: 460px; /* Добавено */
-    box-sizing: border-box; /* Добавено */
-    display: flex; /* Добавено */
-    flex-direction: column; /* Добавено */
+    min-height: 460px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-title {
@@ -91,11 +91,11 @@ body.dark .form-group input::placeholder {
 
 .bottom-link {
     text-align: center;
-    margin-top: auto; /* Променено от 1.5rem */
+    margin-top: auto;
     font-size: 0.875rem;
     color: var(--color-text);
     transition: color 0.2s;
-    padding-top: 1.5rem; /* Добавено за малко отстояние от бутона */
+    padding-top: 1.5rem;
 }
 
 .bottom-link a {
@@ -158,14 +158,14 @@ body.dark .form-group input::placeholder {
     }
     .auth-form-container {
         padding: 2rem;
-        min-height: 0; /* Премахваме min-height за мобилни */
-        display: block; /* Връщаме на block за мобилни */
+        min-height: 0;
+        display: block;
     }
     .main-container.auth-page-container {
         margin: 1.5rem auto;
     }
     .bottom-link {
-        margin-top: 1.5rem; /* Връщаме оригиналния margin за мобилни */
-        padding-top: 0; /* Премахваме padding-top за мобилни */
+        margin-top: 1.5rem;
+        padding-top: 0;
     }
 }

@@ -40,11 +40,11 @@ public class Package {
     @JoinColumn(name = "registered_by_employee_id")
     private Employee registeredBy;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Куриерът може да бъде назначен по-късно
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_courier_id")
     private Employee assignedCourier;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Дестинацията може да е адрес, а не офис
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "destination_office_id")
     private Office destinationOffice;
 
@@ -55,7 +55,7 @@ public class Package {
     @Column(name = "delivery_type", nullable = false)
     private DeliveryType deliveryType;
 
-    @Column(name = "delivery_address") // Nullable, ако доставката е до офис
+    @Column(name = "delivery_address")
     private String deliveryAddress;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
@@ -69,7 +69,7 @@ public class Package {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    @Column(name = "received_at") // Попълва се при получаване
+    @Column(name = "received_at")
     private Instant receivedAt;
 
     public Package() {}

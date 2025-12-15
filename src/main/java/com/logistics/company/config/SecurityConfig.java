@@ -27,12 +27,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF protection for simplicity, especially for API endpoints
+
                 .csrf(csrf -> csrf.disable())
 
-                // Define authorization rules
+
                 .authorizeHttpRequests(authz -> authz
-                        // Allow public access to these specific URLs
+
                         .requestMatchers(
                                 "/",
                                 "/login",
@@ -43,20 +43,20 @@ public class SecurityConfig {
                                 "/images/**"
                         ).permitAll()
 
-                        // All other requests must be authenticated
+
                         .anyRequest().authenticated()
                 )
 
-                // Configure form-based login
+
                 .formLogin(form -> form
-                        .loginPage("/login")    // Use our custom login page at /login
-                        .permitAll()          // The login page must be public
+                        .loginPage("/login")
+                        .permitAll()
                 )
 
-                // Configure logout
+
                 .logout(logout -> logout
-                        .logoutUrl("/logout")   // The URL to trigger logout
-                        .permitAll()          // The logout URL must be public
+                        .logoutUrl("/logout")
+                        .permitAll()
                 );
 
         return http.build();
