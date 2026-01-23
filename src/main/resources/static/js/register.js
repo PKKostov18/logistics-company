@@ -1,16 +1,17 @@
-
 document.addEventListener('DOMContentLoaded', (event) => {
 
     const registrationForm = document.getElementById('registrationForm');
 
     if (registrationForm) {
         registrationForm.addEventListener('submit', function(event) {
-
             event.preventDefault();
 
             const errorMessageDiv = document.getElementById('error-message');
+            const submitButton = registrationForm.querySelector('button[type="submit"]');
+
             if (errorMessageDiv) {
                 errorMessageDiv.textContent = '';
+                errorMessageDiv.style.display = 'none';
             }
 
             const formData = new FormData(event.target);
@@ -19,8 +20,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (data.password !== data.confirmPassword) {
                 if (errorMessageDiv) {
                     errorMessageDiv.textContent = 'Passwords do not match.';
+                    errorMessageDiv.style.display = 'block';
                 }
                 return;
+            }
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Registering...';
             }
 
             fetch('/api/auth/register', {
@@ -28,7 +35,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-
                 body: JSON.stringify({
                     username: data.username,
                     firstName: data.firstName,
@@ -40,14 +46,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             })
                 .then(response => {
                     if (response.ok) {
-
-                        alert('Registration successful! You can now log in.');
-                        window.location.href = '/login';
+                        window.location.href = '/login?success';
                     } else {
-
                         return response.text().then(text => {
                             if (errorMessageDiv) {
-                                errorMessageDiv.textContent = 'Registration Failed: ' + text;
+                                errorMessageDiv.textContent = text;
+                                errorMessageDiv.style.display = 'block';
                             }
                         });
                     }
@@ -56,6 +60,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     console.error('Fetch error:', error);
                     if (errorMessageDiv) {
                         errorMessageDiv.textContent = 'A network error occurred. Please try again.';
+                        errorMessageDiv.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Sign Up';
                     }
                 });
         });
