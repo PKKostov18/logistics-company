@@ -1,4 +1,3 @@
-// CustomUserDetailsService.java
 package com.logistics.company.service;
 
 import com.logistics.company.data.User;

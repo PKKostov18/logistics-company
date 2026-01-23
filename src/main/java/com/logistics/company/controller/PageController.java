@@ -1,4 +1,3 @@
-
 package com.logistics.company.controller;
 
 import org.springframework.stereotype.Controller;

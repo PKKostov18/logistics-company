@@ -1,4 +1,3 @@
-// AuthController.java
 package com.logistics.company.controller;
 
 import com.logistics.company.service.UserService;

@@ -1,4 +1,3 @@
-// UserService.java
 package com.logistics.company.service;
 
 import com.logistics.company.data.*;
@@ -16,7 +15,6 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -26,21 +24,17 @@ public class UserService {
     @Transactional
     public User registerNewUser(RegistrationRequest registrationRequest) {
 
-
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Потребителското име вече е заето.");
+            throw new IllegalArgumentException("Username is already taken.");
         }
         if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email адресът вече е регистриран.");
+            throw new IllegalArgumentException("Email address is already registered.");
         }
 
-
         Role defaultRole = roleRepository.findByName(RoleType.CUSTOMER)
-                .orElseThrow(() -> new IllegalStateException("Роля 'CUSTOMER' не е намерена в базата данни."));
-
+                .orElseThrow(() -> new IllegalStateException("Role 'CUSTOMER' not found in the database."));
 
         String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
-
 
         User newUser = new User(
                 registrationRequest.getUsername(),
@@ -52,6 +46,12 @@ public class UserService {
                 defaultRole
         );
 
+        if (defaultRole.getName() == RoleType.CUSTOMER) {
+            Customer newCustomer = new Customer();
+            newCustomer.setUser(newUser);
+
+            newUser.setCustomer(newCustomer);
+        }
 
         return userRepository.save(newUser);
     }

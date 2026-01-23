@@ -1,4 +1,3 @@
-// RoleRepository.java
 package com.logistics.company.repository;
 
 import com.logistics.company.data.Role;

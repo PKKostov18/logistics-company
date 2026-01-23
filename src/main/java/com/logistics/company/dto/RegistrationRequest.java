@@ -1,4 +1,3 @@
-// RegistrationRequest.java
 package com.logistics.company.dto;
 
 import jakarta.validation.constraints.Email;
@@ -7,23 +6,23 @@ import jakarta.validation.constraints.Size;
 
 public class RegistrationRequest {
 
-    @NotBlank(message = "Username е задължително.")
+    @NotBlank(message = "Username is required.")
     private String username;
 
-    @NotBlank(message = "Името е задължително.")
+    @NotBlank(message = "First name is required.")
     private String firstName;
 
-    @NotBlank(message = "Фамилията е задължителна.")
+    @NotBlank(message = "Last name is required.")
     private String lastName;
 
-    @NotBlank(message = "Email е задължителен.")
-    @Email(message = "Невалиден email формат.")
+    @NotBlank(message = "Email is required.")
+    @Email(message = "Invalid email format.")
     private String email;
 
     private String phoneNumber;
 
-    @NotBlank(message = "Паролата е задължителна.")
-    @Size(min = 6, message = "Паролата трябва да е поне 6 символа.")
+    @NotBlank(message = "Password is required.")
+    @Size(min = 6, message = "The password must be at least 6 characters.")
     private String password;
 
     public String getUsername() { return username; }

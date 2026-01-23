@@ -1,4 +1,3 @@
-// SecurityConfig.java
 package com.logistics.company.config;
 
 import org.springframework.context.annotation.Bean;

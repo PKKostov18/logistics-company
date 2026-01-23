@@ -1,9 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', (event) => {
 
-
     const registrationForm = document.getElementById('registrationForm');
-
 
     if (registrationForm) {
         registrationForm.addEventListener('submit', function(event) {
@@ -15,10 +13,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 errorMessageDiv.textContent = '';
             }
 
-
             const formData = new FormData(event.target);
             const data = Object.fromEntries(formData.entries());
-
 
             if (data.password !== data.confirmPassword) {
                 if (errorMessageDiv) {
@@ -26,9 +22,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
                 return;
             }
-
-
-
 
             fetch('/api/auth/register', {
                 method: 'POST',

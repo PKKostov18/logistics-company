@@ -31,19 +31,17 @@ public class Office {
     @OneToMany(mappedBy = "office")
     private Set<Employee> employees = new HashSet<>();
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
-
-    public Office() {
-    }
 
     public Office(String name, String address, Company company) {
         this.name = name;
         this.address = address;
         this.company = company;
     }
+
+    public Office() {}
 
     public int getId() {
         return id;

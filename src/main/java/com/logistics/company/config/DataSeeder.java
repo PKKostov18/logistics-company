@@ -1,4 +1,3 @@
-// DataSeeder.java
 package com.logistics.company.config;
 
 import com.logistics.company.data.Role;
@@ -21,7 +20,7 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        logger.info("Стартиране на зареждане на данни (Seeding)...");
+        logger.info("Starting data loading (Seeding)...");
 
         for (RoleType roleType : RoleType.values()) {
 
@@ -29,13 +28,13 @@ public class DataSeeder implements CommandLineRunner {
 
                 Role newRole = new Role(roleType);
                 roleRepository.save(newRole);
-                logger.info("Успешно създадена роля: {}", roleType.name());
+                logger.info("Role successfully created: {}", roleType.name());
 
             } else {
-                logger.warn("Роля {} вече съществува. Пропускане.", roleType.name());
+                logger.warn("Role {} already exists. Skipping.", roleType.name());
             }
         }
 
-        logger.info("Зареждането на данни приключи.");
+        logger.info("Data loading is complete.");
     }
 }

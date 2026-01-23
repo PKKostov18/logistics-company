@@ -25,8 +25,7 @@ public class Customer {
     @Column(name = "default_address")
     private String defaultAddress;
 
-    public Customer() {
-    }
+    public Customer() {}
 
     public Customer(User user, String defaultAddress) {
         this.user = user;

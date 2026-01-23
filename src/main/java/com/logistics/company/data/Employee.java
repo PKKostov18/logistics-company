@@ -22,7 +22,7 @@ public class Employee {
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId //стойността employee_id реферира към user_id
+    @MapsId //the employee_id value refers to user_id
     @JoinColumn(name = "employee_id")
     private User user;
 
@@ -37,8 +37,7 @@ public class Employee {
     @Column(name = "hire_date", nullable = false)
     private LocalDate hireDate;
 
-    public Employee() {
-    }
+    public Employee() {}
 
     public Employee(User user, Office office, EmployeeType employeeType, LocalDate hireDate) {
         this.user = user;

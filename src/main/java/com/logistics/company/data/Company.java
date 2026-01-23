@@ -26,11 +26,10 @@ public class Company {
     @Column(name = "vat_number", nullable = false, unique = true)
     private String vatNumber;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true) //за предотвратяване на дублиране
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true) //to prevent duplication
     private Set<Office> offices = new HashSet<>();
 
-    public Company() {
-    }
+    public Company() {}
 
     public Company(String name, String vatNumber) {
         this.name = name;

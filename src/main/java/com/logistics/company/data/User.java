@@ -15,7 +15,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
-
 @Entity
 @Table(name = "users")
 public class User {
@@ -47,14 +46,11 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Customer customer;
 
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Employee employee;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
@@ -62,7 +58,6 @@ public class User {
 
     public User() {
     }
-
 
     public User(String username, String passwordHash, String email, String firstName, String lastName, String phoneNumber, Role role) {
         this.username = username;
@@ -73,8 +68,6 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
-
-
 
     public int getId() {
         return id;
@@ -144,11 +137,9 @@ public class User {
         return customer;
     }
 
-
     public Role getRole() {
         return role;
     }
-
 
     public void setRole(Role role) {
         this.role = role;
