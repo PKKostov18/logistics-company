@@ -19,10 +19,10 @@ public class Employee {
 
     @Id
     @Column(name = "employee_id")
-    private int id;
+    private long id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @MapsId //the employee_id value refers to user_id
+    @MapsId // стойността на employee_id реферира към user_id
     @JoinColumn(name = "employee_id")
     private User user;
 
@@ -46,11 +46,11 @@ public class Employee {
         this.hireDate = hireDate;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

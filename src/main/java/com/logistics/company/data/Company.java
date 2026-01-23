@@ -26,7 +26,7 @@ public class Company {
     @Column(name = "vat_number", nullable = false, unique = true)
     private String vatNumber;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true) //to prevent duplication
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Office> offices = new HashSet<>();
 
     public Company() {}

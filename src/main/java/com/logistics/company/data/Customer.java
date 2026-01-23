@@ -15,7 +15,7 @@ public class Customer {
 
     @Id
     @Column(name = "customer_id")
-    private int id;
+    private long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
@@ -32,11 +32,11 @@ public class Customer {
         this.defaultAddress = defaultAddress;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
