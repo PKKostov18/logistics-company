@@ -8,14 +8,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "customers")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = "user")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Customer {
 
     @Id
     @Column(name = "customer_id")
-    private long id;
+    @EqualsAndHashCode.Include
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
@@ -24,35 +39,4 @@ public class Customer {
 
     @Column(name = "default_address")
     private String defaultAddress;
-
-    public Customer() {}
-
-    public Customer(User user, String defaultAddress) {
-        this.user = user;
-        this.defaultAddress = defaultAddress;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getDefaultAddress() {
-        return defaultAddress;
-    }
-
-    public void setDefaultAddress(String defaultAddress) {
-        this.defaultAddress = defaultAddress;
-    }
 }

@@ -31,7 +31,7 @@ public class DataSeeder implements CommandLineRunner {
 
         for (RoleType roleType : RoleType.values()) {
             if (roleRepository.findByName(roleType).isEmpty()) {
-                Role newRole = new Role(roleType);
+                Role newRole = Role.builder().name(roleType).build();
                 roleRepository.save(newRole);
                 logger.info("Successfully created role: {}", roleType.name());
             }
@@ -47,15 +47,15 @@ public class DataSeeder implements CommandLineRunner {
             Role adminRole = roleRepository.findByName(RoleType.ADMIN)
                     .orElseThrow(() -> new IllegalStateException("ADMIN role not found."));
 
-            User admin = new User(
-                    "admin",
-                    passwordEncoder.encode("Fuy87181"),
-                    "admin@logitrace.com",
-                    "System",
-                    "Admin",
-                    "0000000000",
-                    adminRole
-            );
+            User admin = User.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("Fuy87181"))
+                    .email("admin@logitrace.com")
+                    .firstName("System")
+                    .lastName("Admin")
+                    .phoneNumber("0000000000")
+                    .role(adminRole)
+                    .build();
 
             userRepository.save(admin);
             logger.info("Successfully created ADMIN account: username='admin', password='admin123'");

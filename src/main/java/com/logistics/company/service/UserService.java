@@ -36,19 +36,20 @@ public class UserService {
 
         String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
 
-        User newUser = new User(
-                registrationRequest.getUsername(),
-                encodedPassword,
-                registrationRequest.getEmail(),
-                registrationRequest.getFirstName(),
-                registrationRequest.getLastName(),
-                registrationRequest.getPhoneNumber(),
-                defaultRole
-        );
+        User newUser = User.builder()
+                .username(registrationRequest.getUsername())
+                .password(encodedPassword)
+                .email(registrationRequest.getEmail())
+                .firstName(registrationRequest.getFirstName())
+                .lastName(registrationRequest.getLastName())
+                .phoneNumber(registrationRequest.getPhoneNumber())
+                .role(defaultRole)
+                .build();
 
         if (defaultRole.getName() == RoleType.CUSTOMER) {
-            Customer newCustomer = new Customer();
-            newCustomer.setUser(newUser);
+            Customer newCustomer = Customer.builder()
+                    .user(newUser)
+                    .build();
 
             newUser.setCustomer(newCustomer);
         }
