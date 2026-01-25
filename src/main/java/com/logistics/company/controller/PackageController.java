@@ -30,8 +30,8 @@ public class PackageController {
 
     // списък с всички пратки
     @GetMapping
-    public String listPackages(Model model) {
-        List<Package> packages = packageService.getAllPackages();
+    public String listPackages(Model model, Principal principal) {
+        List<Package> packages = packageService.getPackagesForUser(principal.getName());
         model.addAttribute("packages", packages);
         return "packages/list";
     }
