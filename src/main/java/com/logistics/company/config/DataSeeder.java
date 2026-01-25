@@ -38,7 +38,7 @@ public class DataSeeder implements CommandLineRunner {
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Запазваме референции, за да ги ползваме между методите
+    // запазва референции, за да ги ползва между методите
     private Company mainCompany;
     private Office mainOffice;
 
@@ -84,9 +84,8 @@ public class DataSeeder implements CommandLineRunner {
 
     private void seedMainCompany() {
         String companyName = "LogiTrace International";
-        Optional<Company> existingCompany = companyRepository.findByName(companyName); // Предполагаме, че имаш такъв метод или просто проверяваме
+        Optional<Company> existingCompany = companyRepository.findByName(companyName);
 
-        // Тъй като findByName може да липсва в репозиторито, по-безопасно е да проверим дали таблицата е празна
         if (companyRepository.count() == 0) {
             mainCompany = Company.builder()
                     .name(companyName)
@@ -95,20 +94,20 @@ public class DataSeeder implements CommandLineRunner {
             companyRepository.save(mainCompany);
             logger.info("Created Main Company: {}", companyName);
         } else {
-            mainCompany = companyRepository.findAll().get(0); // Взимаме първата налична
+            mainCompany = companyRepository.findAll().get(0); // взима първата налична
             logger.info("Using existing Company: {}", mainCompany.getName());
         }
     }
 
     private void seedOffices() {
         String officeName = "Sofia Central";
-        Optional<Office> existingOffice = officeRepository.findByName(officeName); // Предполагаме, че имаш findByName
+        Optional<Office> existingOffice = officeRepository.findByName(officeName);
 
         if (existingOffice.isEmpty()) {
             mainOffice = Office.builder()
                     .name(officeName)
                     .address("Sofia, bul. Vitosha 100")
-                    .company(mainCompany) // Свързваме с компанията
+                    .company(mainCompany)
                     .build();
             officeRepository.save(mainOffice);
             logger.info("Created Office: {}", officeName);
@@ -139,7 +138,7 @@ public class DataSeeder implements CommandLineRunner {
         if (userRepository.findByUsername(username).isEmpty()) {
             Role role = roleRepository.findByName(RoleType.OFFICE_EMPLOYEE).orElseThrow();
 
-            // 1. Създаваме User
+            // създава User
             User user = User.builder()
                     .username(username)
                     .password(passwordEncoder.encode("password_office"))
@@ -148,13 +147,13 @@ public class DataSeeder implements CommandLineRunner {
                     .lastName("Ivanova")
                     .role(role)
                     .build();
-            userRepository.save(user); // Тук User вече е Managed, защото сме в @Transactional
+            userRepository.save(user);
 
-            // 2. Създаваме Employee, свързан с User и Office
+            // създава Employee, свързан с User и Office
             Employee employee = Employee.builder()
-                    .user(user) // Връзката е @MapsId, така че employee взима ID-то на user
+                    .user(user) // връзката е @MapsId, така че employee взима ID-то на user
                     .office(mainOffice)
-                    .employeeType(EmployeeType.OFFICE) // Увери се, че имаш такъв тип в EmployeeType
+                    .employeeType(EmployeeType.OFFICE)
                     .hireDate(LocalDate.now())
                     .build();
 
@@ -181,7 +180,7 @@ public class DataSeeder implements CommandLineRunner {
             Employee courier = Employee.builder()
                     .user(user)
                     .office(mainOffice)
-                    .employeeType(EmployeeType.COURIER) // Увери се, че имаш такъв тип
+                    .employeeType(EmployeeType.COURIER)
                     .hireDate(LocalDate.now())
                     .build();
 
