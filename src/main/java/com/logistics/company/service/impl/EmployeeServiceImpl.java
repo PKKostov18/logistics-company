@@ -1,11 +1,6 @@
 package com.logistics.company.service.impl;
 
-import com.logistics.company.data.Employee;
-import com.logistics.company.data.EmployeeType;
-import com.logistics.company.data.Office;
-import com.logistics.company.data.Role;
-import com.logistics.company.data.RoleType;
-import com.logistics.company.data.User;
+import com.logistics.company.data.*;
 import com.logistics.company.dto.CreateEmployeeRequest;
 import com.logistics.company.repository.EmployeeRepository;
 import com.logistics.company.repository.OfficeRepository;
@@ -30,10 +25,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final PasswordEncoder passwordEncoder;
 
     public EmployeeServiceImpl(UserRepository userRepository,
-            EmployeeRepository employeeRepository,
-            OfficeRepository officeRepository,
-            RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+                               EmployeeRepository employeeRepository,
+                               OfficeRepository officeRepository,
+                               RoleRepository roleRepository,
+                               PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.officeRepository = officeRepository;
@@ -48,24 +43,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void registerEmployee(CreateEmployeeRequest request) {
-        // проверка дали потребителското име вече съществува
+    public void createEmployee(CreateEmployeeRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists: " + request.getUsername());
         }
 
-        // fetch-ва офиса чрез officeId
         Office office = officeRepository.findById(request.getOfficeId())
-                .orElseThrow(() -> new EntityNotFoundException("Office not found with id: " + request.getOfficeId()));
+                .orElseThrow(() -> new EntityNotFoundException("Office not found"));
 
-        // map-ва EmployeeType към RoleType
         RoleType roleType = mapEmployeeTypeToRoleType(request.getEmployeeType());
-
-        // fetch-ва ролята чрез roleType
         Role role = roleRepository.findByName(roleType)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found: " + roleType));
 
-        // създава нов User с енкодната парола
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -77,7 +66,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         User savedUser = userRepository.save(user);
 
-        // създава нов Employee, свързан с User и Office
         Employee employee = Employee.builder()
                 .user(savedUser)
                 .office(office)
@@ -85,8 +73,39 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .hireDate(LocalDate.now())
                 .build();
 
-        // запазва Employee в базата
         employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional
+    public void updateEmployee(Long id, CreateEmployeeRequest request) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+
+        User user = employee.getUser();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+
+        Office office = officeRepository.findById(request.getOfficeId())
+                .orElseThrow(() -> new EntityNotFoundException("Office not found"));
+
+        employee.setEmployeeType(request.getEmployeeType());
+        employee.setOffice(office);
+
+        userRepository.save(user);
+        employeeRepository.save(employee);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+
+        Long userId = employee.getUser().getId();
+        employeeRepository.delete(employee);
+        userRepository.deleteById(userId);
     }
 
     private RoleType mapEmployeeTypeToRoleType(EmployeeType employeeType) {

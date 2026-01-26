@@ -11,5 +11,7 @@ public interface OfficeService {
 
     void createOffice(CreateOfficeRequest request);
 
+    void updateOffice(Long id, CreateOfficeRequest request);
+
     void deleteOffice(Long id);
 }

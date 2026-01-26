@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class PageController {
 
     @GetMapping("/")
-    public String showHomePage() {
+    public String showLandingPage() {
         return "index";
+    }
+
+    @GetMapping("/home")
+    public String showUserDashboard() {
+        return "home";
     }
 
     @GetMapping("/register")

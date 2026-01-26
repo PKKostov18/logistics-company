@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Employees - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .table-input { width: 100%; padding: 0.5rem; border: 1px solid transparent; background: transparent; color: var(--text-color); border-radius: 4px; }
+        .table-input:focus { border-color: var(--primary-color); background: var(--bg-color); outline: none; }
+        .row-form { margin: 0; }
+        .select-input { width: 100%; border: 1px solid transparent; background: transparent; color: var(--text-color); cursor: pointer; }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <h1 class="page-title">Manage Employees</h1>
+
+    <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--primary-color);">
+        <h2 class="card-title">Register New Employee</h2>
+        <form th:action="@{/admin/employees/save}" th:object="${employeeRequest}" method="post"
+              style="display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 1rem; align-items: end;">
+            <div>
+                <label>First Name</label>
+                <input type="text" th:field="*{firstName}" class="button-secondary" style="width:100%" required>
+            </div>
+            <div>
+                <label>Last Name</label>
+                <input type="text" th:field="*{lastName}" class="button-secondary" style="width:100%" required>
+            </div>
+            <div>
+                <label>Username</label>
+                <input type="text" th:field="*{username}" class="button-secondary" style="width:100%" required>
+            </div>
+            <div>
+                <label>Email</label>
+                <input type="email" th:field="*{email}" class="button-secondary" style="width:100%" required>
+            </div>
+            <div>
+                <label>Password</label>
+                <input type="password" th:field="*{password}" class="button-secondary" style="width:100%" required>
+            </div>
+            <div>
+                <label>Type</label>
+                <select th:field="*{employeeType}" class="button-secondary" style="width:100%">
+                    <option th:each="type : ${employeeTypes}" th:value="${type}" th:text="${type}"></option>
+                </select>
+            </div>
+            <div>
+                <label>Assign to Office</label>
+                <select th:field="*{officeId}" class="button-secondary" style="width:100%">
+                    <option th:each="office : ${offices}" th:value="${office.id}" th:text="${office.name}"></option>
+                </select>
+            </div>
+            <button type="submit" class="button button-primary"><i class="fa-solid fa-plus"></i> Add</button>
+        </form>
+    </div>
+
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+            <tr style="background-color: var(--card-bg); border-bottom: 2px solid var(--border-color);">
+                <th style="padding: 1rem;">Full Name</th>
+                <th style="padding: 1rem;">Email</th>
+                <th style="padding: 1rem;">Type</th>
+                <th style="padding: 1rem;">Office</th>
+                <th style="padding: 1rem; text-align: right;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emp : ${employees}" style="border-bottom: 1px solid var(--border-color);">
+                <td colspan="5" style="padding: 0;">
+                    <form th:action="@{/admin/employees/save(id=${emp.id})}" method="post" class="row-form">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0.8rem; width: 25%;">
+                                    <div style="display: flex; gap: 5px;">
+                                        <input type="text" name="firstName" th:value="${emp.user.firstName}" class="table-input" required>
+                                        <input type="text" name="lastName" th:value="${emp.user.lastName}" class="table-input" required>
+                                    </div>
+                                </td>
+                                <td style="padding: 0.8rem; width: 20%;">
+                                    <input type="email" name="email" th:value="${emp.user.email}" class="table-input" required>
+                                </td>
+                                <td style="padding: 0.8rem; width: 15%;">
+                                    <select name="employeeType" class="select-input">
+                                        <option th:each="type : ${employeeTypes}" th:value="${type}" th:text="${type}" th:selected="${type == emp.employeeType}"></option>
+                                    </select>
+                                </td>
+                                <td style="padding: 0.8rem; width: 20%;">
+                                    <select name="officeId" class="select-input">
+                                        <option th:each="office : ${offices}" th:value="${office.id}" th:text="${office.name}" th:selected="${office.id == emp.office.id}"></option>
+                                    </select>
+                                </td>
+                                <td style="padding: 0.8rem; text-align: right; width: 20%;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <button type="submit" class="button" style="background-color: #27ae60; color: white;"><i class="fa-solid fa-floppy-disk"></i></button>
+                                        <button type="button" th:onclick="'document.getElementById(\'del-emp-' + ${emp.id} + '\').submit()'" class="button" style="background-color: #ff4d4d; color: white;"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                    <form th:id="'del-emp-' + ${emp.id}" th:action="@{/admin/employees/delete/{id}(id=${emp.id})}" method="post" style="display:none;"></form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+</body>
+</html>

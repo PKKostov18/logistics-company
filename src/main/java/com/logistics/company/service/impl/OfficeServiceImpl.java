@@ -6,21 +6,17 @@ import com.logistics.company.dto.CreateOfficeRequest;
 import com.logistics.company.repository.CompanyRepository;
 import com.logistics.company.repository.OfficeRepository;
 import com.logistics.company.service.OfficeService;
-import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OfficeServiceImpl implements OfficeService {
 
     private final OfficeRepository officeRepository;
     private final CompanyRepository companyRepository;
-
-    public OfficeServiceImpl(OfficeRepository officeRepository, CompanyRepository companyRepository) {
-        this.officeRepository = officeRepository;
-        this.companyRepository = companyRepository;
-    }
 
     @Override
     public List<Office> getAllOffices() {
@@ -29,10 +25,8 @@ public class OfficeServiceImpl implements OfficeService {
 
     @Override
     public void createOffice(CreateOfficeRequest request) {
-        // fetch-ва се единичната "Main Company" (първата компания в БД)
-        Company company = companyRepository.findAll().stream()
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("No company found. Please create a company first."));
+        Company company = companyRepository.findAll().stream().findFirst()
+                .orElseThrow(() -> new RuntimeException("Company not found"));
 
         Office office = Office.builder()
                 .name(request.getName())
@@ -44,10 +38,18 @@ public class OfficeServiceImpl implements OfficeService {
     }
 
     @Override
-    public void deleteOffice(Long id) {
+    public void updateOffice(Long id, CreateOfficeRequest request) {
         Office office = officeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Office not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Office not found"));
 
-        officeRepository.delete(office);
+        office.setName(request.getName());
+        office.setAddress(request.getAddress());
+
+        officeRepository.save(office);
+    }
+
+    @Override
+    public void deleteOffice(Long id) {
+        officeRepository.deleteById(id);
     }
 }

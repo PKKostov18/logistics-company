@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Offices - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .table-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--text-color);
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        .table-input:focus {
+            border-color: var(--primary-color);
+            background: var(--bg-color);
+            outline: none;
+        }
+        .row-form { margin: 0; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <h1 class="page-title">Manage Offices</h1>
+
+    <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--primary-color);">
+        <h2 class="card-title">Add New Office</h2>
+        <form th:action="@{/admin/offices/save}" th:object="${officeRequest}" method="post"
+              style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Office Name</label>
+                <input type="text" th:field="*{name}" class="button-secondary" style="width: 100%; text-align: left; cursor: text;" required>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Address</label>
+                <input type="text" th:field="*{address}" class="button-secondary" style="width: 100%; text-align: left; cursor: text;" required>
+            </div>
+            <button type="submit" class="button button-primary" style="height: fit-content;">
+                <i class="fa-solid fa-plus"></i> Add
+            </button>
+        </form>
+    </div>
+
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+            <tr style="background-color: var(--card-bg); border-bottom: 2px solid var(--border-color);">
+                <th style="padding: 1rem; width: 35%;">Name</th>
+                <th style="padding: 1rem; width: 45%;">Address</th>
+                <th style="padding: 1rem; text-align: right; width: 20%;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="office : ${offices}" style="border-bottom: 1px solid var(--border-color);">
+                <td colspan="3" style="padding: 0;">
+                    <form th:action="@{/admin/offices/save(id=${office.id})}" method="post" class="row-form">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 0.8rem; width: 35%;">
+                                    <input type="text" name="name" th:value="${office.name}" class="table-input" required>
+                                </td>
+                                <td style="padding: 0.8rem; width: 45%;">
+                                    <input type="text" name="address" th:value="${office.address}" class="table-input" required>
+                                </td>
+                                <td style="padding: 0.8rem; text-align: right; width: 20%; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                    <button type="submit" class="button" title="Save Changes"
+                                            style="background-color: #27ae60; color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 5px;">
+                                        <i class="fa-solid fa-floppy-disk"></i>
+                                    </button>
+
+                                    <button type="button" th:onclick="'document.getElementById(\'delete-form-' + ${office.id} + '\').submit()'"
+                                            class="button" title="Delete Office"
+                                            style="background-color: #ff4d4d; color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 5px;">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+
+                    <form th:id="'delete-form-' + ${office.id}" th:action="@{/admin/offices/delete/{id}(id=${office.id})}" method="post" style="display:none;"></form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(offices)}">
+                <td colspan="3" style="padding: 3rem; text-align: center; color: var(--text-muted);">No offices found.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>
