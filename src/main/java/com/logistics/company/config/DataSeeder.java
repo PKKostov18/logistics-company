@@ -191,26 +191,32 @@ public class DataSeeder implements CommandLineRunner {
 
     private void seedCustomer() {
         String username = "client1";
-        if (userRepository.findByUsername(username).isEmpty()) {
-            Role role = roleRepository.findByName(RoleType.CUSTOMER).orElseThrow();
-
-            User user = User.builder()
-                    .username(username)
-                    .password(passwordEncoder.encode("password_client"))
-                    .email("client1@gmail.com")
-                    .firstName("Georgi")
-                    .lastName("Georgiev")
-                    .role(role)
-                    .build();
-            userRepository.save(user);
-
-            Customer customer = Customer.builder()
-                    .user(user)
-                    .defaultAddress("Studentski grad, bl. 55")
-                    .build();
-
-            customerRepository.save(customer);
-            logger.info("Created Customer: {}", username);
+        if (userRepository.findByUsername(username).isPresent()) {
+            return;
         }
+
+        Role role = roleRepository.findByName(RoleType.CUSTOMER)
+                .orElseThrow(() -> new RuntimeException("Error: Role CUSTOMER is not found."));
+
+        User user = User.builder()
+                .username(username)
+                .password(passwordEncoder.encode("password_client"))
+                .email("client1@gmail.com")
+                .firstName("Georgi")
+                .lastName("Georgiev")
+                .role(role)
+                .build();
+        userRepository.save(user);
+
+
+        Customer customer = Customer.builder()
+                .user(user)
+                .name(user.getFirstName() + " " + user.getLastName())
+                .phoneNumber("0888123456")
+                .defaultAddress("Studentski grad, bl. 55")
+                .build();
+
+        customerRepository.save(customer);
+        logger.info("Created Customer: {}", username);
     }
 }

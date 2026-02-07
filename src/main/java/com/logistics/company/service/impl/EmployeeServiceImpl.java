@@ -114,4 +114,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             case COURIER -> RoleType.COURIER;
         };
     }
+
+    @Override
+    public Employee getCurrentEmployee(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found: " + username));
+
+        return employeeRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Employee details not found for user: " + username));
+    }
 }

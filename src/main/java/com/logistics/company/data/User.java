@@ -72,6 +72,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Customer customer;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Employee employee;
+
     // UserDetails implementation
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

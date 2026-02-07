@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Packages - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background-color: #f3f4f6; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
+        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
+        .status-DELIVERED { background-color: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 class="page-title">Packages</h1>
+        <a th:href="@{/packages/create}" class="button button-primary">Register New</a>
+    </div>
+
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table>
+            <thead>
+            <tr>
+                <th>Tracking #</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Address</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pkg : ${packages}">
+                <td th:text="${pkg.trackingNumber}" style="font-family: monospace; font-weight: bold;"></td>
+                <td th:text="${pkg.sender.user.username}"></td>
+                <td th:text="${pkg.receiver.user.username}"></td>
+                <td th:text="${pkg.deliveryAddress}"></td>
+                <td th:text="${pkg.deliveryType}"></td>
+                <td th:text="${pkg.price} + ' BGN'"></td>
+                <td>
+                    <span th:class="'status-badge status-' + ${pkg.status}" th:text="${pkg.status}"></span>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(packages)}">
+                <td colspan="7" style="text-align: center; color: #6b7280;">No packages found.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.logistics.company.controller;
 import com.logistics.company.data.Package;
 import com.logistics.company.dto.CreatePackageRequest;
 import com.logistics.company.mapper.PackageMapper;
+import com.logistics.company.service.OfficeService; // Добавен импорт
 import com.logistics.company.service.PackageService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -21,14 +22,13 @@ import java.util.List;
 public class PackageController {
 
     private final PackageService packageService;
-    private final PackageMapper packageMapper;
+    private final OfficeService officeService;
 
-    public PackageController(PackageService packageService, PackageMapper packageMapper) {
+    public PackageController(PackageService packageService, OfficeService officeService) {
         this.packageService = packageService;
-        this.packageMapper = packageMapper;
+        this.officeService = officeService;
     }
 
-    // списък с всички пратки
     @GetMapping
     public String listPackages(Model model, Principal principal) {
         List<Package> packages = packageService.getPackagesForUser(principal.getName());
@@ -36,14 +36,14 @@ public class PackageController {
         return "packages/list";
     }
 
-    // форма за създаване на пратка
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("createPackageRequest", new CreatePackageRequest());
+        // ВАЖНО: Подаваме списъка с офиси към HTML-а
+        model.addAttribute("offices", officeService.getAllOffices());
         return "packages/create";
     }
 
-    // обработка на формата за създаване на пратка
     @PostMapping("/create")
     public String createPackage(
             @Valid @ModelAttribute("createPackageRequest") CreatePackageRequest request,
@@ -52,6 +52,8 @@ public class PackageController {
             Model model) {
 
         if (bindingResult.hasErrors()) {
+            // Ако има грешка, трябва пак да подадем офисите, иначе падащото меню ще изчезне
+            model.addAttribute("offices", officeService.getAllOffices());
             return "packages/create";
         }
 

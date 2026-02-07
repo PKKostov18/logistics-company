@@ -9,4 +9,5 @@ public interface EmployeeService {
     void createEmployee(CreateEmployeeRequest request);
     void updateEmployee(Long id, CreateEmployeeRequest request);
     void deleteEmployee(Long id);
+    Employee getCurrentEmployee(String username);
 }

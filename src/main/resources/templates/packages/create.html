@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register New Shipment</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container auth-page-container">
+    <div class="auth-layout" style="grid-template-columns: 1fr;">
+        <div class="auth-form-container">
+            <h1 class="form-title">Register New Package</h1>
+
+            <form th:action="@{/packages/create}" th:object="${createPackageRequest}" method="post" id="packageForm">
+
+                <div class="form-group">
+                    <label>Sender Phone Number</label>
+                    <input type="text" th:field="*{senderPhoneNumber}" placeholder="Example: 0888123456" required>
+                    <div th:if="${#fields.hasErrors('senderPhoneNumber')}" th:errors="*{senderPhoneNumber}" style="color: red;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Receiver Phone Number</label>
+                    <input type="text" th:field="*{receiverPhoneNumber}" placeholder="Example: 0899123456" required>
+                    <div th:if="${#fields.hasErrors('receiverPhoneNumber')}" th:errors="*{receiverPhoneNumber}" style="color: red;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" step="0.1" th:field="*{weight}" placeholder="0.0" required>
+                    <div th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" style="color: red;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery Type</label>
+                    <select id="deliveryType" th:field="*{deliveryType}" class="button-secondary" style="width: 100%; padding: 0.75rem;">
+                        <option value="TO_ADDRESS">To Address</option>
+                        <option value="TO_OFFICE">To Office</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="addressInputContainer">
+                    <label>Delivery Address</label>
+                    <input type="text" id="manualAddressInput" th:field="*{deliveryAddress}" placeholder="Enter full address">
+                </div>
+
+                <div class="form-group" id="officeSelectContainer" style="display: none;">
+                    <label>Select Office</label>
+                    <select id="officeSelect" class="button-secondary" style="width: 100%; padding: 0.75rem;">
+                        <option value="" disabled selected>-- Choose an office --</option>
+                        <option th:each="office : ${offices}"
+                                th:value="${office.address}"
+                                th:text="${office.name} + ' (' + ${office.address} + ')'">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" th:field="*{description}" placeholder="Package description">
+                </div>
+
+                <button type="submit" class="button button-primary form-submit-button">Register Package</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+<script>
+    const deliveryTypeSelect = document.getElementById('deliveryType');
+    const addressContainer = document.getElementById('addressInputContainer');
+    const officeContainer = document.getElementById('officeSelectContainer');
+
+    const manualInput = document.getElementById('manualAddressInput');
+    const officeSelect = document.getElementById('officeSelect');
+
+    function toggleDeliveryFields() {
+        if (deliveryTypeSelect.value === 'TO_OFFICE') {
+            addressContainer.style.display = 'none';
+            officeContainer.style.display = 'block';
+
+            manualInput.readOnly = true;
+            if(officeSelect.value) {
+                manualInput.value = officeSelect.value;
+            }
+        } else {
+            addressContainer.style.display = 'block';
+            officeContainer.style.display = 'none';
+
+            manualInput.readOnly = false;
+            manualInput.value = '';
+        }
+    }
+
+    deliveryTypeSelect.addEventListener('change', toggleDeliveryFields);
+
+    officeSelect.addEventListener('change', function() {
+        if (deliveryTypeSelect.value === 'TO_OFFICE') {
+            manualInput.value = this.value;
+        }
+    });
+
+    toggleDeliveryFields();
+</script>
+
+</body>
+</html>

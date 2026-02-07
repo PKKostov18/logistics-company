@@ -2,30 +2,32 @@ package com.logistics.company.dto;
 
 import com.logistics.company.data.DeliveryType;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data; // Ако ползваш Lombok, ако не - генерирай Getters/Setters
-
-import java.math.BigDecimal;
+import lombok.Data;
 
 @Data
 public class CreatePackageRequest {
 
-    @NotNull(message = "Sender ID is required")
-    private Long senderId;
+    @NotNull(message = "Sender phone number is required")
+    private String senderPhoneNumber;
 
-    @NotNull(message = "Receiver ID is required")
-    private Long receiverId;
+    private String senderName;
+
+    @NotNull(message = "Receiver phone number is required")
+    private String receiverPhoneNumber;
+
+    private String receiverName;
 
     @NotNull(message = "Delivery type is required")
     private DeliveryType deliveryType;
 
     private String deliveryAddress;
+    private Long officeId;
 
     @NotNull(message = "Weight is required")
-    @Positive(message = "Weight must be positive")
-    @DecimalMin(value = "0.1", message = "Minimum weight is 0.1 kg")
+    @Positive
+    @DecimalMin(value = "0.1")
     private double weight;
 
     private String description;

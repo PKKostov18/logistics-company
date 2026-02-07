@@ -22,11 +22,13 @@ public class UserService {
     }
 
     @Transactional
-    public User registerNewUser(RegistrationRequest registrationRequest) {
+    public void registerNewUser(RegistrationRequest registrationRequest) {
 
-        if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Username is already taken.");
+        if (userRepository.findByPhoneNumber(registrationRequest.getPhoneNumber()).isPresent()) {
+            throw new IllegalArgumentException("Phone number is already registered.");
         }
+
+        // Запазваме проверката за имейл (добра практика е да я има)
         if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email address is already registered.");
         }
@@ -46,14 +48,18 @@ public class UserService {
                 .role(defaultRole)
                 .build();
 
+        // Тук логиката ти е правилна - ако е Customer, създаваме и записа в другата таблица
         if (defaultRole.getName() == RoleType.CUSTOMER) {
             Customer newCustomer = Customer.builder()
                     .user(newUser)
+                    // Може да добавиш и името тук, за да избегнеш NULL грешката от предишния въпрос
+                    .name(newUser.getFirstName() + " " + newUser.getLastName())
+                    .phoneNumber(newUser.getPhoneNumber())
                     .build();
 
             newUser.setCustomer(newCustomer);
         }
 
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
     }
 }
