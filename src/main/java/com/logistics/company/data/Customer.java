@@ -43,7 +43,4 @@ public class Customer {
 
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
-
-    @Column(name = "default_address")
-    private String defaultAddress;
 }

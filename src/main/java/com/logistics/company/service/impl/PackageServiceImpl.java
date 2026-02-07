@@ -40,41 +40,59 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public List<Package> getPackagesForUser(String username) {
-        return new ArrayList<>();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (user.getRole().getName() == RoleType.CUSTOMER) {
+            List<Package> sent = packageRepository.findAllBySender_User_Id(user.getId());
+            List<Package> received = packageRepository.findAllByReceiver_User_Id(user.getId());
+
+            Set<Package> distinctPackages = new HashSet<>(sent);
+            distinctPackages.addAll(received);
+
+            return new ArrayList<>(distinctPackages);
+        }
+
+        return packageRepository.findAll();
     }
 
     @Override
     @Transactional
     public Package registerPackage(CreatePackageRequest request, String employeeUsername) {
 
-        // 1. Намиране на служителя
         User employeeUser = userRepository.findByUsername(employeeUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Employee user not found"));
+
         Employee employee = employeeUser.getEmployee();
         if (employee == null) {
-            // Опит за намиране чрез репозиторито, ако връзката в User не е заредена
             employee = employeeRepository.findByUser_Id(employeeUser.getId())
                     .orElseThrow(() -> new IllegalArgumentException("User is not an employee"));
         }
 
-        // 2. Обработка на ПОДАТЕЛ (Find or Create)
         Customer sender = getOrCreateCustomer(request.getSenderPhoneNumber(), request.getSenderName());
 
-        // 3. Обработка на ПОЛУЧАТЕЛ (Find or Create)
         Customer receiver = getOrCreateCustomer(request.getReceiverPhoneNumber(), request.getReceiverName());
 
-        // 4. Логика за офиса
         Office destinationOffice = null;
+        String finalDeliveryAddress = request.getDeliveryAddress();
+
         if (request.getDeliveryType() == DeliveryType.TO_OFFICE) {
-            if (request.getOfficeId() == null) throw new IllegalArgumentException("Office is required for TO_OFFICE delivery");
+            if (request.getOfficeId() == null) {
+                throw new IllegalArgumentException("Office is required for TO_OFFICE delivery");
+            }
             destinationOffice = officeRepository.findById(request.getOfficeId())
                     .orElseThrow(() -> new IllegalArgumentException("Office not found"));
+
+            finalDeliveryAddress = null;
+
+        } else {
+            if (finalDeliveryAddress == null || finalDeliveryAddress.trim().isEmpty()) {
+                throw new IllegalArgumentException("Delivery address is required for TO_ADDRESS delivery");
+            }
         }
 
-        // 5. Ценообразуване
         BigDecimal price = calculatePrice(request.getWeight(), request.getDeliveryType());
 
-        // 6. Създаване на пратката
         Package newPackage = Package.builder()
                 .trackingNumber(java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase())
                 .sender(sender)
@@ -83,47 +101,43 @@ public class PackageServiceImpl implements PackageService {
                 .destinationOffice(destinationOffice)
                 .weightKg(request.getWeight())
                 .deliveryType(request.getDeliveryType())
-                .deliveryAddress(request.getDeliveryAddress())
+                .deliveryAddress(finalDeliveryAddress)
                 .price(price)
                 .status(PackageStatus.REGISTERED)
                 .build();
 
         return packageRepository.save(newPackage);
     }
-
-    // --- ПОМОЩЕН МЕТОД: Намери или Създай Клиент ---
+    
     private Customer getOrCreateCustomer(String phoneNumber, String name) {
-        // 1. Търсим дали вече имаме клиент с този телефон в таблица 'customers'
         Optional<Customer> existingCustomer = customerRepository.findByPhoneNumber(phoneNumber);
 
         if (existingCustomer.isPresent()) {
             return existingCustomer.get();
         }
 
-        // 2. Ако няма клиент, проверяваме дали има регистриран User с този телефон
-        // (за да ги свържем автоматично)
         Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
+        Customer newCustomer = getCustomer(phoneNumber, name, existingUser);
 
+        return customerRepository.save(newCustomer);
+    }
+
+    private static Customer getCustomer(String phoneNumber, String name, Optional<User> existingUser) {
         Customer newCustomer = new Customer();
         newCustomer.setPhoneNumber(phoneNumber);
 
         if (existingUser.isPresent()) {
-            // Има User -> Свързваме го!
             User user = existingUser.get();
             newCustomer.setUser(user);
-            // Ако не е подадено име в рекуеста, ползваме това от профила
             String customerName = (name != null && !name.isEmpty())
                     ? name
                     : user.getFirstName() + " " + user.getLastName();
             newCustomer.setName(customerName);
         } else {
-            // Няма User -> Създаваме "Гост" клиент
             newCustomer.setUser(null);
-            // Тук името е задължително от формата
-            newCustomer.setName(name != null ? name : "Unknown Client");
+            newCustomer.setName(name != null && !name.isEmpty() ? name : "Guest Customer");
         }
-
-        return customerRepository.save(newCustomer);
+        return newCustomer;
     }
 
     @Override

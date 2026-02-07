@@ -213,7 +213,6 @@ public class DataSeeder implements CommandLineRunner {
                 .user(user)
                 .name(user.getFirstName() + " " + user.getLastName())
                 .phoneNumber("0888123456")
-                .defaultAddress("Studentski grad, bl. 55")
                 .build();
 
         customerRepository.save(customer);

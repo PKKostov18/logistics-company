@@ -41,8 +41,22 @@
             <tbody>
             <tr th:each="pkg : ${packages}">
                 <td th:text="${pkg.trackingNumber}" style="font-family: monospace; font-weight: bold;"></td>
-                <td th:text="${pkg.sender.user.username}"></td>
-                <td th:text="${pkg.receiver.user.username}"></td>
+                <td>
+                    <span th:if="${pkg.sender.user != null}"
+                          th:text="${pkg.sender.user.username} + ' (' + ${pkg.sender.phoneNumber} + ')'"></span>
+
+                    <span th:if="${pkg.sender.user == null}"
+                          th:text="'Without account (' + ${pkg.sender.phoneNumber} + ')'"
+                          style="color: #6b7280; font-style: italic;"></span>
+                </td>
+                <td>
+                    <span th:if="${pkg.receiver.user != null}"
+                          th:text="${pkg.receiver.user.username}  + ' (' + ${pkg.receiver.phoneNumber} + ')'"></span>
+
+                    <span th:if="${pkg.receiver.user == null}"
+                          th:text="'Without account (' + ${pkg.receiver.phoneNumber} + ')'"
+                          style="color: #6b7280; font-style: italic;"></span>
+                </td>
                 <td th:text="${pkg.deliveryAddress}"></td>
                 <td th:text="${pkg.deliveryType}"></td>
                 <td th:text="${pkg.price} + ' BGN'"></td>

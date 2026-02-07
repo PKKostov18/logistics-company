@@ -51,10 +51,11 @@
 
                 <div class="form-group" id="officeSelectContainer" style="display: none;">
                     <label>Select Office</label>
-                    <select id="officeSelect" class="button-secondary" style="width: 100%; padding: 0.75rem;">
+                    <select id="officeSelect" th:field="*{officeId}" class="button-secondary" style="width: 100%; padding: 0.75rem;">
                         <option value="" disabled selected>-- Choose an office --</option>
+
                         <option th:each="office : ${offices}"
-                                th:value="${office.address}"
+                                th:value="${office.id}"
                                 th:text="${office.name} + ' (' + ${office.address} + ')'">
                         </option>
                     </select>

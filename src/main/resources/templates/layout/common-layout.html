@@ -63,7 +63,7 @@
 
             <ul class="nav-menu-list" sec:authorize="hasRole('OFFICE_EMPLOYEE')">
                 <li>
-                    <a href="#" class="nav-menu-link">Register Package</a>
+                    <a th:href="@{/packages}" class="nav-menu-link">Register Package</a>
                 </li>
                 <li>
                     <a href="#" class="nav-menu-link">Pending Shipments</a>
