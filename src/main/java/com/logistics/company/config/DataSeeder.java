@@ -141,7 +141,7 @@ public class DataSeeder implements CommandLineRunner {
             // създава User
             User user = User.builder()
                     .username(username)
-                    .password(passwordEncoder.encode("password_office"))
+                        .password(passwordEncoder.encode("password_office"))
                     .email("office1@logitrace.com")
                     .firstName("Maria")
                     .lastName("Ivanova")

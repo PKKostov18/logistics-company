@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -35,7 +36,18 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public List<Package> getPackagesByUserId(Long userId) {
-        return List.of();
+        return packageRepository.findAllBySender_User_Id(userId);
+    }
+
+    @Override
+    public List<Package> getPendingPackages() {
+        // Връщаме всичко, което е РЕГИСТРИРАНО или В ПРОЦЕС НА ДОСТАВКА
+        List<Package> registered = packageRepository.findAllByStatus(PackageStatus.REGISTERED);
+        List<Package> inTransit = packageRepository.findAllByStatus(PackageStatus.IN_TRANSIT);
+
+        List<Package> allPending = new ArrayList<>(registered);
+        allPending.addAll(inTransit);
+        return allPending;
     }
 
     @Override
@@ -70,7 +82,6 @@ public class PackageServiceImpl implements PackageService {
         }
 
         Customer sender = getOrCreateCustomer(request.getSenderPhoneNumber(), request.getSenderName());
-
         Customer receiver = getOrCreateCustomer(request.getReceiverPhoneNumber(), request.getReceiverName());
 
         Office destinationOffice = null;
@@ -93,22 +104,46 @@ public class PackageServiceImpl implements PackageService {
 
         BigDecimal price = calculatePrice(request.getWeight(), request.getDeliveryType());
 
-        Package newPackage = Package.builder()
-                .trackingNumber(java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase())
-                .sender(sender)
-                .receiver(receiver)
-                .registeredBy(employee)
-                .destinationOffice(destinationOffice)
-                .weightKg(request.getWeight())
-                .deliveryType(request.getDeliveryType())
-                .deliveryAddress(finalDeliveryAddress)
-                .price(price)
-                .status(PackageStatus.REGISTERED)
-                .build();
+        Package newPackage = new Package();
+        newPackage.setTrackingNumber(java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        newPackage.setSender(sender);
+        newPackage.setReceiver(receiver);
+        newPackage.setRegisteredBy(employee);
+        newPackage.setDestinationOffice(destinationOffice);
+
+        // ПОПРАВКА: Използваме setWeightKg вместо setWeight
+        newPackage.setWeightKg(request.getWeight());
+
+        newPackage.setDeliveryType(request.getDeliveryType());
+        newPackage.setDeliveryAddress(finalDeliveryAddress);
+        newPackage.setPrice(price);
+        newPackage.setStatus(PackageStatus.REGISTERED);
+
+        // Ако има поле created_at
+        // newPackage.setCreatedAt(java.time.Instant.now());
 
         return packageRepository.save(newPackage);
     }
-    
+
+    @Override
+    @Transactional
+    public void updatePackageStatus(Long packageId, String newStatus) {
+        Package pkg = packageRepository.findById(packageId)
+                .orElseThrow(() -> new IllegalArgumentException("Package not found"));
+        try {
+            PackageStatus status = PackageStatus.valueOf(newStatus);
+            pkg.setStatus(status);
+
+            if (status == PackageStatus.DELIVERED || status == PackageStatus.RECEIVED) {
+                // pkg.setReceivedAt(java.time.Instant.now()); // Ако ползваш Instant
+            }
+
+            packageRepository.save(pkg);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid status: " + newStatus);
+        }
+    }
+
     private Customer getOrCreateCustomer(String phoneNumber, String name) {
         Optional<Customer> existingCustomer = customerRepository.findByPhoneNumber(phoneNumber);
 
@@ -138,18 +173,6 @@ public class PackageServiceImpl implements PackageService {
             newCustomer.setName(name != null && !name.isEmpty() ? name : "Guest Customer");
         }
         return newCustomer;
-    }
-
-    @Override
-    public void updatePackageStatus(Long packageId, String newStatus) {
-        Package pkg = packageRepository.findById(packageId)
-                .orElseThrow(() -> new IllegalArgumentException("Package not found"));
-        try {
-            pkg.setStatus(PackageStatus.valueOf(newStatus));
-            packageRepository.save(pkg);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid status: " + newStatus);
-        }
     }
 
     @Override

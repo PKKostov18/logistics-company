@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Shipments - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: left; }
+        th { background-color: var(--bg-color); color: var(--text-color); }
+
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
+        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
+
+        .action-btn {
+            border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;
+            font-size: 0.85rem; color: white; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .btn-ship { background-color: #eab308; }
+        .btn-ship:hover { background-color: #ca8a04; }
+        .btn-deliver { background-color: #22c55e; }
+        .btn-deliver:hover { background-color: #16a34a; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <h1 class="page-title">Pending Shipments</h1>
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table>
+            <thead>
+            <tr>
+                <th>Tracking #</th>
+                <th>From -> To</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pkg : ${packages}">
+                <td th:text="${pkg.trackingNumber}" style="font-family: monospace; font-weight: bold;"></td>
+                <td>
+                    <div style="font-size: 0.9rem;"><i class="fa-solid fa-user"></i> <span th:text="${pkg.sender.name}"></span></div>
+                    <div style="font-size: 0.9rem; margin-top: 4px; color: #666;"><i class="fa-solid fa-arrow-right"></i> <span th:text="${pkg.receiver.name}"></span></div>
+                </td>
+                <td th:text="${pkg.deliveryAddress}"></td>
+                <td><span th:class="'status-badge status-' + ${pkg.status}" th:text="${pkg.status}"></span></td>
+                <td style="text-align: right;">
+                    <div style="display: flex; gap: 5px; justify-content: flex-end;">
+                        <form th:if="${pkg.status.name() == 'REGISTERED'}" th:action="@{/packages/status/update}" method="post">
+                            <input type="hidden" name="id" th:value="${pkg.id}">
+                            <input type="hidden" name="status" value="IN_TRANSIT">
+                            <button type="submit" class="action-btn btn-ship"><i class="fa-solid fa-truck-fast"></i> Ship</button>
+                        </form>
+                        <form th:if="${pkg.status.name() == 'IN_TRANSIT' or pkg.status.name() == 'REGISTERED'}" th:action="@{/packages/status/update}" method="post">
+                            <input type="hidden" name="id" th:value="${pkg.id}">
+                            <input type="hidden" name="status" value="DELIVERED">
+                            <button type="submit" class="action-btn btn-deliver"><i class="fa-solid fa-check"></i> Deliver</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+</body>
+</html>
