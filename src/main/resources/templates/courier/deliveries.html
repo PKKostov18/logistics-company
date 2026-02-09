@@ -2,67 +2,254 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Deliveries - LogiTrace</title>
+    <title>My Deliveries</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Filter Section Styles */
+        .filter-container {
+            background-color: var(--color-bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--color-border-nav);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            flex-grow: 1;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--color-border-nav);
+            border-radius: 0.375rem;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        /* Success Message Alert (Green Pop-up) */
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #a7f3d0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            background-color: var(--color-bg-card);
+            border-radius: 0.5rem;
+            border: 1px solid var(--color-border-nav);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .deliveries-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        .deliveries-table th {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid var(--color-border-nav);
+            white-space: nowrap;
+        }
+
+        .deliveries-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-border-nav);
+            vertical-align: middle;
+            color: var(--color-text);
+        }
+
+        .deliveries-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .deliveries-table tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Badge and Icon Styles */
+        .tracking-badge {
+            font-family: monospace;
+            background-color: var(--color-btn-secondary-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: #dbeafe;
+            color: #1e40af;
+            display: inline-block;
+        }
+
+        .office-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background-color: rgba(37, 99, 235, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .address-detail {
+            display: block;
+            color: var(--color-text);
+            font-size: 0.9rem;
+        }
+
+        .price-text {
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        /* Button Styles */
+        .btn-deliver-sm {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-deliver-sm:hover {
+            background-color: #059669;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-card-desc);
+        }
+    </style>
 </head>
 <body>
 
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
 <main class="main-container">
-    <h1 class="page-title">My Pending Deliveries</h1>
-    <p class="page-description">Manage and track your assigned shipments.</p>
-
-    <div class="content-grid" style="display: block;"> <div th:if="${packages.isEmpty()}" class="alert alert-info">
-        You have no pending deliveries at the moment. Good job!
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.5rem;">
+        <div>
+            <h1 class="page-title">My Tasks</h1>
+            <p class="page-description">Manage your active deliveries.</p>
+        </div>
     </div>
 
-        <div th:if="${!packages.isEmpty()}" class="table-responsive card" style="padding: 20px;">
-            <table class="table table-striped table-hover align-middle">
-                <thead class="table-dark">
-                <tr>
-                    <th>Tracking #</th>
-                    <th>Receiver</th>
-                    <th>Address</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="pkg : ${packages}">
-                    <td th:text="${pkg.trackingNumber}" class="fw-bold"></td>
+    <div th:if="${successMessage}" class="alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${successMessage}">Package delivered successfully!</span>
+    </div>
 
-                    <td>
-                        <div th:if="${pkg.receiver.user != null}"
-                             th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}"></div>
-                        <div th:if="${pkg.receiver.user == null}" class="text-muted">
-                            Unknown/Guest
-                        </div>
-                        <small class="text-primary"
-                               th:text="${pkg.receiver.phoneNumber}"></small>
-                    </td>
-
-                    <td th:text="${pkg.deliveryAddress}"></td>
-                    <td th:text="${pkg.price} + ' BGN'"></td>
-
-                    <td>
-                        <span class="badge bg-warning text-dark" th:text="${pkg.status}"></span>
-                    </td>
-
-                    <td>
-                        <form th:action="@{/courier/deliver/{id}(id=${pkg.id})}" method="post">
-                            <button type="submit" class="btn btn-success btn-sm"
-                                    onclick="return confirm('Confirm delivery completion?')">
-                                Mark Delivered
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <form th:action="@{/courier/deliveries}" method="get" class="filter-container">
+        <div style="font-weight: 600; color: var(--color-text);">
+            <i class="fa-solid fa-magnifying-glass"></i> Search:
         </div>
+        <input type="text" name="id" class="filter-input" placeholder="Search by Package ID...">
+        <button type="submit" class="button button-primary">Find</button>
+        <a th:href="@{/courier/deliveries}" class="button button-secondary">Show All</a>
+    </form>
+
+    <div class="table-responsive">
+
+        <div th:if="${packages.isEmpty()}" class="empty-state">
+            <i class="fa-solid fa-truck-fast" style="font-size: 3rem; margin-bottom: 1rem; color: #9ca3af;"></i>
+            <h3>No active deliveries</h3>
+            <p>You haven't picked up any packages yet.</p>
+            <a th:href="@{/courier/available}" class="button button-primary" style="margin-top: 1rem;">Go to Marketplace</a>
+        </div>
+
+        <table th:unless="${packages.isEmpty()}" class="deliveries-table">
+            <thead>
+            <tr>
+                <th>Tracking #</th>
+                <th>Status</th>
+                <th>Receiver</th>
+                <th>Destination</th>
+                <th>Weight / Price</th>
+                <th style="text-align: right;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pkg : ${packages}">
+                <td>
+                    <span class="tracking-badge" th:text="${pkg.trackingNumber}">#TRACK123</span>
+                </td>
+                <td>
+                    <span class="status-badge" th:text="${pkg.status}">IN TRANSIT</span>
+                </td>
+                <td>
+                    <div style="font-weight: 500;"
+                         th:if="${pkg.receiver.user != null}"
+                         th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">
+                        John Doe
+                    </div>
+                    <div th:if="${pkg.receiver.user == null}">Guest User</div>
+                </td>
+                <td>
+                    <div th:if="${pkg.destinationOffice != null}">
+                        <div class="office-tag"><i class="fa-solid fa-building"></i> OFFICE</div>
+                        <span class="address-detail" th:text="${pkg.destinationOffice.address}">Office Address</span>
+                    </div>
+                    <div th:if="${pkg.destinationOffice == null}">
+                        <div style="color: #6b7280; font-size: 0.85rem; margin-bottom: 2px;">
+                            <i class="fa-solid fa-location-dot"></i> Home Address
+                        </div>
+                        <span class="address-detail" th:text="${pkg.deliveryAddress}">Some Street 123</span>
+                    </div>
+                </td>
+                <td>
+                    <div th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
+                    <div class="price-text" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
+                </td>
+                <td style="text-align: right;">
+                    <form th:action="@{/courier/deliver/{id}(id=${pkg.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-deliver-sm">
+                            <i class="fa-solid fa-box-open"></i> Deliver
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </main>
 

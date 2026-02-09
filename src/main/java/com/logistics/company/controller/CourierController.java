@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -45,8 +46,12 @@ public class CourierController {
     }
 
     @PostMapping("/deliver/{id}")
-    public String deliverPackage(@PathVariable Long id) {
+    public String deliverPackage(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         packageService.markPackageAsDelivered(id);
+
+        // Зеленият pop-up за успешно доставяне
+        redirectAttributes.addFlashAttribute("successMessage", "Package delivered successfully!");
+
         return "redirect:/courier/deliveries";
     }
 
@@ -59,12 +64,25 @@ public class CourierController {
         return "courier/available";
     }
 
-    @PostMapping("/take/{id}")
-    public String takePackage(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    // --- НОВ МЕТОД ЗА МАСОВО ВЗЕМАНЕ НА ПРАТКИ ---
+    @PostMapping("/take/batch")
+    public String takeSelectedPackages(@RequestParam(value = "packageIds", required = false) List<Long> packageIds,
+                                       @AuthenticationPrincipal UserDetails userDetails,
+                                       RedirectAttributes redirectAttributes) {
+
+        if (packageIds == null || packageIds.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Please select at least one package.");
+            return "redirect:/courier/available";
+        }
+
         User courier = userService.findByUsername(userDetails.getUsername());
 
-        packageService.assignPackageToCourier(id, courier);
+        // Обхождаме всички избрани ID-та и ги присвояваме
+        for (Long id : packageIds) {
+            packageService.assignPackageToCourier(id, courier);
+        }
 
+        redirectAttributes.addFlashAttribute("successMessage", "Successfully took " + packageIds.size() + " packages!");
         return "redirect:/courier/deliveries";
     }
 }

@@ -1,19 +1,128 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>All Packages - LogiTrace</title>
+    <title>All Packages</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-        th { background-color: #f3f4f6; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
-        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
-        .status-DELIVERED { background-color: #d1fae5; color: #065f46; }
+        /* Shared Table Styles to match Courier pages */
+        .table-responsive {
+            overflow-x: auto;
+            background-color: var(--color-bg-card);
+            border-radius: 0.5rem;
+            border: 1px solid var(--color-border-nav);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .packages-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            text-align: left;
+        }
+
+        /* HEADER FIX for Dark Mode */
+        .packages-table th {
+            background-color: var(--color-bg); /* Adapts to theme */
+            color: var(--color-text);          /* Adapts to theme */
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid var(--color-border-nav);
+            white-space: nowrap;
+        }
+
+        .packages-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-border-nav);
+            vertical-align: middle;
+            color: var(--color-text);
+        }
+
+        .packages-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .packages-table tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Badges & Tags */
+        .tracking-badge {
+            font-family: monospace;
+            background-color: var(--color-btn-secondary-bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            background-color: #dbeafe;
+            color: #1e40af;
+            display: inline-block;
+        }
+
+        .office-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background-color: rgba(37, 99, 235, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .address-detail {
+            display: block;
+            color: var(--color-text);
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background-color: #eab308;
+            color: white;
+            border: none;
+        }
+        .btn-edit:hover { background-color: #ca8a04; }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+        }
+        .btn-delete:hover { background-color: #dc2626; }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -21,56 +130,79 @@
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
 <main class="main-container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 class="page-title">Packages</h1>
 
-        <a th:href="@{/packages/create}" class="button button-primary"
-           sec:authorize="hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN')">
-            Register New
-        </a>
+    <div class="header-actions">
+        <div>
+            <h1 class="page-title">All Packages</h1>
+            <p class="page-description">Manage all shipments in the system.</p>
+        </div>
+        <div>
+            <a th:href="@{/packages/create}" class="button button-primary">
+                <i class="fa-solid fa-plus"></i> Create New Package
+            </a>
+        </div>
     </div>
 
-    <div class="card" style="padding: 0; overflow-x: auto;">
-        <table>
+    <div class="table-responsive">
+        <table class="packages-table">
             <thead>
             <tr>
                 <th>Tracking #</th>
                 <th>Sender</th>
                 <th>Receiver</th>
-                <th>Address</th>
-                <th>Type</th>
-                <th>Price</th>
+                <th>Destination</th>
+                <th>Weight / Price</th>
                 <th>Status</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}">
-                <td th:text="${pkg.trackingNumber}" style="font-family: monospace; font-weight: bold;"></td>
                 <td>
-                    <span th:if="${pkg.sender.user != null}"
-                          th:text="${pkg.sender.user.username} + ' (' + ${pkg.sender.phoneNumber} + ')'"></span>
+                    <span class="tracking-badge" th:text="${pkg.trackingNumber}">#TRACK123</span>
+                </td>
+                <td>
+                    <div class="user-name"
+                         th:if="${pkg.sender.user != null}"
+                         th:text="${pkg.sender.user.firstName} + ' ' + ${pkg.sender.user.lastName}">
+                        Sender Name
+                    </div>
+                    <div th:if="${pkg.sender.user == null}">Unknown Sender</div>
+                </td>
+                <td>
+                    <div class="user-name"
+                         th:if="${pkg.receiver.user != null}"
+                         th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">
+                        Receiver Name
+                    </div>
+                    <div th:if="${pkg.receiver.user == null}">Guest Receiver</div>
+                </td>
+                <td>
+                    <div th:if="${pkg.destinationOffice != null}">
+                        <div class="office-tag"><i class="fa-solid fa-building"></i> OFFICE</div>
+                        <span class="address-detail" th:text="${pkg.destinationOffice.address}">Office Address</span>
+                    </div>
 
-                    <span th:if="${pkg.sender.user == null}"
-                          th:text="'Without account (' + ${pkg.sender.phoneNumber} + ')'"
-                          style="color: #6b7280; font-style: italic;"></span>
+                    <div th:if="${pkg.destinationOffice == null}">
+                        <div style="color: #6b7280; font-size: 0.85rem; margin-bottom: 2px;">
+                            <i class="fa-solid fa-location-dot"></i> Address
+                        </div>
+                        <span class="address-detail" th:text="${pkg.deliveryAddress}">Delivery Address</span>
+                    </div>
                 </td>
                 <td>
-                    <span th:if="${pkg.receiver.user != null}"
-                          th:text="${pkg.receiver.user.username}  + ' (' + ${pkg.receiver.phoneNumber} + ')'"></span>
+                    <div th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
+                    <div style="color: #10b981; font-weight: 600;" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
+                </td>
+                <td>
+                    <span class="status-badge" th:text="${pkg.status}">STATUS</span>
+                </td>
 
-                    <span th:if="${pkg.receiver.user == null}"
-                          th:text="'Without account (' + ${pkg.receiver.phoneNumber} + ')'"
-                          style="color: #6b7280; font-style: italic;"></span>
-                </td>
-                <td th:text="${pkg.deliveryAddress}"></td>
-                <td th:text="${pkg.deliveryType}"></td>
-                <td th:text="${pkg.price} + ' BGN'"></td>
-                <td>
-                    <span th:class="'status-badge status-' + ${pkg.status}" th:text="${pkg.status}"></span>
-                </td>
             </tr>
-            <tr th:if="${#lists.isEmpty(packages)}">
-                <td colspan="7" style="text-align: center; color: #6b7280;">No packages found.</td>
+
+            <tr th:if="${packages.isEmpty()}">
+                <td colspan="7" style="text-align: center; padding: 2rem;">
+                    No packages found in the system.
+                </td>
             </tr>
             </tbody>
         </table>
