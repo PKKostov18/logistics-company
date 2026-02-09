@@ -24,7 +24,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else if (roles.contains("ROLE_OFFICE_EMPLOYEE")) {
             response.sendRedirect("/office-employee/dashboard");
         } else if (roles.contains("ROLE_COURIER")) {
-            response.sendRedirect("/");
+            response.sendRedirect("/courier/dashboard");
         } else {
             response.sendRedirect("/");
         }

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clients List - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <style>
+        /* Стилове за таблицата */
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; table-layout: fixed; }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; vertical-align: middle; }
+        th { background-color: #f3f4f6; color: #374151; font-weight: 600; }
+
+        /* Стилове за бутони */
+        .btn-sm { padding: 4px 10px; font-size: 0.85rem; border-radius: 4px; cursor: pointer; border: none; font-weight: 500; text-decoration: none; display: inline-block;}
+        .btn-edit { background-color: #f59e0b; color: white; }
+        .btn-edit:hover { background-color: #d97706; }
+        .btn-save { background-color: #10b981; color: white; }
+        .btn-save:hover { background-color: #059669; }
+        .btn-cancel { background-color: #ef4444; color: white; margin-left: 5px;}
+        .btn-cancel:hover { background-color: #dc2626; }
+        .btn-history { background-color: #3b82f6; color: white; margin-left: 5px; }
+
+        /* Input полета при редакция */
+        .edit-input {
+            width: 95%;
+            padding: 5px;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Значки за статус */
+        .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .badge-reg { background-color: #d1fae5; color: #065f46; }
+        .badge-off { background-color: #f3f4f6; color: #374151; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1 class="page-title">Clients Directory</h1>
+    </div>
+
+    <div class="card" style="padding: 0; overflow-x: auto;">
+        <table>
+            <thead>
+            <tr>
+                <th style="width: 25%;">Name</th>
+                <th style="width: 20%;">Phone Number</th>
+                <th style="width: 20%;">Email / User</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 20%;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="client : ${clients}" th:id="'row-' + ${client.id}">
+
+                <td>
+                    <span class="view-field name-text" th:text="${client.name}" style="font-weight: bold; color: #1f2937;"></span>
+                    <input type="text" class="edit-field edit-input" name="name" th:value="${client.name}" style="display: none;">
+                </td>
+
+                <td>
+                    <span class="view-field phone-text" th:text="${client.phoneNumber}"></span>
+                    <input type="text" class="edit-field edit-input" name="phoneNumber" th:value="${client.phoneNumber}" style="display: none;">
+                </td>
+
+                <td>
+                    <div th:if="${client.user != null}">
+                        <div th:text="${client.user.email}" style="font-size: 0.85rem;"></div>
+                        <div th:text="'@' + ${client.user.username}" style="font-size: 0.75rem; color: #6b7280;"></div>
+                    </div>
+                    <div th:unless="${client.user != null}" style="color: #9ca3af;">-</div>
+                </td>
+
+                <td>
+                    <span th:if="${client.user != null}" class="badge badge-reg">Registered</span>
+                    <span th:unless="${client.user != null}" class="badge badge-off">Offline</span>
+                </td>
+
+                <td>
+                    <div class="view-actions">
+                        <button type="button" class="btn-sm btn-edit" th:onclick="'enableEdit(' + ${client.id} + ')'">Edit</button>
+                        <a href="#" class="btn-sm btn-history" onclick="alert('History coming soon!')">History</a>
+                    </div>
+
+                    <div class="edit-actions" style="display: none;">
+                        <button type="button" class="btn-sm btn-save" th:onclick="'saveClient(' + ${client.id} + ')'">Save</button>
+                        <button type="button" class="btn-sm btn-cancel" th:onclick="'cancelEdit(' + ${client.id} + ')'">Cancel</button>
+                    </div>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(clients)}">
+                <td colspan="5" style="text-align: center; padding: 2rem; color: #6b7280;">
+                    No clients found in the database.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+<script>
+    function enableEdit(id) {
+        const row = document.getElementById('row-' + id);
+        row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = 'none');
+        row.querySelectorAll('.edit-field, .edit-actions').forEach(el => {
+            el.style.display = 'inline-block';
+            if(el.tagName === 'DIV') el.style.display = 'flex';
+        });
+    }
+
+    function cancelEdit(id) {
+        const row = document.getElementById('row-' + id);
+        const originalName = row.querySelector('.name-text').innerText;
+        const originalPhone = row.querySelector('.phone-text').innerText;
+
+        row.querySelector('input[name="name"]').value = originalName;
+        row.querySelector('input[name="phoneNumber"]').value = originalPhone;
+
+        row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = '');
+        row.querySelectorAll('.edit-field, .edit-actions').forEach(el => el.style.display = 'none');
+    }
+
+    function saveClient(id) {
+        const row = document.getElementById('row-' + id);
+        const name = row.querySelector('input[name="name"]').value;
+        const phoneNumber = row.querySelector('input[name="phoneNumber"]').value;
+
+        // ПРЕМАХНАТО: CSRF логиката, защото защитата е изключена на ниво Java
+        const formData = new URLSearchParams();
+        formData.append('name', name);
+        formData.append('phoneNumber', phoneNumber);
+
+        fetch('/clients/update/' + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                // Няма нужда от X-CSRF-TOKEN хедър
+            },
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    row.querySelector('.name-text').innerText = name;
+                    row.querySelector('.phone-text').innerText = phoneNumber;
+
+                    row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = '');
+                    row.querySelectorAll('.edit-field, .edit-actions').forEach(el => el.style.display = 'none');
+
+                    row.style.backgroundColor = '#d1fae5';
+                    setTimeout(() => row.style.backgroundColor = '', 500);
+                } else {
+                    alert('Error updating client. Please check the data.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('A network error occurred.');
+            });
+    }
+</script>
+
+</body>
+</html>

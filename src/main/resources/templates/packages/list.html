@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>All Packages - LogiTrace</title>
@@ -22,7 +23,11 @@
 <main class="main-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h1 class="page-title">Packages</h1>
-        <a th:href="@{/packages/create}" class="button button-primary">Register New</a>
+
+        <a th:href="@{/packages/create}" class="button button-primary"
+           sec:authorize="hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN')">
+            Register New
+        </a>
     </div>
 
     <div class="card" style="padding: 0; overflow-x: auto;">

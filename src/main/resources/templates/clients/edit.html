@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Client - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/register.css}"> </head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <div class="register-container"> <h2 class="form-title">Edit Client Details</h2>
+
+        <form th:action="@{/clients/update/{id}(id=${client.id})}" method="post">
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" th:value="${client.name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" th:value="${client.phoneNumber}" required>
+            </div>
+
+            <div th:if="${client.user != null}" style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+                * Username and Email can only be changed by the user or system admin via User Management.
+            </div>
+
+            <button type="submit" class="button-primary" style="width: 100%;">Save Changes</button>
+            <a th:href="@{/clients}" class="button-secondary" style="display: block; text-align: center; margin-top: 10px; text-decoration: none;">Cancel</a>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>

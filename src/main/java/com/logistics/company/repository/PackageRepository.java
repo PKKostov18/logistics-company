@@ -1,7 +1,9 @@
 package com.logistics.company.repository;
 
+import com.logistics.company.data.Employee;
 import com.logistics.company.data.Package;
 import com.logistics.company.data.PackageStatus;
+import com.logistics.company.data.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +22,9 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
 
     List<Package> findAllByStatus(PackageStatus status);
 
-    // НОВО: Търсене по списък от статуси (за pending пратки)
     List<Package> findAllByStatusIn(Collection<PackageStatus> statuses);
+    List<Package> findAllByAssignedCourierAndStatusNot(Employee assignedCourier, PackageStatus status);
+
+    List<Package> findAllByAssignedCourierIsNullAndStatus(PackageStatus status);
+    List<Package> findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(PackageStatus status, String address);
 }

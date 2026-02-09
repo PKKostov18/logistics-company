@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Courier Dashboard - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <h1 class="page-title">Courier Dashboard</h1>
+
+    <p class="page-description">
+        Hello, <span th:text="${courierName}">User</span>!
+        You have <strong th:text="${pendingCount}">0</strong> active shipments assigned to you today.
+    </p>
+
+    <div class="content-grid">
+        <div class="card">
+            <h2 class="card-title">My Deliveries</h2>
+            <p class="card-description">View your assigned tasks and mark them as delivered.</p>
+            <a th:href="@{/courier/deliveries}" class="button button-primary">View Tasks</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">All Packages</h2>
+            <p class="card-description">Reference list of all shipments in the system.</p>
+            <a th:href="@{/packages}" class="button button-primary">Browse All</a>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Find Packages</h2>
+            <p class="card-description">Search for unassigned packages in your city.</p>
+            <a th:href="@{/courier/available}" class="button button-primary">Open Marketplace</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>

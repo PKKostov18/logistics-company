@@ -69,6 +69,7 @@ public class DataSeeder implements CommandLineRunner {
         seedOfficeEmployee();
         seedCourier();
         seedCustomer();
+        seedCourierTwo();
 
         logger.info("Data seeding completed successfully.");
     }
@@ -173,6 +174,33 @@ public class DataSeeder implements CommandLineRunner {
                     .email("courier1@logitrace.com")
                     .firstName("Ivan")
                     .lastName("Petrov")
+                    .role(role)
+                    .build();
+            userRepository.save(user);
+
+            Employee courier = Employee.builder()
+                    .user(user)
+                    .office(mainOffice)
+                    .employeeType(EmployeeType.COURIER)
+                    .hireDate(LocalDate.now())
+                    .build();
+
+            employeeRepository.save(courier);
+            logger.info("Created Courier: {}", username);
+        }
+    }
+
+    private void seedCourierTwo() {
+        String username = "courier2";
+        if (userRepository.findByUsername(username).isEmpty()) {
+            Role role = roleRepository.findByName(RoleType.COURIER).orElseThrow();
+
+            User user = User.builder()
+                    .username(username)
+                    .password(passwordEncoder.encode("password_courier2"))
+                    .email("courier2@logitrace.com")
+                    .firstName("Plamen")
+                    .lastName("Kostov")
                     .role(role)
                     .build();
             userRepository.save(user);

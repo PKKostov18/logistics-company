@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -70,7 +70,7 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     @Transactional
-    public Package registerPackage(CreatePackageRequest request, String employeeUsername) {
+    public void registerPackage(CreatePackageRequest request, String employeeUsername) {
 
         User employeeUser = userRepository.findByUsername(employeeUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Employee user not found"));
@@ -111,7 +111,6 @@ public class PackageServiceImpl implements PackageService {
         newPackage.setRegisteredBy(employee);
         newPackage.setDestinationOffice(destinationOffice);
 
-        // ПОПРАВКА: Използваме setWeightKg вместо setWeight
         newPackage.setWeightKg(request.getWeight());
 
         newPackage.setDeliveryType(request.getDeliveryType());
@@ -119,10 +118,9 @@ public class PackageServiceImpl implements PackageService {
         newPackage.setPrice(price);
         newPackage.setStatus(PackageStatus.REGISTERED);
 
-        // Ако има поле created_at
-        // newPackage.setCreatedAt(java.time.Instant.now());
+        newPackage.setCreatedAt(java.time.Instant.now());
 
-        return packageRepository.save(newPackage);
+        packageRepository.save(newPackage);
     }
 
     @Override
@@ -135,7 +133,7 @@ public class PackageServiceImpl implements PackageService {
             pkg.setStatus(status);
 
             if (status == PackageStatus.DELIVERED || status == PackageStatus.RECEIVED) {
-                // pkg.setReceivedAt(java.time.Instant.now()); // Ако ползваш Instant
+                pkg.setReceivedAt(java.time.Instant.now());
             }
 
             packageRepository.save(pkg);
@@ -190,5 +188,46 @@ public class PackageServiceImpl implements PackageService {
             total = total.add(BigDecimal.valueOf(10.00));
         }
         return total;
+    }
+
+    @Override
+    public List<Package> getPackagesForCourier(User courier) {
+        return packageRepository.findAllByAssignedCourierAndStatusNot(courier.getEmployee(), PackageStatus.DELIVERED);
+    }
+
+    @Override
+    public void markPackageAsDelivered(Long packageId) {
+        Package pkg = packageRepository.findById(packageId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid package Id:" + packageId));
+
+        pkg.setStatus(PackageStatus.DELIVERED);
+        pkg.setReceivedAt(java.time.Instant.now());
+
+        packageRepository.save(pkg);
+    }
+
+    @Override
+    public List<Package> getAvailablePackages(String city) {
+        if (city != null && !city.isEmpty()) {
+            return packageRepository.findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(
+                    PackageStatus.REGISTERED,
+                    city
+            );
+        }
+
+        return packageRepository.findAllByAssignedCourierIsNullAndStatus(PackageStatus.REGISTERED);
+    }
+
+    @Override
+    @Transactional
+    public void assignPackageToCourier(Long packageId, User courier) {
+        Package pkg = packageRepository.findById(packageId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid package Id: " + packageId));
+
+        pkg.setAssignedCourier(courier.getEmployee());
+
+        pkg.setStatus(PackageStatus.IN_TRANSIT);
+
+        packageRepository.save(pkg);
     }
 }
