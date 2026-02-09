@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .about-section { margin-bottom: 4rem; }
+        .about-text { font-size: 1.1rem; color: var(--color-text-card-desc); line-height: 1.8; }
+
+        /* Review Card Style */
+        .review-card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border-nav);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .stars { color: #f59e0b; margin-bottom: 0.5rem; }
+        .client-name { font-weight: 700; color: var(--color-text); margin-top: 1rem; display: block; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 class="page-title">About LogiTrace</h1>
+        <p class="page-description">Delivering excellence, one package at a time.</p>
+    </div>
+
+    <div class="about-section card">
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
+            <div style="flex: 1; min-width: 300px;">
+                <h2 class="card-title" style="font-size: 1.8rem; margin-bottom: 1rem;">Who We Are</h2>
+                <p class="about-text">
+                    Founded in 2026, <strong>LogiTrace</strong> has quickly become a leader in the logistics industry.
+                    Our mission is simple: to provide fast, secure, and transparent shipping solutions for everyone.
+                    Whether you are a small business owner or sending a gift to a loved one, we ensure your package
+                    arrives safely and on time.
+                </p>
+                <div style="margin-top: 1rem; display: flex; gap: 20px;">
+                    <div>
+                        <h3 style="color: #1d4ed8; font-size: 2rem; margin: 0;">10k+</h3>
+                        <span style="color: #6b7280;">Packages Delivered</span>
+                    </div>
+                    <div>
+                        <h3 style="color: #1d4ed8; font-size: 2rem; margin: 0;">50+</h3>
+                        <span style="color: #6b7280;">Office Locations</span>
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <i class="fa-solid fa-earth-europe" style="font-size: 10rem; color: #e0f2fe;"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2 class="page-title" style="font-size: 1.8rem; text-align: center;">Our Core Policies</h2>
+        <div class="content-grid" style="margin-top: 1.5rem;">
+            <div class="card">
+                <i class="fa-solid fa-lock" style="font-size: 2rem; color: #10b981; margin-bottom: 1rem;"></i>
+                <h3 class="card-title">Security First</h3>
+                <p class="card-description">We treat every package with the utmost care. Our tracking system ensures 100% visibility from pickup to drop-off.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-clock" style="font-size: 2rem; color: #f59e0b; margin-bottom: 1rem;"></i>
+                <h3 class="card-title">On-Time Guarantee</h3>
+                <p class="card-description">We respect your time. If we promise a delivery date, we stick to it. Efficiency is in our DNA.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-section">
+        <h2 class="page-title" style="font-size: 1.8rem; text-align: center;">What Our Clients Say</h2>
+        <div class="content-grid" style="margin-top: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+
+            <div class="review-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p style="font-style: italic; color: var(--color-text);">"The best courier service I've used! The tracking is real-time and very accurate."</p>
+                <span class="client-name">- Maria Ivanova</span>
+            </div>
+
+            <div class="review-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                <p style="font-style: italic; color: var(--color-text);">"Great service for my online business. My customers are always happy with the delivery speed."</p>
+                <span class="client-name">- Petar Petrov (E-shop Owner)</span>
+            </div>
+
+            <div class="review-card">
+                <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                <p style="font-style: italic; color: var(--color-text);">"Friendly staff at the Sofia office and very helpful support."</p>
+                <span class="client-name">- Elena G.</span>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+
+</body>
+</html>

@@ -80,3 +80,44 @@
   text-decoration: none;
   transition: background-color 0.2s;
 }
+
+/* --- Status Badges --- */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;       /* По-заоблени (тип "хапче") за модерен вид */
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase; /* Прави буквите главни */
+    letter-spacing: 0.5px;
+    display: inline-block;
+    text-align: center;
+    min-width: 100px;          /* За да са с еднаква ширина */
+}
+
+/* 1. REGISTERED (Нова) -> СИНЬО */
+.status-REGISTERED {
+    background-color: #e0f2fe; /* Светло синьо */
+    color: #0369a1;            /* Тъмно синьо */
+    border: 1px solid #bae6fd;
+}
+
+/* 2. IN_TRANSIT (Пътува) -> ОРАНЖЕВО/ЖЪЛТО */
+.status-IN_TRANSIT {
+    background-color: #fef3c7; /* Светло оранжево */
+    color: #b45309;            /* Тъмно оранжево/кафяво */
+    border: 1px solid #fde68a;
+}
+
+/* 3. DELIVERED (Доставена) -> ЗЕЛЕНО */
+.status-DELIVERED {
+    background-color: #dcfce7; /* Светло зелено */
+    color: #15803d;            /* Тъмно зелено */
+    border: 1px solid #bbf7d0;
+}
+
+/* 4. RECEIVED (Получена/Приключена) -> ЛИЛАВО (За да се различава от Delivered) */
+.status-RECEIVED {
+    background-color: #f3e8ff; /* Светло лилаво */
+    color: #7e22ce;            /* Тъмно лилаво */
+    border: 1px solid #e9d5ff;
+}

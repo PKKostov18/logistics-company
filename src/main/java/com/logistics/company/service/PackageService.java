@@ -16,12 +16,10 @@ public interface PackageService {
 
     List<Package> getPackagesForUser(String username);
 
-    // Метод за чакащи пратки
     List<Package> getPendingPackages();
 
     void registerPackage(CreatePackageRequest request, String employeeUsername);
 
-    // Този метод трябва да присъства тук, за да можеш да го ползваш с @Override в Impl
     void updatePackageStatus(Long packageId, String newStatus);
 
     BigDecimal calculatePrice(double weight, boolean toOffice);
@@ -33,4 +31,7 @@ public interface PackageService {
 
     List<Package> getAvailablePackages(String city);
     void assignPackageToCourier(Long packageId, User courier);
+
+    Package getPackageByTrackingNumberForCourier(String trackingNumber, User courier);
+    Package findPackageByTrackingNumber(String trackingNumber);
 }

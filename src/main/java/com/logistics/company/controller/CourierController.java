@@ -38,9 +38,25 @@ public class CourierController {
     }
 
     @GetMapping("/deliveries")
-    public String myDeliveries(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String myDeliveries(@RequestParam(required = false) String trackingNumber,
+                               Model model,
+                               @AuthenticationPrincipal UserDetails userDetails) {
+
         User courier = userService.findByUsername(userDetails.getUsername());
-        List<Package> packages = packageService.getPackagesForCourier(courier);
+        List<Package> packages;
+
+        if (trackingNumber != null && !trackingNumber.trim().isEmpty()) {
+            Package foundPackage = packageService.getPackageByTrackingNumberForCourier(trackingNumber.trim(), courier);
+
+            if (foundPackage != null) {
+                packages = List.of(foundPackage);
+            } else {
+                packages = List.of();
+            }
+        } else {
+            packages = packageService.getPackagesForCourier(courier);
+        }
+
         model.addAttribute("packages", packages);
         return "courier/deliveries";
     }
@@ -49,7 +65,6 @@ public class CourierController {
     public String deliverPackage(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         packageService.markPackageAsDelivered(id);
 
-        // Зеленият pop-up за успешно доставяне
         redirectAttributes.addFlashAttribute("successMessage", "Package delivered successfully!");
 
         return "redirect:/courier/deliveries";
@@ -64,7 +79,6 @@ public class CourierController {
         return "courier/available";
     }
 
-    // --- НОВ МЕТОД ЗА МАСОВО ВЗЕМАНЕ НА ПРАТКИ ---
     @PostMapping("/take/batch")
     public String takeSelectedPackages(@RequestParam(value = "packageIds", required = false) List<Long> packageIds,
                                        @AuthenticationPrincipal UserDetails userDetails,

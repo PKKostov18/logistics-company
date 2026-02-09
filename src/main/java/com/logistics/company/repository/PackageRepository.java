@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection; // Добавен импорт
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PackageRepository extends JpaRepository<Package, Long> {
@@ -27,4 +28,8 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
 
     List<Package> findAllByAssignedCourierIsNullAndStatus(PackageStatus status);
     List<Package> findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(PackageStatus status, String address);
+
+    Optional<Package> findByTrackingNumberAndAssignedCourier_User(String trackingNumber, User user);
+    Optional<Package> findByTrackingNumber(String trackingNumber);
+
 }

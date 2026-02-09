@@ -3,58 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LogiTrace</title>
+    <title>LogiTrace - Fast & Reliable Shipping</title>
 
     <div th:replace="~{layout/common-layout :: head-content}"></div>
     <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        /* HERO SECTION */
+        .hero-section {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 4rem 1.5rem 6rem;
+            text-align: center;
+            border-radius: 0 0 50% 50% / 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* SEARCH BOX */
+        .tracking-box {
+            background: white;
+            max-width: 700px;
+            margin: -5rem auto 3rem; /* Negative margin pulls it up into the hero */
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            position: relative;
+            z-index: 10;
+        }
+
+        .tracking-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tracking-input {
+            flex-grow: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .tracking-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .search-btn {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 0 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-btn:hover { background-color: #1e40af; }
+
+        /* RESULT SECTION */
+        .result-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            border: 1px solid #e5e7eb;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        /* STATUS TIMELINE */
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .status-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e5e7eb;
+            z-index: 0;
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 34px;
+            height: 34px;
+            background: #e5e7eb;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        /* Active State logic */
+        .timeline-step.active .step-circle { background: #10b981; }
+        .timeline-step.active .step-label { color: #10b981; }
+
+        /* FEATURES GRID */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #f3f4f6;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover { transform: translateY(-5px); }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        /* Dark Mode adjustments */
+        body.dark .hero-section { background: linear-gradient(135deg, #111827 0%, #1f2937 100%); }
+        body.dark .tracking-box, body.dark .result-card, body.dark .feature-card {
+            background-color: #1f2937;
+            border-color: #374151;
+        }
+        body.dark .tracking-input {
+            background-color: #111827;
+            border-color: #374151;
+            color: white;
+        }
+        body.dark .step-label { color: #9ca3af; }
+        body.dark .status-timeline::before, body.dark .step-circle { background: #374151; }
+        body.dark .timeline-step.active .step-circle { background: #10b981; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-<!-- Theme loader script -->
+
 <script>
     if (localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark');
+        document.body.classList.add('dark');
     } else {
-      document.body.classList.remove('dark');
+        document.body.classList.remove('dark');
     }
 </script>
 
-
-<!-- Navigation Fragment -->
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
-<!-- Main Page Content -->
-<main class="main-container">
+<div class="hero-section">
+    <h1 class="hero-title">Global Logistics, Simplified.</h1>
+    <p class="hero-subtitle">Fast, secure, and reliable delivery solutions for your business and personal needs.</p>
+</div>
 
-    <h1 class="page-title">Welcome!</h1>
+<div class="tracking-box">
+    <h2 style="margin-top: 0; margin-bottom: 1rem; color: var(--color-text);">Track Your Shipment</h2>
+    <form action="/" method="get" class="tracking-form">
+        <input type="text" name="trackingNumber" class="tracking-input"
+               placeholder="Enter Tracking Number (e.g. TRACK123)"
+               th:value="${trackingNumber}" required>
+        <button type="submit" class="search-btn">
+            <i class="fa-solid fa-magnifying-glass"></i> Track
+        </button>
+    </form>
 
-    <p class="page-description">
-        This is the main content for the homepage. The header, navigation, and footer
-        are loaded automatically from `common-layout.html`.
-    </p>
+    <div th:if="${error}" style="margin-top: 1rem; color: #ef4444; font-weight: 500; text-align: center;">
+        <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
+    </div>
+</div>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-        <div class="card">
-            <h2 class="card-title">Send a Package</h2>
-            <p class="card-description">Quick and easy shipping to an office or address.</p>
-            <a href="#" class="button button-primary">Start Now</a>
+<div th:if="${searchedPackage}" class="result-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border-nav); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <div>
+            <span style="color: #6b7280; font-size: 0.9rem;">Tracking Number:</span>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-link-active);"
+                 th:text="${searchedPackage.trackingNumber}">TRACK123</div>
         </div>
-        <div class="card">
-            <h2 class="card-title">Track a Package</h2>
-            <p class="card-description">Enter your tracking number to see the status.</p>
-            <a href="#" class="track-button button-secondary">Track</a>
+        <div style="text-align: right;">
+            <span style="color: #6b7280; font-size: 0.9rem;">Current Status:</span>
+            <div style="font-weight: 700; color: #10b981; text-transform: uppercase;"
+                 th:text="${searchedPackage.status}">IN TRANSIT</div>
         </div>
     </div>
 
-</main>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.95rem;">
+        <div>
+            <strong>From:</strong> <span th:text="${searchedPackage.sender.name}">Sender</span><br>
+            <strong>To:</strong> <span th:text="${searchedPackage.receiver.name}">Receiver</span>
+        </div>
+        <div style="text-align: right;">
+            <strong>Destination:</strong><br>
+            <span th:if="${searchedPackage.destinationOffice != null}" th:text="${searchedPackage.destinationOffice.name} + ' (Office)'"></span>
+            <span th:if="${searchedPackage.destinationOffice == null}" th:text="${searchedPackage.deliveryAddress}"></span>
+        </div>
+    </div>
 
-<div th:replace="~{layout/common-layout :: footer}"></div>
+    <div class="status-timeline">
+        <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'REGISTERED' or searchedPackage.status.name() == 'IN_TRANSIT' or searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+            <div class="step-circle"><i class="fa-solid fa-file-pen"></i></div>
+            <div class="step-label">Registered</div>
+        </div>
+
+        <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'IN_TRANSIT' or searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+            <div class="step-circle"><i class="fa-solid fa-truck-fast"></i></div>
+            <div class="step-label">In Transit</div>
+        </div>
+
+        <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+            <div class="step-circle"><i class="fa-solid fa-box-open"></i></div>
+            <div class="step-label">Delivered</div>
+        </div>
+    </div>
+</div>
+
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-clock"></i></div>
+        <h3>Fast Delivery</h3>
+        <p style="color: var(--color-text-card-desc);">We prioritize speed and efficiency to ensure your packages arrive on time, every time.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Secure Shipping</h3>
+        <p style="color: var(--color-text-card-desc);">Your items are safe with us. We offer insurance and real-time tracking for peace of mind.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fa-solid fa-globe"></i></div>
+        <h3>Global Reach</h3>
+        <p style="color: var(--color-text-card-desc);">Sending a package across the country or across the world? We've got you covered.</p>
+    </div>
+</div>
+
+<div style="margin-top: 4rem;">
+    <div th:replace="~{layout/common-layout :: footer}"></div>
+</div>
 
 <script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/menu.js}"></script>
 
 </body>
 </html>
-

@@ -183,9 +183,13 @@
         <div style="font-weight: 600; color: var(--color-text);">
             <i class="fa-solid fa-magnifying-glass"></i> Search:
         </div>
-        <input type="text" name="id" class="filter-input" placeholder="Search by Package ID...">
+        <input type="text" name="trackingNumber" class="filter-input" placeholder="Search by Tracking # (e.g. TRACK123)...">
         <button type="submit" class="button button-primary">Find</button>
-        <a th:href="@{/courier/deliveries}" class="button button-secondary">Show All</a>
+
+        <a th:href="@{/courier/deliveries}" class="button button-secondary"
+           style="color: #1f2937; background-color: #e5e7eb; border: none;">
+            Show All
+        </a>
     </form>
 
     <div class="table-responsive">
@@ -256,6 +260,20 @@
 <div th:replace="~{layout/common-layout :: footer}"></div>
 <script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/menu.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const alertBox = document.querySelector('.alert-success');
+        if (alertBox) {
+            setTimeout(function() {
+                alertBox.style.transition = "opacity 0.5s ease";
+                alertBox.style.opacity = "0";
 
+                setTimeout(function() {
+                    alertBox.style.display = "none";
+                }, 500);
+            }, 2000);
+        }
+    });
+</script>
 </body>
 </html>

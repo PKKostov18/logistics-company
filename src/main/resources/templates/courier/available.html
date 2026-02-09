@@ -172,7 +172,10 @@
             <input type="text" name="city" th:value="${cityFilter}"
                    class="filter-input" placeholder="Search by City or Address...">
             <button type="submit" class="button button-primary">Search</button>
-            <a th:href="@{/courier/available}" class="button button-secondary">Clear</a>
+            <a th:href="@{/courier/available}" class="button button-secondary"
+               style="color: #1f2937; background-color: #e5e7eb; border: none;">
+                <i class="fa-solid fa-times"></i> Clear
+            </a>
         </div>
 
         <div></div>
@@ -181,8 +184,7 @@
     <form th:action="@{/courier/take/batch}" method="post">
 
         <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-            <button type="submit" class="btn-take-batch"
-                    onclick="return confirm('Take all selected packages?')">
+            <button type="submit" class="btn-take-batch">
                 <i class="fa-solid fa-hand-holding-box"></i> Take Selected Packages
             </button>
         </div>

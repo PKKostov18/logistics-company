@@ -208,10 +208,10 @@ public class PackageServiceImpl implements PackageService {
 
     @Override
     public List<Package> getAvailablePackages(String city) {
-        if (city != null && !city.isEmpty()) {
+        if (city != null && !city.trim().isEmpty()) {
             return packageRepository.findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(
                     PackageStatus.REGISTERED,
-                    city
+                    city.trim()
             );
         }
 
@@ -225,9 +225,19 @@ public class PackageServiceImpl implements PackageService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid package Id: " + packageId));
 
         pkg.setAssignedCourier(courier.getEmployee());
-
         pkg.setStatus(PackageStatus.IN_TRANSIT);
 
         packageRepository.save(pkg);
+    }
+
+    @Override
+    public Package getPackageByTrackingNumberForCourier(String trackingNumber, User courier) {
+        return packageRepository.findByTrackingNumberAndAssignedCourier_User(trackingNumber, courier)
+                .orElse(null);
+    }
+
+    @Override
+    public Package findPackageByTrackingNumber(String trackingNumber) {
+        return packageRepository.findByTrackingNumber(trackingNumber).orElse(null);
     }
 }

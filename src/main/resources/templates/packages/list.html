@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>All Packages</title>
@@ -58,16 +59,46 @@
             font-weight: 600;
         }
 
+        /* --- СТАТУСИ (ЦВЕТОВЕ) --- */
         .status-badge {
             font-size: 0.75rem;
             text-transform: uppercase;
             font-weight: 700;
             padding: 4px 8px;
             border-radius: 12px;
+            display: inline-block;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        /* 1. REGISTERED -> СИНЬО */
+        .status-REGISTERED {
             background-color: #dbeafe;
             color: #1e40af;
-            display: inline-block;
+            border: 1px solid #bfdbfe;
         }
+
+        /* 2. IN_TRANSIT -> ОРАНЖЕВО */
+        .status-IN_TRANSIT {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        /* 3. DELIVERED -> ЗЕЛЕНО */
+        .status-DELIVERED {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* 4. RECEIVED -> ЛИЛАВО */
+        .status-RECEIVED {
+            background-color: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+        }
+        /* ------------------------- */
 
         .office-tag {
             display: inline-flex;
@@ -93,30 +124,6 @@
             color: var(--color-text);
         }
 
-        /* Action Buttons */
-        .action-btn {
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.375rem;
-            text-decoration: none;
-            font-size: 0.85rem;
-            margin-right: 0.5rem;
-            display: inline-block;
-        }
-
-        .btn-edit {
-            background-color: #eab308;
-            color: white;
-            border: none;
-        }
-        .btn-edit:hover { background-color: #ca8a04; }
-
-        .btn-delete {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-        }
-        .btn-delete:hover { background-color: #dc2626; }
-
         .header-actions {
             display: flex;
             justify-content: space-between;
@@ -137,7 +144,8 @@
             <p class="page-description">Manage all shipments in the system.</p>
         </div>
         <div>
-            <a th:href="@{/packages/create}" class="button button-primary">
+            <a th:href="@{/packages/create}" class="button button-primary"
+               sec:authorize="hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN')">
                 <i class="fa-solid fa-plus"></i> Create New Package
             </a>
         </div>
@@ -193,14 +201,17 @@
                     <div th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
                     <div style="color: #10b981; font-weight: 600;" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
                 </td>
+
                 <td>
-                    <span class="status-badge" th:text="${pkg.status}">STATUS</span>
+                    <span class="status-badge"
+                          th:classappend="'status-' + ${pkg.status}"
+                          th:text="${pkg.status}">STATUS</span>
                 </td>
 
             </tr>
 
             <tr th:if="${packages.isEmpty()}">
-                <td colspan="7" style="text-align: center; padding: 2rem;">
+                <td colspan="6" style="text-align: center; padding: 2rem;">
                     No packages found in the system.
                 </td>
             </tr>

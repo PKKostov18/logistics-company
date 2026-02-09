@@ -1,5 +1,6 @@
 package com.logistics.company.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,9 +29,11 @@ public class Office {
 
     @OneToMany(mappedBy = "office")
     @Builder.Default
+    @JsonIgnore
     private Set<Employee> employees = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
+    @JsonIgnore
     private Company company;
 }
