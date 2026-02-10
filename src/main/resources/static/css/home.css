@@ -156,3 +156,20 @@
     color: #7e22ce;            /* Тъмно лилаво */
     border: 1px solid #e9d5ff;
 }
+
+/* --- STICKY FOOTER --- */
+body {
+    /* Това гарантира, че страницата е поне колкото екрана, без да реже нищо */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Това кара основното съдържание да заеме празното място */
+.main-content,
+.main-container,
+.offices-container,
+.reports-container,
+.main-content-wrapper {
+    flex: 1;
+}

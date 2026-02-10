@@ -6,91 +6,12 @@
     <div th:replace="~{layout/common-layout :: head-content}"></div>
 
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/offices-public.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
-
-    <style>
-        /* --- STICKY FOOTER FIX --- */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .main-content-wrapper {
-            flex: 1;
-        }
-
-        /* --- MAP STYLES --- */
-        #map {
-            height: 55vh;
-            width: 100%;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            border: 1px solid var(--color-border-nav);
-            z-index: 1;
-        }
-
-        /* --- INFO SECTION STYLES --- */
-        .info-section {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--color-border-nav);
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .service-item {
-            background-color: var(--color-bg-card);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid var(--color-border-nav);
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            transition: transform 0.2s;
-        }
-
-        .service-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .service-icon {
-            background-color: #dbeafe;
-            color: #2563eb;
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        /* Dark Mode Map Fixes */
-        body.dark .leaflet-layer,
-        body.dark .leaflet-control-zoom-in,
-        body.dark .leaflet-control-zoom-out,
-        body.dark .leaflet-control-attribution {
-            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
-        }
-
-        body.dark .service-icon {
-            background-color: #1e3a8a;
-            color: #93c5fd;
-        }
-    </style>
 </head>
 <body>
 
@@ -193,71 +114,10 @@
         crossorigin=""></script>
 
 <script th:inline="javascript">
-    let map;
-    let markers = [];
-
-    document.addEventListener("DOMContentLoaded", function() {
-        map = L.map('map').setView([42.7339, 25.4858], 7);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap'
-        }).addTo(map);
-
-        var offices = /*[[${offices}]]*/ [];
-
-        function geocodeAndPlot(office) {
-            if (!office.address) return;
-            var query = office.address + ", Bulgaria";
-            var url = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query);
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.length > 0) {
-                        var lat = data[0].lat;
-                        var lon = data[0].lon;
-                        var marker = L.marker([lat, lon]).addTo(map);
-
-                        marker.officeData = { name: office.name, address: office.address };
-                        markers.push(marker);
-
-                        marker.bindTooltip(`<b>${office.name}</b>`, { permanent: false, direction: 'top' });
-                        marker.bindPopup(`<div style="text-align:center;"><h3>${office.name}</h3><p>${office.address}</p></div>`);
-                    }
-                })
-                .catch(err => console.error("Error:", err));
-        }
-
-        offices.forEach((office, index) => {
-            setTimeout(() => { geocodeAndPlot(office); }, index * 600);
-        });
-    });
-
-    function focusOnOffice(name, address) {
-        var query = address + ", Bulgaria";
-        var url = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query);
-
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                    var lat = data[0].lat;
-                    var lon = data[0].lon;
-
-                    map.flyTo([lat, lon], 16, { duration: 1.5 });
-
-                    markers.forEach(m => {
-                        if (Math.abs(m.getLatLng().lat - lat) < 0.001 && Math.abs(m.getLatLng().lng - lon) < 0.001) {
-                            m.openPopup();
-                        }
-                    });
-                }
-            });
-
-        document.getElementById('map').scrollIntoView({behavior: 'smooth'});
-    }
+    window.officesData = /*[[${offices}]]*/ [];
 </script>
+
+<script th:src="@{/js/offices.js}"></script>
 
 </body>
 </html>
