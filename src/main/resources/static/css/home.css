@@ -75,29 +75,29 @@
 .btn-primary {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem; /* Разстояние между иконата и текста */
+    gap: 0.5rem;
     background-color: #5d3bf6;
-    color: white !important; /* Текстът винаги бял */
+    color: white !important;
     padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem; /* Леко заоблени ъгли, в тон с таблицата */
-    text-decoration: none; /* Маха подчертаването на линка */
+    border-radius: 0.5rem;
+    text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
     border: 1px solid transparent;
-    box-shadow: 0 2px 4px rgba(78, 59, 246, 0.3); /* Мека синя сянка */
-    transition: all 0.2s ease; /* Плавен преход при hover */
+    box-shadow: 0 2px 4px rgba(78, 59, 246, 0.3);
+    transition: all 0.2s ease;
 }
 
 /* Ефект при посочване с мишката */
 .btn-primary:hover {
-    background-color: #4925eb; /* По-тъмно синьо */
-    transform: translateY(-2px); /* Леко повдигане нагоре */
-    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4); /* По-силна сянка */
+    background-color: #4925eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
 }
 
 /* Ефект при клик */
 .btn-primary:active {
-    transform: translateY(0); /* Връщане надолу */
+    transform: translateY(0);
     box-shadow: 0 1px 2px rgba(59, 130, 246, 0.3);
 }
 
@@ -119,20 +119,20 @@
 /* --- Status Badges --- */
 .status-badge {
     padding: 6px 12px;
-    border-radius: 20px;       /* По-заоблени (тип "хапче") за модерен вид */
+    border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
-    text-transform: uppercase; /* Прави буквите главни */
+    text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-block;
     text-align: center;
-    min-width: 100px;          /* За да са с еднаква ширина */
+    min-width: 100px;
 }
 
 /* 1. REGISTERED (Нова) -> СИНЬО */
 .status-REGISTERED {
-    background-color: #e0f2fe; /* Светло синьо */
-    color: #0369a1;            /* Тъмно синьо */
+    background-color: #e0f2fe;
+    color: #0369a1;
     border: 1px solid #bae6fd;
 }
 

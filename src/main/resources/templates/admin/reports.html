@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reports & Statistics - LogiTrace</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/reports.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="theme-light">
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<div class="reports-container">
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text);">
+            <i class="fa-solid fa-chart-line" style="color: #3b82f6; margin-right: 10px;"></i>
+            Reports & Statistics
+        </h1>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+
+        <div class="report-card">
+            <div class="report-header"><i class="fa-solid fa-list"></i> General Reports</div>
+            <div class="quick-links">
+                <a th:href="@{/admin/employees}" class="link-card">
+                    <i class="fa-solid fa-users"></i> All Employees
+                </a>
+                <a th:href="@{/clients}" class="link-card">
+                    <i class="fa-solid fa-user-group"></i> All Clients
+                </a>
+                <a th:href="@{/admin/reports(type='all')}" class="link-card">
+                    <i class="fa-solid fa-boxes-stacked"></i> All Packages
+                </a>
+                <a th:href="@{/admin/reports(type='pending')}" class="link-card">
+                    <i class="fa-solid fa-clock"></i> Pending Shipments
+                </a>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <div class="report-header"><i class="fa-solid fa-money-bill-wave"></i> Income Report</div>
+            <form th:action="@{/admin/reports}" method="get">
+                <div style="display: flex; gap: 0.5rem;">
+                    <div style="flex: 1;">
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.4rem; color:#4b5563;">From:</label>
+                        <input type="date" name="startDate" class="form-control" required th:value="${periodStart}">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.4rem; color:#4b5563;">To:</label>
+                        <input type="date" name="endDate" class="form-control" required th:value="${periodEnd}">
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; justify-content: center;">
+                    Calculate
+                </button>
+            </form>
+
+            <div th:if="${incomeResult != null}" class="income-result">
+                Total: <span th:text="${incomeResult}">0.00</span> BGN
+            </div>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div class="report-header"><i class="fa-solid fa-filter"></i> Detailed Package Reports</div>
+        <form th:action="@{/admin/reports}" method="get" id="reportForm">
+            <div class="filters-row">
+
+                <div class="form-group">
+                    <label>Report Type</label>
+                    <select name="type" id="reportType" class="form-control" onchange="toggleFilters()">
+                        <option value="" disabled selected>-- Select Type --</option>
+                        <option value="by_employee" th:selected="${selectedType == 'by_employee'}">Registered By Employee</option>
+                        <option value="sent_by_client" th:selected="${selectedType == 'sent_by_client'}">Sent By Client</option>
+                        <option value="received_by_client" th:selected="${selectedType == 'received_by_client'}">Received By Client</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Filter Target</label>
+
+                    <select id="filter-placeholder" class="form-control" disabled style="background-color: #f9fafb; color: #9ca3af;">
+                        <option>Select a type first...</option>
+                    </select>
+
+                    <select id="filter-employee" class="form-control" style="display: none;">
+                        <option th:each="emp : ${employees}"
+                                th:value="${emp.user.id}"
+                                th:text="${emp.user.firstName + ' ' + emp.user.lastName + ' (' + emp.employeeType + ')'}"></option>
+                    </select>
+
+                    <select id="filter-client" class="form-control" style="display: none;">
+                        <option th:each="cli : ${clients}"
+                                th:value="${cli.id}"
+                                th:text="${cli.name + ' (' + cli.phoneNumber + ')'}"></option>
+                    </select>
+                </div>
+
+                <div style="flex: 0 0 auto;">
+                    <button type="submit" class="btn-primary" style="height: 40px;">Generate</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${packages != null}" class="report-card">
+        <div class="report-header" style="justify-content: space-between;">
+            <span th:text="${reportTitle}">Results</span>
+            <span class="tracking-badge" th:text="${packages.size() + ' records'}">0</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="packages-table">
+                <thead>
+                <tr>
+                    <th>Tracking #</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Destination</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pkg : ${packages}">
+                    <td><span class="tracking-badge" th:text="${pkg.trackingNumber}"></span></td>
+                    <td>
+                        <div style="font-weight:600;" th:text="${pkg.senderName}"></div>
+                        <div style="font-size:0.8rem; color:#6b7280;" th:text="${pkg.senderPhone}"></div>
+                    </td>
+                    <td>
+                        <div style="font-weight:600;" th:text="${pkg.receiverName}"></div>
+                        <div style="font-size:0.8rem; color:#6b7280;" th:text="${pkg.receiverPhone}"></div>
+                    </td>
+                    <td>
+                        <div th:if="${pkg.destinationOffice != null}">
+                            <i class="fa-solid fa-building" style="color:#4f46e5;"></i>
+                            <span th:text="${pkg.destinationOffice}"></span>
+                        </div>
+                        <div th:if="${pkg.destinationOffice == null}">
+                            <i class="fa-solid fa-location-dot" style="color:#9333ea;"></i>
+                            <span th:text="${pkg.deliveryAddress}"></span>
+                        </div>
+                    </td>
+                    <td style="color:#10b981; font-weight:700;" th:text="${pkg.price} + ' BGN'"></td>
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="'status-' + ${pkg.status}"
+                              th:text="${pkg.status}"></span>
+                    </td>
+                </tr>
+                <tr th:if="${packages.isEmpty()}">
+                    <td colspan="6" style="text-align:center; padding:2rem; color:#9ca3af;">No records found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+<script th:src="@{/js/reports.js}"></script>
+
+</body>
+</html>

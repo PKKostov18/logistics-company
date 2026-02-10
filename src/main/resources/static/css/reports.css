@@ -1,0 +1,152 @@
+/* --- ОСНОВЕН КОНТЕЙНЕР --- */
+.reports-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    gap: 2rem;
+}
+
+/* --- КАРТИ --- */
+.report-card {
+    background-color: var(--color-bg-card);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.report-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* --- ПРИХОДИ --- */
+.income-result {
+    margin-top: auto;
+    padding: 1rem;
+    background-color: #ecfdf5;
+    border-radius: 0.5rem;
+    color: #065f46;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    border: 1px solid #a7f3d0;
+}
+
+/* --- ФОРМИ --- */
+/* Flexbox за перфектна симетрия на долния ред */
+.filters-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #4b5563;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    background-color: #fff;
+    color: #374151;
+    box-sizing: border-box; /* ВАЖНО: За да не излизат от контейнера */
+    height: 40px; /* Фиксирана височина за подравняване */
+}
+
+/* --- БЪРЗИ ВРЪЗКИ --- */
+.quick-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.link-card {
+    flex: 1;
+    min-width: 150px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: #f3f4f6;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.link-card:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+/* --- ТАБЛИЦА --- */
+.table-responsive {
+    overflow-x: auto;
+    background-color: var(--color-bg-card);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    margin-top: 1rem;
+}
+
+.packages-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.95rem;
+    text-align: left;
+}
+.packages-table th {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    padding: 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border-nav);
+    white-space: nowrap;
+}
+.packages-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border-nav);
+    vertical-align: middle;
+    color: var(--color-text);
+}
+.tracking-badge {
+    display: inline-block;
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-weight: 700;
+    border: 1px solid #e5e7eb;
+}
+
+/* Статуси */
+.status-badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+.status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
+.status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
+.status-DELIVERED { background-color: #d1fae5; color: #065f46; }
+.status-CANCELED { background-color: #fee2e2; color: #991b1b; }

@@ -30,6 +30,11 @@
             font-size: 0.9rem;
         }
 
+        .name-text {
+            color: var(--color-text); /* Ще се сменя автоматично спрямо темата */
+            font-weight: 400;
+        }
+
         /* Значки за статус */
         .badge { padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
         .badge-reg { background-color: #d1fae5; color: #065f46; }
@@ -60,7 +65,7 @@
             <tr th:each="client : ${clients}" th:id="'row-' + ${client.id}">
 
                 <td>
-                    <span class="view-field name-text" th:text="${client.name}" style="font-weight: bold; color: #1f2937;"></span>
+                    <span class="view-field name-text" th:text="${client.name}"></span>
                     <input type="text" class="edit-field edit-input" name="name" th:value="${client.name}" style="display: none;">
                 </td>
 

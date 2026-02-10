@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,26 +29,36 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
             "LEFT JOIN FETCH p.assignedCourier ac LEFT JOIN FETCH ac.user")
     List<Package> findAll();
 
-    // Оптимизирана версия за търсене по служител (registeredBy)
+    // Оптимизирана версия за клиент (подател ИЛИ получател) - използва се в "My Packages"
     @Query("SELECT p FROM Package p " +
-            "JOIN FETCH p.sender s JOIN FETCH s.user " +
-            "JOIN FETCH p.receiver r JOIN FETCH r.user " +
-            "LEFT JOIN FETCH p.destinationOffice " +
-            "WHERE p.registeredBy.user.id = :employeeId")
-    List<Package> findAllByRegisteredBy_User_Id(@Param("employeeId") Long employeeId);
-
-    // Оптимизирана версия за клиент (подател ИЛИ получател)
-    @Query("SELECT p FROM Package p " +
-            "JOIN FETCH p.sender s JOIN FETCH s.user " +
-            "JOIN FETCH p.receiver r JOIN FETCH r.user " +
+            "JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
+            "JOIN FETCH p.receiver r LEFT JOIN FETCH r.user " +
             "LEFT JOIN FETCH p.destinationOffice " +
             "WHERE s.user.username = :username OR r.user.username = :username")
     List<Package> findAllByUserInvolvement(@Param("username") String username);
 
-    List<Package> findAllBySender_User_Id(Long senderId);
-    List<Package> findAllByReceiver_User_Id(Long receiverId);
+    // --- МЕТОДИ ЗА СПРАВКИ (REPORTS) ЗА АДМИН ПАНЕЛА ---
 
-    // Pending пратки (LEFT JOIN)
+    // Справка F: Пратки, изпратени от клиент
+    // EntityGraph за оптимизация
+    @EntityGraph(attributePaths = {"sender.user", "receiver.user", "destinationOffice", "registeredBy.user"})
+    List<Package> findAllBySender_Id(Long senderCustomerId);
+
+    // Справка G: Пратки, получени от клиент
+    @EntityGraph(attributePaths = {"sender.user", "receiver.user", "destinationOffice", "registeredBy.user"})
+    List<Package> findAllByReceiver_Id(Long receiverCustomerId);
+
+    // Справка D: Пратки, регистрирани от служител
+    @EntityGraph(attributePaths = {"sender.user", "receiver.user", "destinationOffice", "registeredBy.user"})
+    List<Package> findAllByRegisteredBy_User_Id(Long employeeUserId);
+
+    // Справка H: Приходи за период
+    @Query("SELECT SUM(p.price) FROM Package p WHERE p.createdAt BETWEEN :startDate AND :endDate")
+    BigDecimal calculateIncomeForPeriod(@Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
+
+
+    // --- МЕТОДИ ЗА СТАТУСИ И КУРИЕРИ ---
+    // Pending пратки (LEFT JOIN) - Справка E
     @Query("SELECT p FROM Package p " +
             "LEFT JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
             "LEFT JOIN FETCH p.receiver r LEFT JOIN FETCH r.user " +
@@ -57,19 +66,16 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
             "WHERE p.status <> :status")
     List<Package> findAllByStatusNot(@Param("status") PackageStatus status);
 
-    List<Package> findAllByStatus(PackageStatus status);
-    List<Package> findAllByStatusIn(Collection<PackageStatus> statuses);
-
-    // За Куриерския контролер
+    // За Куриерския контролер - само пратките на конкретния куриер, които не са доставени
     List<Package> findAllByAssignedCourierAndStatusNot(Employee assignedCourier, PackageStatus status);
 
+    // За "Свободни пратки" (Available) - нямат куриер и са регистрирани
     List<Package> findAllByAssignedCourierIsNullAndStatus(PackageStatus status);
+
+    // Търсене в свободни пратки
     List<Package> findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(PackageStatus status, String address);
 
+    // Търсене по номер
     Optional<Package> findByTrackingNumberAndAssignedCourier_User(String trackingNumber, User user);
     Optional<Package> findByTrackingNumber(String trackingNumber);
-
-    // СПРАВКА ЗА ПРИХОДИ
-    @Query("SELECT SUM(p.price) FROM Package p WHERE p.createdAt BETWEEN :startDate AND :endDate")
-    BigDecimal calculateIncomeForPeriod(@Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
 }
