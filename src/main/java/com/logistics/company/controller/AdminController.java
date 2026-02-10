@@ -52,7 +52,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public String manageOffices(Model model) {
         model.addAttribute("offices", officeService.getAllOffices());
-        model.addAttribute("officeRequest", new CreateOfficeRequest());
+        model.addAttribute("newOffice", new CreateOfficeRequest());
         return "admin/offices";
     }
 

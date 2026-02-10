@@ -4,81 +4,82 @@
     <meta charset="UTF-8">
     <title>Manage Offices - LogiTrace</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
+
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .table-input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid transparent;
-            background: transparent;
-            color: var(--text-color);
-            border-radius: 4px;
-            transition: border-color 0.2s;
-        }
-        .table-input:focus {
-            border-color: var(--primary-color);
-            background: var(--bg-color);
-            outline: none;
-        }
-        .row-form { margin: 0; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/offices.css}"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="theme-light">
 
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
-<main class="main-container">
-    <h1 class="page-title">Manage Offices</h1>
+<main class="offices-container">
 
-    <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--primary-color);">
-        <h2 class="card-title">Add New Office</h2>
-        <form th:action="@{/admin/offices/save}" th:object="${officeRequest}" method="post"
-              style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; align-items: end;">
-            <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Office Name</label>
-                <input type="text" th:field="*{name}" class="button-secondary" style="width: 100%; text-align: left; cursor: text;" required>
+    <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--color-text);">
+            <i class="fa-solid fa-building" style="color: #3b82f6; margin-right: 10px;"></i>
+            Manage Offices
+        </h1>
+    </div>
+
+    <div class="office-card">
+        <h3 style="margin-bottom: 1rem; color: var(--color-text);">Add New Office</h3>
+        <form th:action="@{/admin/offices/add}" method="post" th:object="${newOffice}" class="office-form">
+
+            <div class="form-group">
+                <label class="form-label">Office Name</label>
+                <label>
+                    <input type="text" th:field="*{name}" placeholder="e.g. Central Station" class="form-input" required>
+                </label>
             </div>
-            <div>
-                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Address</label>
-                <input type="text" th:field="*{address}" class="button-secondary" style="width: 100%; text-align: left; cursor: text;" required>
+
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <label>
+                    <input type="text" th:field="*{address}" placeholder="City, Street 123" class="form-input" required>
+                </label>
             </div>
-            <button type="submit" class="button button-primary" style="height: fit-content;">
-                <i class="fa-solid fa-plus"></i> Add
-            </button>
+
+            <div style="flex: 0 0 auto;">
+                <button type="submit" class="btn-action btn-add">
+                    <i class="fa-solid fa-plus"></i> Add Office
+                </button>
+            </div>
         </form>
     </div>
 
-    <div class="card" style="padding: 0; overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <div class="table-wrapper">
+        <table class="offices-table">
             <thead>
-            <tr style="background-color: var(--card-bg); border-bottom: 2px solid var(--border-color);">
-                <th style="padding: 1rem; width: 35%;">Name</th>
-                <th style="padding: 1rem; width: 45%;">Address</th>
-                <th style="padding: 1rem; text-align: right; width: 20%;">Actions</th>
+            <tr>
+                <th style="width: 30%;">Name</th>
+                <th style="width: 50%;">Address</th>
+                <th style="width: 20%; text-align: right;">Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="office : ${offices}" style="border-bottom: 1px solid var(--border-color);">
+            <tr th:each="office : ${offices}">
                 <td colspan="3" style="padding: 0;">
-                    <form th:action="@{/admin/offices/save(id=${office.id})}" method="post" class="row-form">
+                    <form th:action="@{/admin/offices/update/{id}(id=${office.id})}" method="post" style="display: contents;">
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="padding: 0.8rem; width: 35%;">
-                                    <input type="text" name="name" th:value="${office.name}" class="table-input" required>
+                                <td style="width: 30%; border: none;">
+                                    <label>
+                                        <input type="text" name="name" th:value="${office.name}" class="table-input" required>
+                                    </label>
                                 </td>
-                                <td style="padding: 0.8rem; width: 45%;">
-                                    <input type="text" name="address" th:value="${office.address}" class="table-input" required>
+                                <td style="width: 50%; border: none;">
+                                    <label>
+                                        <input type="text" name="address" th:value="${office.address}" class="table-input" required>
+                                    </label>
                                 </td>
-                                <td style="padding: 0.8rem; text-align: right; width: 20%; display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                    <button type="submit" class="button" title="Save Changes"
-                                            style="background-color: #27ae60; color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 5px;">
+                                <td style="width: 20%; text-align: right; border: none;">
+                                    <button type="submit" class="btn-action btn-save" title="Save Changes">
                                         <i class="fa-solid fa-floppy-disk"></i>
                                     </button>
 
-                                    <button type="button" th:onclick="'document.getElementById(\'delete-form-' + ${office.id} + '\').submit()'"
-                                            class="button" title="Delete Office"
-                                            style="background-color: #ff4d4d; color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 5px;">
+                                    <button type="button" class="btn-action btn-delete"
+                                            th:onclick="'if(confirm(\'Are you sure?\')) document.getElementById(\'delete-form-' + ${office.id} + '\').submit()'"
+                                            title="Delete Office">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </td>
@@ -86,11 +87,18 @@
                         </table>
                     </form>
 
-                    <form th:id="'delete-form-' + ${office.id}" th:action="@{/admin/offices/delete/{id}(id=${office.id})}" method="post" style="display:none;"></form>
+                    <form th:id="'delete-form-' + ${office.id}"
+                          th:action="@{/admin/offices/delete/{id}(id=${office.id})}"
+                          method="post" style="display:none;">
+                    </form>
                 </td>
             </tr>
+
             <tr th:if="${#lists.isEmpty(offices)}">
-                <td colspan="3" style="padding: 3rem; text-align: center; color: var(--text-muted);">No offices found.</td>
+                <td colspan="3" class="empty-state">
+                    <i class="fa-regular fa-building" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                    No offices found.
+                </td>
             </tr>
             </tbody>
         </table>

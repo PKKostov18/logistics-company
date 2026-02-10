@@ -1,0 +1,98 @@
+/* --- LAYOUT & CONTAINER --- */
+.main-content {
+    max-width: 900px; /* Ограничава ширината */
+    margin: 0 auto;    /* Центрира */
+    padding: 2rem;
+    width: 100%;
+}
+
+/* --- CARD WRAPPER (Бялата кутия около таблицата) --- */
+.table-responsive {
+    overflow-x: auto;
+    background-color: var(--color-bg-card); /* Бял фон */
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- TABLE STYLES --- */
+.clients-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+.clients-table th {
+    background-color: var(--color-bg);
+    color: var(--color-text);         /* Бял текст */
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border-nav);
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.clients-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border-nav);
+    vertical-align: middle;
+    color: var(--color-text);
+}
+
+/* --- TYPOGRAPHY --- */
+.name-text {
+    font-weight: 600;
+    color: var(--color-text);
+    display: block;
+}
+
+/* --- BADGES --- */
+.username-badge {
+    font-size: 0.85rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    display: inline-block;
+}
+
+/* --- BUTTONS & INPUTS --- */
+.edit-input {
+    width: 100%;
+    padding: 0.4rem;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background-color: var(--color-bg-card);
+    color: var(--color-text);
+}
+
+.btn-sm {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+}
+
+.btn-edit { background-color: #f59e0b; }
+.btn-edit:hover { background-color: #d97706; transform: translateY(-1px); }
+
+.btn-save { background-color: #10b981; }
+.btn-save:hover { background-color: #059669; }
+
+.btn-delete { background-color: #ef4444; }
+.btn-delete:hover { background-color: #dc2626; transform: translateY(-1px); }
+
+.btn-cancel { background-color: #9ca3af; }
+.btn-cancel:hover { background-color: #6b7280; }
