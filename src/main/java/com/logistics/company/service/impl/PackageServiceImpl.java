@@ -5,6 +5,7 @@ import com.logistics.company.data.Package;
 import com.logistics.company.dto.CreatePackageRequest;
 import com.logistics.company.repository.*;
 import com.logistics.company.service.PackageService;
+import com.logistics.company.service.PricingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +21,20 @@ public class PackageServiceImpl implements PackageService {
     private final CustomerRepository customerRepository;
     private final EmployeeRepository employeeRepository;
     private final OfficeRepository officeRepository;
+    private final PricingService pricingService;
 
-    public PackageServiceImpl(PackageRepository packageRepository, UserRepository userRepository, CustomerRepository customerRepository, EmployeeRepository employeeRepository, OfficeRepository officeRepository) {
+    public PackageServiceImpl(PackageRepository packageRepository,
+                              UserRepository userRepository,
+                              CustomerRepository customerRepository,
+                              EmployeeRepository employeeRepository,
+                              OfficeRepository officeRepository,
+                              PricingService pricingService) {
         this.packageRepository = packageRepository;
         this.userRepository = userRepository;
         this.customerRepository = customerRepository;
         this.employeeRepository = employeeRepository;
         this.officeRepository = officeRepository;
+        this.pricingService = pricingService;
     }
 
     @Override
@@ -40,46 +48,32 @@ public class PackageServiceImpl implements PackageService {
     }
 
     @Override
-    public List<Package> getPendingPackages() {
-        // Връщаме всичко, което е РЕГИСТРИРАНО или В ПРОЦЕС НА ДОСТАВКА
-        List<Package> registered = packageRepository.findAllByStatus(PackageStatus.REGISTERED);
-        List<Package> inTransit = packageRepository.findAllByStatus(PackageStatus.IN_TRANSIT);
-
-        List<Package> allPending = new ArrayList<>(registered);
-        allPending.addAll(inTransit);
-        return allPending;
-    }
-
-    @Override
     public List<Package> getPackagesForUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (user.getRole().getName() == RoleType.CUSTOMER) {
-            List<Package> sent = packageRepository.findAllBySender_User_Id(user.getId());
-            List<Package> received = packageRepository.findAllByReceiver_User_Id(user.getId());
-
-            Set<Package> distinctPackages = new HashSet<>(sent);
-            distinctPackages.addAll(received);
-
-            return new ArrayList<>(distinctPackages);
+            // новата оптимизирана заявка в Repository
+            return packageRepository.findAllByUserInvolvement(username);
         }
 
+        // За служители връща всички (оптимизирано от findAll)
         return packageRepository.findAll();
+    }
+
+    @Override
+    public List<Package> getPendingPackages() {
+        return packageRepository.findAllByStatusNot(PackageStatus.DELIVERED);
     }
 
     @Override
     @Transactional
     public void registerPackage(CreatePackageRequest request, String employeeUsername) {
-
         User employeeUser = userRepository.findByUsername(employeeUsername)
                 .orElseThrow(() -> new IllegalArgumentException("Employee user not found"));
 
-        Employee employee = employeeUser.getEmployee();
-        if (employee == null) {
-            employee = employeeRepository.findByUser_Id(employeeUser.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("User is not an employee"));
-        }
+        Employee employee = employeeRepository.findByUser_Id(employeeUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User is not an employee"));
 
         Customer sender = getOrCreateCustomer(request.getSenderPhoneNumber(), request.getSenderName());
         Customer receiver = getOrCreateCustomer(request.getReceiverPhoneNumber(), request.getReceiverName());
@@ -93,16 +87,14 @@ public class PackageServiceImpl implements PackageService {
             }
             destinationOffice = officeRepository.findById(request.getOfficeId())
                     .orElseThrow(() -> new IllegalArgumentException("Office not found"));
-
             finalDeliveryAddress = null;
-
         } else {
             if (finalDeliveryAddress == null || finalDeliveryAddress.trim().isEmpty()) {
                 throw new IllegalArgumentException("Delivery address is required for TO_ADDRESS delivery");
             }
         }
 
-        BigDecimal price = calculatePrice(request.getWeight(), request.getDeliveryType());
+        BigDecimal price = pricingService.calculatePrice(request.getWeight(), request.getDeliveryType());
 
         Package newPackage = new Package();
         newPackage.setTrackingNumber(java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
@@ -110,15 +102,12 @@ public class PackageServiceImpl implements PackageService {
         newPackage.setReceiver(receiver);
         newPackage.setRegisteredBy(employee);
         newPackage.setDestinationOffice(destinationOffice);
-
         newPackage.setWeightKg(request.getWeight());
-
         newPackage.setDeliveryType(request.getDeliveryType());
         newPackage.setDeliveryAddress(finalDeliveryAddress);
         newPackage.setPrice(price);
         newPackage.setStatus(PackageStatus.REGISTERED);
-
-        newPackage.setCreatedAt(java.time.Instant.now());
+        newPackage.setCreatedAt(Instant.now());
 
         packageRepository.save(newPackage);
     }
@@ -133,9 +122,8 @@ public class PackageServiceImpl implements PackageService {
             pkg.setStatus(status);
 
             if (status == PackageStatus.DELIVERED || status == PackageStatus.RECEIVED) {
-                pkg.setReceivedAt(java.time.Instant.now());
+                pkg.setReceivedAt(Instant.now());
             }
-
             packageRepository.save(pkg);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid status: " + newStatus);
@@ -144,65 +132,48 @@ public class PackageServiceImpl implements PackageService {
 
     private Customer getOrCreateCustomer(String phoneNumber, String name) {
         Optional<Customer> existingCustomer = customerRepository.findByPhoneNumber(phoneNumber);
-
         if (existingCustomer.isPresent()) {
             return existingCustomer.get();
         }
-
         Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
-        Customer newCustomer = getCustomer(phoneNumber, name, existingUser);
-
-        return customerRepository.save(newCustomer);
-    }
-
-    private static Customer getCustomer(String phoneNumber, String name, Optional<User> existingUser) {
         Customer newCustomer = new Customer();
         newCustomer.setPhoneNumber(phoneNumber);
-
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             newCustomer.setUser(user);
-            String customerName = (name != null && !name.isEmpty())
-                    ? name
-                    : user.getFirstName() + " " + user.getLastName();
-            newCustomer.setName(customerName);
+            newCustomer.setName((name != null && !name.isEmpty()) ? name : user.getFirstName() + " " + user.getLastName());
         } else {
             newCustomer.setUser(null);
             newCustomer.setName(name != null && !name.isEmpty() ? name : "Guest Customer");
         }
-        return newCustomer;
+        return customerRepository.save(newCustomer);
     }
 
     @Override
     public BigDecimal calculatePrice(double weight, boolean toOffice) {
-        return calculatePrice(weight, toOffice ? DeliveryType.TO_OFFICE : DeliveryType.TO_ADDRESS);
+        return pricingService.calculatePrice(weight, toOffice ? DeliveryType.TO_OFFICE : DeliveryType.TO_ADDRESS);
     }
 
     @Override
     public BigDecimal calculatePrice(double weight, DeliveryType deliveryType) {
-        BigDecimal basePrice = BigDecimal.valueOf(5.00);
-        BigDecimal weightCharge = BigDecimal.valueOf(weight * 2.50);
-        BigDecimal total = basePrice.add(weightCharge);
-
-        if (deliveryType == DeliveryType.TO_ADDRESS) {
-            total = total.add(BigDecimal.valueOf(10.00));
-        }
-        return total;
+        return pricingService.calculatePrice(weight, deliveryType);
     }
 
     @Override
     public List<Package> getPackagesForCourier(User courier) {
-        return packageRepository.findAllByAssignedCourierAndStatusNot(courier.getEmployee(), PackageStatus.DELIVERED);
+        Employee emp = courier.getEmployee();
+        if(emp == null) { // Fallback, ако User обекта няма закачен Employee (lazy loading проблем)
+            emp = employeeRepository.findByUser_Id(courier.getId()).orElse(null);
+        }
+        return packageRepository.findAllByAssignedCourierAndStatusNot(emp, PackageStatus.DELIVERED);
     }
 
     @Override
     public void markPackageAsDelivered(Long packageId) {
         Package pkg = packageRepository.findById(packageId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid package Id:" + packageId));
-
         pkg.setStatus(PackageStatus.DELIVERED);
-        pkg.setReceivedAt(java.time.Instant.now());
-
+        pkg.setReceivedAt(Instant.now());
         packageRepository.save(pkg);
     }
 
@@ -210,11 +181,8 @@ public class PackageServiceImpl implements PackageService {
     public List<Package> getAvailablePackages(String city) {
         if (city != null && !city.trim().isEmpty()) {
             return packageRepository.findAllByAssignedCourierIsNullAndStatusAndDeliveryAddressContainingIgnoreCase(
-                    PackageStatus.REGISTERED,
-                    city.trim()
-            );
+                    PackageStatus.REGISTERED, city.trim());
         }
-
         return packageRepository.findAllByAssignedCourierIsNullAndStatus(PackageStatus.REGISTERED);
     }
 
@@ -224,16 +192,19 @@ public class PackageServiceImpl implements PackageService {
         Package pkg = packageRepository.findById(packageId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid package Id: " + packageId));
 
-        pkg.setAssignedCourier(courier.getEmployee());
-        pkg.setStatus(PackageStatus.IN_TRANSIT);
+        Employee emp = courier.getEmployee();
+        if(emp == null) {
+            emp = employeeRepository.findByUser_Id(courier.getId()).orElseThrow();
+        }
 
+        pkg.setAssignedCourier(emp);
+        pkg.setStatus(PackageStatus.IN_TRANSIT);
         packageRepository.save(pkg);
     }
 
     @Override
     public Package getPackageByTrackingNumberForCourier(String trackingNumber, User courier) {
-        return packageRepository.findByTrackingNumberAndAssignedCourier_User(trackingNumber, courier)
-                .orElse(null);
+        return packageRepository.findByTrackingNumberAndAssignedCourier_User(trackingNumber, courier).orElse(null);
     }
 
     @Override
