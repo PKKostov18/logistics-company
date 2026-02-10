@@ -71,6 +71,41 @@
   transition: background-color 0.2s;
 }
 
+/* Основен стил за бутона (Register Package) */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem; /* Разстояние между иконата и текста */
+    background-color: #5d3bf6;
+    color: white !important; /* Текстът винаги бял */
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem; /* Леко заоблени ъгли, в тон с таблицата */
+    text-decoration: none; /* Маха подчертаването на линка */
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 4px rgba(78, 59, 246, 0.3); /* Мека синя сянка */
+    transition: all 0.2s ease; /* Плавен преход при hover */
+}
+
+/* Ефект при посочване с мишката */
+.btn-primary:hover {
+    background-color: #4925eb; /* По-тъмно синьо */
+    transform: translateY(-2px); /* Леко повдигане нагоре */
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4); /* По-силна сянка */
+}
+
+/* Ефект при клик */
+.btn-primary:active {
+    transform: translateY(0); /* Връщане надолу */
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Иконата вътре в бутона */
+.btn-primary i {
+    font-size: 0.9em;
+}
+
 .track-button{
     display: inline-block;
     color: var(--color-btn-secondary-text);

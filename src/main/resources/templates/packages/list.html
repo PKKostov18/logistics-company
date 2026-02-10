@@ -3,35 +3,43 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>All Packages</title>
+    <title>All Packages - LogiTrace</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Shared Table Styles to match Courier pages */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
         .table-responsive {
             overflow-x: auto;
             background-color: var(--color-bg-card);
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             border: 1px solid var(--color-border-nav);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .packages-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             font-size: 0.95rem;
             text-align: left;
         }
 
-        /* HEADER FIX for Dark Mode */
         .packages-table th {
-            background-color: var(--color-bg); /* Adapts to theme */
-            color: var(--color-text);          /* Adapts to theme */
-            font-weight: 600;
+            background-color: var(--color-bg);
+            color: var(--color-text);
             padding: 1rem;
+            font-weight: 600;
             border-bottom: 2px solid var(--color-border-nav);
             white-space: nowrap;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
         }
 
         .packages-table td {
@@ -41,112 +49,67 @@
             color: var(--color-text);
         }
 
-        .packages-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .packages-table tr:hover {
-            background-color: rgba(59, 130, 246, 0.05);
-        }
-
-        /* Badges & Tags */
-        .tracking-badge {
-            font-family: monospace;
-            background-color: var(--color-btn-secondary-bg);
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* --- СТАТУСИ (ЦВЕТОВЕ) --- */
-        .status-badge {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 12px;
-            display: inline-block;
-            text-align: center;
-            min-width: 90px;
-        }
-
-        /* 1. REGISTERED -> СИНЬО */
-        .status-REGISTERED {
-            background-color: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
-        }
-
-        /* 2. IN_TRANSIT -> ОРАНЖЕВО */
-        .status-IN_TRANSIT {
-            background-color: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
-        }
-
-        /* 3. DELIVERED -> ЗЕЛЕНО */
-        .status-DELIVERED {
-            background-color: #dcfce7;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
-        }
-
-        /* 4. RECEIVED -> ЛИЛАВО */
-        .status-RECEIVED {
-            background-color: #f3e8ff;
-            color: #7e22ce;
-            border: 1px solid #e9d5ff;
-        }
-        /* ------------------------- */
-
-        .office-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            color: #2563eb;
-            font-weight: 600;
-            font-size: 0.85rem;
-            background-color: rgba(37, 99, 235, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-bottom: 0.25rem;
-        }
-
-        .address-detail {
+        /* Стилове за текст */
+        .sub-text {
             display: block;
-            color: var(--color-text);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 4px;
         }
 
         .user-name {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--color-text);
         }
 
-        .header-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+        /* Tracking Number Bubble */
+        .tracking-badge {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 1px solid #e5e7eb;
         }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
+        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
+        .status-DELIVERED { background-color: #d1fae5; color: #065f46; }
+        .status-CANCELED { background-color: #fee2e2; color: #991b1b; }
+
+        /* Icon Colors */
+        .icon-office { color: #4f46e5; margin-right: 5px; }
+        .icon-address { color: #9333ea; margin-right: 5px; }
+        .icon-phone { font-size: 0.75rem; color: #9ca3af; margin-right: 4px; }
+
     </style>
 </head>
-<body>
+<body class="theme-light">
 
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
-<main class="main-container">
-
-    <div class="header-actions">
-        <div>
-            <h1 class="page-title">All Packages</h1>
-            <p class="page-description">Manage all shipments in the system.</p>
-        </div>
-        <div>
-            <a th:href="@{/packages/create}" class="button button-primary"
-               sec:authorize="hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN')">
-                <i class="fa-solid fa-plus"></i> Create New Package
+<main class="main-content">
+    <div class="page-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">
+            <i class="fa-solid fa-boxes-stacked" style="color: #3b82f6; margin-right: 10px;"></i>
+            All Packages
+        </h1>
+        <div class="actions">
+            <a sec:authorize="hasRole('OFFICE_EMPLOYEE')" th:href="@{/packages/create}" class="btn-primary">
+                <i class="fa-solid fa-plus"></i> Register Package
             </a>
         </div>
     </div>
@@ -159,60 +122,75 @@
                 <th>Sender</th>
                 <th>Receiver</th>
                 <th>Destination</th>
-                <th>Weight / Price</th>
+                <th>Details</th>
                 <th>Status</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}">
                 <td>
-                    <span class="tracking-badge" th:text="${pkg.trackingNumber}">#TRACK123</span>
-                </td>
-                <td>
-                    <div class="user-name"
-                         th:if="${pkg.sender.user != null}"
-                         th:text="${pkg.sender.user.firstName} + ' ' + ${pkg.sender.user.lastName}">
-                        Sender Name
+                    <span class="tracking-badge" th:text="${pkg.trackingNumber}">TRK-123</span>
+                    <div th:if="${pkg.description != null}" class="sub-text"
+                         style="font-style: italic;" th:text="${pkg.description}">
+                        Fragile content
                     </div>
-                    <div th:if="${pkg.sender.user == null}">Unknown Sender</div>
                 </td>
+
                 <td>
-                    <div class="user-name"
-                         th:if="${pkg.receiver.user != null}"
-                         th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">
-                        Receiver Name
+                    <div class="user-name" th:text="${pkg.senderName}">Sender Name</div>
+                    <div class="sub-text">
+                        <i class="fa-solid fa-phone icon-phone"></i>
+                        <span th:text="${pkg.senderPhone}">0888 123 456</span>
                     </div>
-                    <div th:if="${pkg.receiver.user == null}">Guest Receiver</div>
                 </td>
+
+                <td>
+                    <div class="user-name" th:text="${pkg.receiverName}">Receiver Name</div>
+                    <div class="sub-text">
+                        <i class="fa-solid fa-phone icon-phone"></i>
+                        <span th:text="${pkg.receiverPhone}">0888 987 654</span>
+                    </div>
+                </td>
+
                 <td>
                     <div th:if="${pkg.destinationOffice != null}">
-                        <div class="office-tag"><i class="fa-solid fa-building"></i> OFFICE</div>
-                        <span class="address-detail" th:text="${pkg.destinationOffice.address}">Office Address</span>
+                        <div style="font-weight: 600; color: var(--color-text);">
+                            <i class="fa-solid fa-building icon-office"></i>
+                            <span th:text="${pkg.destinationOffice}">Office Name</span>
+                        </div>
+                        <div class="sub-text" th:text="${pkg.destinationOfficeAddress}">Address</div>
                     </div>
 
                     <div th:if="${pkg.destinationOffice == null}">
-                        <div style="color: #6b7280; font-size: 0.85rem; margin-bottom: 2px;">
-                            <i class="fa-solid fa-location-dot"></i> Address
+                        <div style="font-weight: 600; color: var(--color-text);">
+                            <i class="fa-solid fa-location-dot icon-address"></i>
+                            <span>To Address</span>
                         </div>
-                        <span class="address-detail" th:text="${pkg.deliveryAddress}">Delivery Address</span>
+                        <div class="sub-text" th:text="${pkg.deliveryAddress}">Street 123</div>
                     </div>
                 </td>
+
                 <td>
-                    <div th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
-                    <div style="color: #10b981; font-weight: 600;" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
+                    <div style="font-weight: 500;" th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
+                    <div style="color: #10b981; font-weight: 700;" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
                 </td>
 
                 <td>
                     <span class="status-badge"
                           th:classappend="'status-' + ${pkg.status}"
                           th:text="${pkg.status}">STATUS</span>
-                </td>
 
+                    <div th:if="${pkg.courierName != null}" style="margin-top: 6px; font-size: 0.8rem; color: #6b7280;">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span th:text="${pkg.courierName}">Courier Name</span>
+                    </div>
+                </td>
             </tr>
 
             <tr th:if="${packages.isEmpty()}">
-                <td colspan="6" style="text-align: center; padding: 2rem;">
-                    No packages found in the system.
+                <td colspan="6" style="text-align: center; padding: 3rem; color: #9ca3af;">
+                    <i class="fa-regular fa-folder-open" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                    No packages found.
                 </td>
             </tr>
             </tbody>
@@ -223,6 +201,5 @@
 <div th:replace="~{layout/common-layout :: footer}"></div>
 <script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/menu.js}"></script>
-
 </body>
 </html>
