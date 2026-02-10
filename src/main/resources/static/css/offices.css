@@ -1,0 +1,118 @@
+/* --- CONTAINER --- */
+.offices-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* --- CARDS --- */
+.office-card {
+    background-color: var(--color-bg-card);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    /* Декоративна лента отляво */
+    border-left: 5px solid #3b82f6;
+}
+
+/* --- FORMS --- */
+.office-form {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--color-border-nav);
+    border-radius: 0.5rem;
+    background-color: var(--color-bg); /* Правилна променлива */
+    color: var(--color-text);          /* Правилна променлива */
+    box-sizing: border-box;
+}
+
+/* --- TABLE --- */
+.table-wrapper {
+    background-color: var(--color-bg-card);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    overflow-x: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.offices-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.offices-table th,
+.offices-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border-nav);
+    color: var(--color-text);
+}
+
+.offices-table th {
+    background-color: var(--color-bg);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Edit Inputs inside Table */
+.table-input {
+    width: 100%;
+    padding: 0.4rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text);
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+
+.table-input:focus {
+    border-color: #3b82f6; /* Primary color */
+    background-color: var(--color-bg);
+    outline: none;
+}
+
+/* --- BUTTONS --- */
+.btn-action {
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-action:hover { opacity: 0.9; }
+
+.btn-add { background-color: #3b82f6; font-weight: 600; padding: 0.6rem 1.2rem; } /* Blue */
+.btn-save { background-color: #10b981; } /* Green */
+.btn-delete { background-color: #ef4444; } /* Red */
+
+/* Empty State */
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #9ca3af;
+}

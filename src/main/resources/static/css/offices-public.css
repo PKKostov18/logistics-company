@@ -1,0 +1,77 @@
+/* --- STICKY FOOTER FIX --- */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content-wrapper {
+    flex: 1;
+}
+
+/* --- MAP STYLES --- */
+#map {
+    height: 55vh;
+    width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border-nav);
+    z-index: 1;
+}
+
+/* --- INFO SECTION STYLES --- */
+.info-section {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border-nav);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.service-item {
+    background-color: var(--color-bg-card);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: transform 0.2s;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.service-icon {
+    background-color: #dbeafe;
+    color: #2563eb;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* Dark Mode Map Fixes */
+body.dark .leaflet-layer,
+body.dark .leaflet-control-zoom-in,
+body.dark .leaflet-control-zoom-out,
+body.dark .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+body.dark .service-icon {
+    background-color: #1e3a8a;
+    color: #93c5fd;
+}
