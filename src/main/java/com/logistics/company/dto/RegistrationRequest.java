@@ -3,11 +3,11 @@ package com.logistics.company.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data // Getters, Setters, ToString, EqualsAndHashCode
 public class RegistrationRequest {
 
     @NotBlank(message = "Username is required.")

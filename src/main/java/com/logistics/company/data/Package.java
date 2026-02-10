@@ -73,6 +73,9 @@ public class Package {
     @Column(name = "delivery_address")
     private String deliveryAddress;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 

@@ -3,7 +3,7 @@ package com.logistics.company.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-@Data
+@Data // Getters, Setters, ToString, EqualsAndHashCode
 public class CreateOfficeRequest {
 
     @NotBlank(message = "Office name is required")

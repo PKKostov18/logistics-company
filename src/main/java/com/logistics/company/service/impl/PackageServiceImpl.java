@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 
+import static java.util.UUID.randomUUID;
+
 @Service
 public class PackageServiceImpl implements PackageService {
 
@@ -97,7 +99,7 @@ public class PackageServiceImpl implements PackageService {
         BigDecimal price = pricingService.calculatePrice(request.getWeight(), request.getDeliveryType());
 
         Package newPackage = new Package();
-        newPackage.setTrackingNumber(java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        newPackage.setTrackingNumber(randomUUID().toString().substring(0, 8).toUpperCase());
         newPackage.setSender(sender);
         newPackage.setReceiver(receiver);
         newPackage.setRegisteredBy(employee);
@@ -105,6 +107,7 @@ public class PackageServiceImpl implements PackageService {
         newPackage.setWeightKg(request.getWeight());
         newPackage.setDeliveryType(request.getDeliveryType());
         newPackage.setDeliveryAddress(finalDeliveryAddress);
+        newPackage.setDescription(request.getDescription());
         newPackage.setPrice(price);
         newPackage.setStatus(PackageStatus.REGISTERED);
         newPackage.setCreatedAt(Instant.now());

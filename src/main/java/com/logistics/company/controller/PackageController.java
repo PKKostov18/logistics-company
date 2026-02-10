@@ -2,6 +2,8 @@ package com.logistics.company.controller;
 
 import com.logistics.company.data.Package;
 import com.logistics.company.dto.CreatePackageRequest;
+import com.logistics.company.dto.PackageResponse;
+import com.logistics.company.mapper.PackageMapper;
 import com.logistics.company.service.OfficeService;
 import com.logistics.company.service.PackageService;
 import jakarta.validation.Valid;
@@ -20,30 +22,40 @@ public class PackageController {
 
     private final PackageService packageService;
     private final OfficeService officeService;
+    private final PackageMapper packageMapper;
 
-    public PackageController(PackageService packageService, OfficeService officeService) {
+    // Добавя се packageMapper в конструктора
+    public PackageController(PackageService packageService,
+                             OfficeService officeService,
+                             PackageMapper packageMapper) {
         this.packageService = packageService;
         this.officeService = officeService;
+        this.packageMapper = packageMapper;
     }
 
-    // --- Списък на всички пратки ---
+    // Списък на всички пратки (Admin / Employee)
     @GetMapping
-    public String listPackages(Model model, Principal principal) {
-        List<Package> packages = packageService.getPackagesForUser(principal.getName());
-        model.addAttribute("packages", packages);
+    public String listPackages(Model model) {
+        List<Package> packages = packageService.getAllPackages();
+
+        List<PackageResponse> responseDTOs = packageMapper.toResponseList(packages);
+
+        model.addAttribute("packages", responseDTOs);
         return "packages/list";
     }
 
-    // --- Страница за създаване ---
+    // Форма за създаване
     @GetMapping("/create")
-    public String showCreateForm(Model model) {
+    @PreAuthorize("hasRole('OFFICE_EMPLOYEE')")
+    public String showCreatePackageForm(Model model) {
         model.addAttribute("createPackageRequest", new CreatePackageRequest());
         model.addAttribute("offices", officeService.getAllOffices());
         return "packages/create";
     }
 
-    // --- Логика за създаване ---
+    // Логика за създаване
     @PostMapping("/create")
+    @PreAuthorize("hasRole('OFFICE_EMPLOYEE')")
     public String createPackage(
             @Valid @ModelAttribute("createPackageRequest") CreatePackageRequest request,
             BindingResult bindingResult,
@@ -61,21 +73,25 @@ public class PackageController {
         return "redirect:/packages";
     }
 
-    // --- Страница за Pending Shipments ---
+    // Страница за Pending Shipments
     @GetMapping("/pending")
     @PreAuthorize("hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN', 'COURIER')")
     public String listPendingPackages(Model model) {
         List<Package> packages = packageService.getPendingPackages();
-        model.addAttribute("packages", packages);
+
+        // ползва се DTO, за да е консистентно
+        List<PackageResponse> responseDTOs = packageMapper.toResponseList(packages);
+        model.addAttribute("packages", responseDTOs);
+
         return "packages/pending";
     }
 
-    // --- Логика за смяна на статуса (Ship / Deliver) ---
+    // Логика за смяна на статуса
     @PostMapping("/status/update")
     @PreAuthorize("hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN', 'COURIER')")
     public String updatePackageStatus(@RequestParam("id") Long id,
                                       @RequestParam("status") String status) {
         packageService.updatePackageStatus(id, status);
-        return "redirect:/packages/pending";
+        return "redirect:/packages";
     }
 }

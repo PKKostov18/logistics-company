@@ -1,52 +1,73 @@
 package com.logistics.company.mapper;
 
-import com.logistics.company.data.Customer;
 import com.logistics.company.data.Package;
-import com.logistics.company.data.PackageStatus;
-import com.logistics.company.data.User;
-import com.logistics.company.dto.CreatePackageRequest;
-import com.logistics.company.repository.UserRepository;
+import com.logistics.company.dto.PackageResponse;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Преобразува Package обект в PackageResponse DTO, който се използва за връщане на данни към клиента.
+ */
 
 @Component
 public class PackageMapper {
 
-    // Сменяме CustomerRepository с UserRepository, защото търсим по телефон (който е в User)
-    private final UserRepository userRepository;
+    public PackageResponse toResponse(Package pkg) {
+        // ползва се @Builder за по-лесно създаване на обектите и по-ясен код
+        PackageResponse.PackageResponseBuilder builder = PackageResponse.builder()
+                .id(pkg.getId())
+                .trackingNumber(pkg.getTrackingNumber())
+                .price(pkg.getPrice())
+                .status(pkg.getStatus())
+                .deliveryType(pkg.getDeliveryType())
+                .description(pkg.getDescription())
+                .deliveryAddress(pkg.getDeliveryAddress())
+                .weightKg(pkg.getWeightKg());
 
-    public PackageMapper(UserRepository userRepository) {
-        this.userRepository = userRepository;
+        // Мапинг на Sender с проверка за null стойности,
+        // за да се избегне NullPointerException
+        if (pkg.getSender() != null) {
+            builder.senderName(pkg.getSender().getName());
+            if (pkg.getSender().getUser() != null) {
+                builder.senderPhone(pkg.getSender().getUser().getPhoneNumber());
+            } else {
+                builder.senderPhone(pkg.getSender().getPhoneNumber());
+            }
+        } else {
+            builder.senderName("Unknown").senderPhone("-");
+        }
+
+        // Мапинг за Receiver
+        if (pkg.getReceiver() != null) {
+            builder.receiverName(pkg.getReceiver().getName());
+            if (pkg.getReceiver().getUser() != null) {
+                builder.receiverPhone(pkg.getReceiver().getUser().getPhoneNumber());
+            } else {
+                builder.receiverPhone(pkg.getReceiver().getPhoneNumber());
+            }
+        } else {
+            builder.receiverName("Unknown").receiverPhone("-");
+        }
+
+        // Мапинг за Куриер с проверка за null стойности
+        if (pkg.getAssignedCourier() != null && pkg.getAssignedCourier().getUser() != null) {
+            builder.courierName(pkg.getAssignedCourier().getUser().getFirstName() + " " +
+                    pkg.getAssignedCourier().getUser().getLastName());
+        }
+
+        // Мапинг за Офиси с проверка за null стойности
+        if (pkg.getDestinationOffice() != null) {
+            builder.destinationOffice(pkg.getDestinationOffice().getName());
+            builder.destinationOfficeAddress(pkg.getDestinationOffice().getAddress());
+        }
+
+        return builder.build();
     }
 
-    public Package toEntity(CreatePackageRequest request) {
-        // 1. Намираме подателя по телефон
-        User senderUser = userRepository.findByPhoneNumber(request.getSenderPhoneNumber())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Sender with phone " + request.getSenderPhoneNumber() + " not found"));
-
-        Customer sender = senderUser.getCustomer();
-        if (sender == null) {
-            throw new IllegalArgumentException("User with phone " + request.getSenderPhoneNumber() + " is not a customer");
-        }
-
-        // 2. Намираме получателя по телефон
-        User receiverUser = userRepository.findByPhoneNumber(request.getReceiverPhoneNumber())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Receiver with phone " + request.getReceiverPhoneNumber() + " not found"));
-
-        Customer receiver = receiverUser.getCustomer();
-        if (receiver == null) {
-            throw new IllegalArgumentException("User with phone " + request.getReceiverPhoneNumber() + " is not a customer");
-        }
-
-        // 3. Създаваме обекта
-        return Package.builder()
-                .sender(sender)
-                .receiver(receiver)
-                .deliveryType(request.getDeliveryType())
-                .deliveryAddress(request.getDeliveryAddress())
-                .weightKg(request.getWeight())
-                .status(PackageStatus.REGISTERED)
-                .build();
+    public List<PackageResponse> toResponseList(List<Package> packages) {
+        if (packages == null) return List.of();
+        return packages.stream().map(this::toResponse).collect(Collectors.toList());
     }
 }

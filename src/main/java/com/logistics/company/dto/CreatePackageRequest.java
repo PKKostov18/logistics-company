@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
-@Data
+@Data // Getters, Setters, ToString, EqualsAndHashCode
 public class CreatePackageRequest {
 
     @NotNull(message = "Sender phone number is required")

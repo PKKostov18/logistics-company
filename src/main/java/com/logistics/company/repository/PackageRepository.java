@@ -20,8 +20,14 @@ import java.util.Optional;
 public interface PackageRepository extends JpaRepository<Package, Long> {
 
     // ОПТИМИЗАЦИЯ (N+1 FIX) - зарежда всички свързани данни наведнъж, когато се извиква findAll
+    // Всички пратки (LEFT JOIN навсякъде, за да не крие Guest пратки)
     @Override
-    @EntityGraph(attributePaths = {"sender.user", "receiver.user", "destinationOffice", "registeredBy.user", "assignedCourier.user"})
+    @Query("SELECT p FROM Package p " +
+            "LEFT JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
+            "LEFT JOIN FETCH p.receiver r LEFT JOIN FETCH r.user " +
+            "LEFT JOIN FETCH p.destinationOffice " +
+            "LEFT JOIN FETCH p.registeredBy rb LEFT JOIN FETCH rb.user " +
+            "LEFT JOIN FETCH p.assignedCourier ac LEFT JOIN FETCH ac.user")
     List<Package> findAll();
 
     // Оптимизирана версия за търсене по служител (registeredBy)
@@ -43,10 +49,11 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
     List<Package> findAllBySender_User_Id(Long senderId);
     List<Package> findAllByReceiver_User_Id(Long receiverId);
 
-    // Оптимизирана версия за статус (Pending shipments)
+    // Pending пратки (LEFT JOIN)
     @Query("SELECT p FROM Package p " +
-            "JOIN FETCH p.sender s JOIN FETCH s.user " +
-            "JOIN FETCH p.receiver r JOIN FETCH r.user " +
+            "LEFT JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
+            "LEFT JOIN FETCH p.receiver r LEFT JOIN FETCH r.user " +
+            "LEFT JOIN FETCH p.destinationOffice " +
             "WHERE p.status <> :status")
     List<Package> findAllByStatusNot(@Param("status") PackageStatus status);
 

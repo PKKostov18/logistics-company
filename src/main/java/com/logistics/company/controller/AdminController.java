@@ -5,9 +5,11 @@ import com.logistics.company.service.OfficeService;
 import com.logistics.company.dto.CreateEmployeeRequest;
 import com.logistics.company.dto.CreateOfficeRequest;
 import com.logistics.company.data.EmployeeType;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -38,13 +40,21 @@ public class AdminController {
 
     @PostMapping("/offices/save")
     @PreAuthorize("hasRole('ADMIN')")
-    public String saveOffice(@ModelAttribute("officeRequest") CreateOfficeRequest request,
-                             @RequestParam(required = false) Long id) {
-        if (id != null) {
-            officeService.updateOffice(id, request);
-        } else {
-            officeService.createOffice(request);
+    public String saveOffice(@Valid @ModelAttribute("officeRequest") CreateOfficeRequest request,
+                             BindingResult bindingResult,
+                             // взима резултата от валидацията
+                             Model model) {
+
+        // проверка за грешки
+        if (bindingResult.hasErrors()) {
+            // връща същата страница, за да се покажат грешките
+            // трябва да зареди отново списъците, които страницата очаква
+            model.addAttribute("offices", officeService.getAllOffices());
+            model.addAttribute("employees", employeeService.getAllEmployees());
+            return "admin/offices";
         }
+
+        officeService.createOffice(request);
         return "redirect:/admin/offices";
     }
 
@@ -67,13 +77,18 @@ public class AdminController {
 
     @PostMapping("/employees/save")
     @PreAuthorize("hasRole('ADMIN')")
-    public String saveEmployee(@ModelAttribute("employeeRequest") CreateEmployeeRequest request,
-                               @RequestParam(required = false) Long id) {
-        if (id != null) {
-            employeeService.updateEmployee(id, request);
-        } else {
-            employeeService.createEmployee(request);
+    public String saveEmployee(@Valid @ModelAttribute("employeeRequest") CreateEmployeeRequest request,
+                               BindingResult bindingResult,
+                               Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("employees", employeeService.getAllEmployees());
+            model.addAttribute("offices", officeService.getAllOffices());
+            // връща изгледа, където е формата за служители
+            return "admin/employees";
         }
+
+        employeeService.createEmployee(request);
         return "redirect:/admin/employees";
     }
 
