@@ -144,9 +144,9 @@ public class DataSeeder implements CommandLineRunner {
                     .username(username)
                         .password(passwordEncoder.encode("password_office"))
                     .email("office1@logitrace.com")
-                    .firstName("Maria")
-                    .lastName("Ivanova")
-                    .phoneNumber("0889019875")
+                    .firstName("Shakira")
+                    .lastName("Popova")
+                    .phoneNumber("0878013575")
                     .role(role)
                     .build();
             userRepository.save(user);
@@ -173,9 +173,9 @@ public class DataSeeder implements CommandLineRunner {
                     .username(username)
                     .password(passwordEncoder.encode("password_courier"))
                     .email("courier1@logitrace.com")
-                    .firstName("Ivan")
-                    .lastName("Petrov")
-                    .phoneNumber("0887963214")
+                    .firstName("Slavi")
+                    .lastName("Panayotov")
+                    .phoneNumber("0867963214")
                     .role(role)
                     .build();
             userRepository.save(user);
@@ -201,8 +201,8 @@ public class DataSeeder implements CommandLineRunner {
                     .username(username)
                     .password(passwordEncoder.encode("password_courier2"))
                     .email("courier2@logitrace.com")
-                    .firstName("Plamen")
-                    .lastName("Kostov")
+                    .firstName("Nikoleta")
+                    .lastName("Lozanova")
                     .role(role)
                     .build();
             userRepository.save(user);
@@ -232,9 +232,9 @@ public class DataSeeder implements CommandLineRunner {
                 .username(username)
                 .password(passwordEncoder.encode("password_client"))
                 .email("client1@gmail.com")
-                .firstName("Georgi")
-                .lastName("Georgiev")
-                .phoneNumber("0888123456")
+                .firstName("Tsar")
+                .lastName("Ivan")
+                .phoneNumber("0883315067")
                 .role(role)
                 .build();
         userRepository.save(user);

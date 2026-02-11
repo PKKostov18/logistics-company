@@ -4,127 +4,18 @@
     <meta charset="UTF-8">
     <title>Pending Shipments</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
+
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Центриране и стил на контейнера */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            background-color: var(--color-bg-card);
-            border-radius: 0.75rem;
-            border: 1px solid var(--color-border-nav);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .packages-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            font-size: 0.95rem;
-            text-align: left;
-        }
-
-        .packages-table th {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            padding: 1rem;
-            font-weight: 600;
-            border-bottom: 2px solid var(--color-border-nav);
-            white-space: nowrap;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        .packages-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--color-border-nav);
-            vertical-align: middle;
-            color: var(--color-text);
-        }
-
-        /* Стилове за текст и баджове */
-        .sub-text {
-            display: block;
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        .tracking-badge {
-            display: inline-block;
-            background-color: #f3f4f6;
-            color: #374151;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
-        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
-
-        /* Бутони за действие */
-        .action-form { display: inline-block; }
-
-        .btn-action {
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .btn-ship {
-            background-color: #f59e0b; /* Amber */
-        }
-        .btn-ship:hover { background-color: #d97706; transform: translateY(-1px); }
-
-        .btn-deliver {
-            background-color: #10b981; /* Emerald */
-        }
-        .btn-deliver:hover { background-color: #059669; transform: translateY(-1px); }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/packages.css}"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="theme-light">
 
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
 <main class="main-content">
-    <div class="page-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">
-            <i class="fa-solid fa-clock-rotate-left" style="color: #f59e0b; margin-right: 10px;"></i>
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fa-solid fa-clock-rotate-left icon-pending"></i>
             Pending Shipments
         </h1>
     </div>
@@ -136,8 +27,8 @@
                 <th>Tracking #</th>
                 <th>Sender</th>
                 <th>Receiver</th>
-                <th style="text-align: left">Status</th>
-                <th style="text-align: center;">Actions</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -163,7 +54,7 @@
                           th:text="${pkg.status}">STATUS</span>
                 </td>
 
-                <td style="text-align: right;">
+                <td class="text-right">
                     <form th:if="${pkg.status.name() == 'REGISTERED'}"
                           th:action="@{/packages/status/update}" method="post" class="action-form">
                         <input type="hidden" name="id" th:value="${pkg.id}">
@@ -185,8 +76,8 @@
             </tr>
 
             <tr th:if="${packages.isEmpty()}">
-                <td colspan="5" style="text-align: center; padding: 3rem; color: #9ca3af;">
-                    <i class="fa-solid fa-clipboard-check" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                <td colspan="5" class="empty-state-cell">
+                    <i class="fa-solid fa-clipboard-check empty-state-icon"></i>
                     No pending shipments found. Good job!
                 </td>
             </tr>

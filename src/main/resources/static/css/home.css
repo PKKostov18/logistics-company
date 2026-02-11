@@ -1,74 +1,76 @@
 :root{
---color-btn-secondary-text: #1f2937;
+    --color-btn-secondary-text: #1f2937;
 }
 
+/* --- GLOBAL / SHARED STYLES (EXISTING) --- */
+
 .main-container {
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1.5rem;
-  flex-grow: 1;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.5rem;
+    flex-grow: 1;
 }
 
 .page-title {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 1rem;
-  transition: color 0.2s;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    transition: color 0.2s;
 }
 
 .page-description {
-  font-size: 1.125rem;
-  color: var(--color-text);
-  margin-bottom: 1.5rem;
-  transition: color 0.2s;
+    font-size: 1.125rem;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
 }
 
 .content-grid {
-  display: grid;
-  gap: 1.5rem;
+    display: grid;
+    gap: 1.5rem;
 }
 
 @media (min-width: 875px) {
-  .content-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .card {
-  background-color: var(--color-bg-card);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--color-border-nav);
-  transition: background-color 0.2s, border-color 0.2s;
+    background-color: var(--color-bg-card);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--color-border-nav);
+    transition: background-color 0.2s, border-color 0.2s;
 }
 
 .card-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-text-card-title);
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  transition: color 0.2s;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-card-title);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s;
 }
 
 .card-description {
-  color: var(--color-text-card-desc);
-  margin-bottom: 1rem;
-  transition: color 0.2s;
+    color: var(--color-text-card-desc);
+    margin-bottom: 1rem;
+    transition: color 0.2s;
 }
 
 .button {
-  display: inline-block;
-  color: white;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 0.2s;
+    display: inline-block;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s;
 }
 
 /* Основен стил за бутона (Register Package) */
@@ -110,10 +112,10 @@
     display: inline-block;
     color: var(--color-btn-secondary-text);
     padding: 0.5rem 1.25rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 0.2s;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s;
 }
 
 /* --- Status Badges --- */
@@ -172,4 +174,266 @@ body {
 .reports-container,
 .main-content-wrapper {
     flex: 1;
+}
+
+
+/* =========================================
+   --- LANDING PAGE STYLES ---
+   ========================================= */
+
+/* --- HERO SECTION --- */
+.hero-section {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    color: white;
+    padding: 4rem 1.5rem 6rem;
+    text-align: center;
+    border-radius: 0 0 50% 50% / 4rem;
+    margin-bottom: 3rem;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+/* --- SEARCH BOX --- */
+.tracking-box {
+    background: white;
+    max-width: 700px;
+    margin: -5rem auto 3rem; /* Negative margin pulls it up into the hero */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 10;
+}
+
+.tracking-title {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+}
+
+.tracking-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tracking-input {
+    flex-grow: 1;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.tracking-input:focus {
+    border-color: #3b82f6;
+}
+
+.search-btn {
+    background-color: #1d4ed8;
+    color: white;
+    padding: 0 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-btn:hover {
+    background-color: #1e40af;
+}
+
+.error-message {
+    margin-top: 1rem;
+    color: #ef4444;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* --- RESULT SECTION --- */
+.result-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    border: 1px solid #e5e7eb;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-nav);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.result-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.result-tracking-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-link-active);
+}
+
+.result-status {
+    font-weight: 700;
+    color: #10b981;
+    text-transform: uppercase;
+}
+
+.result-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+/* --- STATUS TIMELINE (Horizontal) --- */
+.status-timeline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    position: relative;
+}
+
+.status-timeline::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e5e7eb;
+    z-index: 0;
+}
+
+.timeline-step {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    flex: 1;
+}
+
+.step-circle {
+    width: 34px;
+    height: 34px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.step-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+/* Active State logic */
+.timeline-step.active .step-circle { background: #10b981; }
+.timeline-step.active .step-label { color: #10b981; }
+
+/* --- FEATURES GRID --- */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid #f3f4f6;
+    transition: transform 0.2s;
+}
+
+.feature-card:hover { transform: translateY(-5px); }
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: #3b82f6;
+    margin-bottom: 1rem;
+}
+
+.feature-desc {
+    color: var(--color-text-card-desc);
+}
+
+.footer-wrapper {
+    margin-top: 4rem;
+}
+
+/* Utilities */
+.text-right {
+    text-align: right;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- DARK MODE ADJUSTMENTS --- */
+body.dark .hero-section {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+}
+
+body.dark .tracking-box,
+body.dark .result-card,
+body.dark .feature-card {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+body.dark .tracking-input {
+    background-color: #111827;
+    border-color: #374151;
+    color: white;
+}
+
+body.dark .step-label {
+    color: #9ca3af;
+}
+
+body.dark .status-timeline::before,
+body.dark .step-circle {
+    background: #374151;
+}
+
+body.dark .timeline-step.active .step-circle {
+    background: #10b981;
 }

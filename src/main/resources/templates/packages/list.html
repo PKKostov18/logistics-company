@@ -5,105 +5,17 @@
     <meta charset="UTF-8">
     <title>All Packages - LogiTrace</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
+
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            background-color: var(--color-bg-card);
-            border-radius: 0.75rem;
-            border: 1px solid var(--color-border-nav);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .packages-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            font-size: 0.95rem;
-            text-align: left;
-        }
-
-        .packages-table th {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            padding: 1rem;
-            font-weight: 600;
-            border-bottom: 2px solid var(--color-border-nav);
-            white-space: nowrap;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        .packages-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--color-border-nav);
-            vertical-align: middle;
-            color: var(--color-text);
-        }
-
-        /* Стилове за текст */
-        .sub-text {
-            display: block;
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        /* Tracking Number Bubble */
-        .tracking-badge {
-            display: inline-block;
-            background-color: #f3f4f6;
-            color: #374151;
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Status Badges */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
-        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
-        .status-DELIVERED { background-color: #d1fae5; color: #065f46; }
-        .status-CANCELED { background-color: #fee2e2; color: #991b1b; }
-
-        /* Icon Colors */
-        .icon-office { color: #4f46e5; margin-right: 5px; }
-        .icon-address { color: #9333ea; margin-right: 5px; }
-        .icon-phone { font-size: 0.75rem; color: #9ca3af; margin-right: 4px; }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/packages.css}"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="theme-light">
 
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
 <main class="main-content">
-    <div class="page-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">
+    <div class="page-header">
+        <h1 class="page-title">
             All Packages
         </h1>
         <div class="actions">
@@ -122,15 +34,15 @@
                 <th>Receiver</th>
                 <th>Destination</th>
                 <th>Details</th>
-                <th>Status</th>
+                <th class="text-center">Status</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}">
                 <td>
                     <span class="tracking-badge" th:text="${pkg.trackingNumber}">TRK-123</span>
-                    <div th:if="${pkg.description != null}" class="sub-text"
-                         style="font-style: italic;" th:text="${pkg.description}">
+                    <div th:if="${pkg.description != null}" class="sub-text pkg-description"
+                         th:text="${pkg.description}">
                         Fragile content
                     </div>
                 </td>
@@ -153,7 +65,7 @@
 
                 <td>
                     <div th:if="${pkg.destinationOffice != null}">
-                        <div style="font-weight: 600; color: var(--color-text);">
+                        <div class="pkg-location-title">
                             <i class="fa-solid fa-building icon-office"></i>
                             <span th:text="${pkg.destinationOffice}">Office Name</span>
                         </div>
@@ -161,7 +73,7 @@
                     </div>
 
                     <div th:if="${pkg.destinationOffice == null}">
-                        <div style="font-weight: 600; color: var(--color-text);">
+                        <div class="pkg-location-title">
                             <i class="fa-solid fa-location-dot icon-address"></i>
                             <span>To Address</span>
                         </div>
@@ -170,8 +82,8 @@
                 </td>
 
                 <td>
-                    <div style="font-weight: 500;" th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
-                    <div style="color: #10b981; font-weight: 700;" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
+                    <div class="pkg-weight" th:text="${pkg.weightKg} + ' kg'">2.5 kg</div>
+                    <div class="pkg-price" th:text="${pkg.price} + ' BGN'">25.00 BGN</div>
                 </td>
 
                 <td>
@@ -179,7 +91,7 @@
                           th:classappend="'status-' + ${pkg.status}"
                           th:text="${pkg.status}">STATUS</span>
 
-                    <div th:if="${pkg.courierName != null}" style="margin-top: 6px; font-size: 0.8rem; color: #6b7280;">
+                    <div th:if="${pkg.courierName != null}" class="pkg-courier-info">
                         <i class="fa-solid fa-truck-fast"></i>
                         <span th:text="${pkg.courierName}">Courier Name</span>
                     </div>
@@ -187,8 +99,8 @@
             </tr>
 
             <tr th:if="${packages.isEmpty()}">
-                <td colspan="6" style="text-align: center; padding: 3rem; color: #9ca3af;">
-                    <i class="fa-regular fa-folder-open" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                <td colspan="6" class="empty-state-cell">
+                    <i class="fa-regular fa-folder-open empty-state-icon"></i>
                     No packages found.
                 </td>
             </tr>

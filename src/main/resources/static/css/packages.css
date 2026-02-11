@@ -1,0 +1,195 @@
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Page Header */
+.page-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+/* Table Container */
+.table-responsive {
+    overflow-x: auto;
+    background-color: var(--color-bg-card);
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-nav);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styles */
+.packages-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.95rem;
+    text-align: left;
+}
+
+.packages-table th {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    padding: 1rem;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-border-nav);
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.packages-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border-nav);
+    vertical-align: middle;
+    color: var(--color-text);
+}
+
+/* Alignment Utilities */
+.text-center {
+    text-align: center;
+}
+
+/* Text Styles */
+.sub-text {
+    display: block;
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.pkg-description {
+    font-style: italic;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.pkg-location-title {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.pkg-weight {
+    font-weight: 500;
+}
+
+.pkg-price {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.pkg-courier-info {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Badges */
+.tracking-badge {
+    display: inline-block;
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: 1px solid #e5e7eb;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Status Colors */
+.status-REGISTERED { background-color: #dbeafe; color: #1e40af; }
+.status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; }
+.status-DELIVERED { background-color: #d1fae5; color: #065f46; }
+.status-CANCELED { background-color: #fee2e2; color: #991b1b; }
+
+/* Icons */
+.icon-office { color: #4f46e5; margin-right: 5px; }
+.icon-address { color: #9333ea; margin-right: 5px; }
+.icon-phone { font-size: 0.75rem; color: #9ca3af; margin-right: 4px; }
+
+/* Empty State */
+.empty-state-cell {
+    text-align: center;
+    padding: 3rem;
+    color: #9ca3af;
+}
+
+.empty-state-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* PENDING PACKAGES --- */
+
+/* Action Buttons */
+.action-form {
+    display: inline-block;
+}
+
+.btn-action {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-decoration: none;
+}
+
+.btn-ship {
+    background-color: #f59e0b; /* Amber */
+}
+.btn-ship:hover {
+    background-color: #d97706;
+    transform: translateY(-1px);
+}
+
+.btn-deliver {
+    background-color: #10b981; /* Emerald */
+}
+.btn-deliver:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
+
+/* Utilities */
+.text-right {
+    text-align: right;
+}
+
+.icon-pending {
+    color: #f59e0b;
+    margin-right: 10px;
+}
