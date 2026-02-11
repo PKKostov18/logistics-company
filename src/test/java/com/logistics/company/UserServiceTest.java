@@ -44,10 +44,10 @@ class UserServiceTest {
     @Test
     void registerNewUser_ShouldThrow_WhenPhoneNumberExists() {
         RegistrationRequest request = new RegistrationRequest();
-        request.setPhoneNumber("123456");
-        request.setEmail("test@example.com");
+        request.setPhoneNumber("0882008835");
+        request.setEmail("ivan@gmail.com");
 
-        when(userRepository.findByPhoneNumber("123456")).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.of(new User()));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> userService.registerNewUser(request));
@@ -59,11 +59,11 @@ class UserServiceTest {
     @Test
     void registerNewUser_ShouldThrow_WhenEmailExists() {
         RegistrationRequest request = new RegistrationRequest();
-        request.setPhoneNumber("123456");
-        request.setEmail("test@example.com");
+        request.setPhoneNumber("0882008835");
+        request.setEmail("ivan@gmail.com");
 
-        when(userRepository.findByPhoneNumber("123456")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(new User()));
+        when(userRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("ivan@gmail.com")).thenReturn(Optional.of(new User()));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> userService.registerNewUser(request));
@@ -75,11 +75,11 @@ class UserServiceTest {
     @Test
     void registerNewUser_ShouldThrow_WhenRoleNotFound() {
         RegistrationRequest request = new RegistrationRequest();
-        request.setPhoneNumber("123456");
-        request.setEmail("test@example.com");
+        request.setPhoneNumber("0882008835");
+        request.setEmail("ivan@gmail.com");
 
-        when(userRepository.findByPhoneNumber("123456")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("ivan@gmail.com")).thenReturn(Optional.empty());
         when(roleRepository.findByName(RoleType.CUSTOMER)).thenReturn(Optional.empty());
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
@@ -92,21 +92,21 @@ class UserServiceTest {
     @Test
     void registerNewUser_ShouldSaveNewUser_WhenValidRequestAndNoExistingCustomer() {
         RegistrationRequest request = new RegistrationRequest();
-        request.setUsername("john");
-        request.setPassword("password");
-        request.setEmail("john@example.com");
-        request.setFirstName("John");
-        request.setLastName("Doe");
-        request.setPhoneNumber("123456");
+        request.setUsername("ivan");
+        request.setPassword("parola123");
+        request.setEmail("ivan@gmail.com");
+        request.setFirstName("Ivan");
+        request.setLastName("Dimov");
+        request.setPhoneNumber("0882008835");
 
         Role role = new Role();
         role.setName(RoleType.CUSTOMER);
 
-        when(userRepository.findByPhoneNumber("123456")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("ivan@gmail.com")).thenReturn(Optional.empty());
         when(roleRepository.findByName(RoleType.CUSTOMER)).thenReturn(Optional.of(role));
-        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(customerRepository.findByPhoneNumber("123456")).thenReturn(Optional.empty());
+        when(passwordEncoder.encode("parola123")).thenReturn("encodedPassword");
+        when(customerRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.empty());
 
         userService.registerNewUser(request);
 
@@ -114,37 +114,37 @@ class UserServiceTest {
         verify(userRepository).save(userCaptor.capture());
 
         User savedUser = userCaptor.getValue();
-        assertEquals("john", savedUser.getUsername());
+        assertEquals("ivan", savedUser.getUsername());
         assertEquals("encodedPassword", savedUser.getPassword());
-        assertEquals("John Doe", savedUser.getCustomer().getName());
-        assertEquals("123456", savedUser.getCustomer().getPhoneNumber());
+        assertEquals("Ivan Dimov", savedUser.getCustomer().getName());
+        assertEquals("0882008835", savedUser.getCustomer().getPhoneNumber());
     }
 
     @Test
     void registerNewUser_ShouldUpdateExistingCustomer_WhenCustomerExists() {
         RegistrationRequest request = new RegistrationRequest();
-        request.setUsername("john");
-        request.setPassword("password");
-        request.setEmail("john@example.com");
-        request.setFirstName("John");
-        request.setLastName("Doe");
-        request.setPhoneNumber("123456");
+        request.setUsername("ivan");
+        request.setPassword("parola123");
+        request.setEmail("ivan@gmail.com");
+        request.setFirstName("Ivan");
+        request.setLastName("Dimov");
+        request.setPhoneNumber("0882008835");
 
         Role role = new Role();
         role.setName(RoleType.CUSTOMER);
 
         Customer existingCustomer = new Customer();
-        existingCustomer.setPhoneNumber("123456");
+        existingCustomer.setPhoneNumber("0882008835");
 
-        when(userRepository.findByPhoneNumber("123456")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
+        when(userRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("ivan@gmail.com")).thenReturn(Optional.empty());
         when(roleRepository.findByName(RoleType.CUSTOMER)).thenReturn(Optional.of(role));
-        when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        when(customerRepository.findByPhoneNumber("123456")).thenReturn(Optional.of(existingCustomer));
+        when(passwordEncoder.encode("parola123")).thenReturn("encodedPassword");
+        when(customerRepository.findByPhoneNumber("0882008835")).thenReturn(Optional.of(existingCustomer));
 
         userService.registerNewUser(request);
 
-        assertEquals("John Doe", existingCustomer.getName());
+        assertEquals("Ivan Dimov", existingCustomer.getName());
         assertNotNull(existingCustomer.getUser());
         verify(userRepository).save(existingCustomer.getUser());
     }
@@ -152,21 +152,21 @@ class UserServiceTest {
     @Test
     void findByUsername_ShouldReturnUser_WhenFound() {
         User user = new User();
-        user.setUsername("john");
+        user.setUsername("ivan");
 
-        when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("ivan")).thenReturn(Optional.of(user));
 
-        User found = userService.findByUsername("john");
-        assertEquals("john", found.getUsername());
+        User found = userService.findByUsername("ivan");
+        assertEquals("ivan", found.getUsername());
     }
 
     @Test
     void findByUsername_ShouldThrow_WhenNotFound() {
-        when(userRepository.findByUsername("john")).thenReturn(Optional.empty());
+        when(userRepository.findByUsername("ivan")).thenReturn(Optional.empty());
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.findByUsername("john"));
+                () -> userService.findByUsername("ivan"));
 
-        assertEquals("User not found with username: john", exception.getMessage());
+        assertEquals("User not found with username: ivan", exception.getMessage());
     }
 }
