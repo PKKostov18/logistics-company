@@ -3,6 +3,7 @@ package com.logistics.company;
 import com.logistics.company.data.Customer;
 import com.logistics.company.data.User;
 import com.logistics.company.repository.CustomerRepository;
+import com.logistics.company.repository.PackageRepository;
 import com.logistics.company.repository.UserRepository;
 import com.logistics.company.service.impl.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +27,14 @@ class CustomerServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PackageRepository packageRepository;
+
     private CustomerServiceImpl customerService;
 
     @BeforeEach
     void setUp() {
-        customerService = new CustomerServiceImpl(customerRepository, userRepository);
+        customerService = new CustomerServiceImpl(customerRepository, userRepository, packageRepository);
     }
 
     @Test
