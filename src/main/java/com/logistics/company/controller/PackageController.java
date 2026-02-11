@@ -94,4 +94,22 @@ public class PackageController {
         packageService.updatePackageStatus(id, status);
         return "redirect:/packages";
     }
+
+    @PostMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OFFICE_EMPLOYEE', 'COURIER')")
+    public String updatePackage(@PathVariable Long id,
+                                @RequestParam String description,
+                                @RequestParam double weight,
+                                @RequestParam String deliveryAddress) {
+        packageService.updatePackageDetails(id, description, weight, deliveryAddress);
+        return "redirect:/packages";
+    }
+
+    // Метод за изтриване
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('OFFICE_EMPLOYEE', 'ADMIN')")
+    public String deletePackage(@PathVariable Long id) {
+        packageService.deletePackage(id);
+        return "redirect:/packages";
+    }
 }

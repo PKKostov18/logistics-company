@@ -64,7 +64,7 @@
                         <button type="button" class="btn-sm btn-edit" onclick="enableEdit(this)">
                             <i class="fa-solid fa-pen"></i> Edit
                         </button>
-                        <form th:action="@{/clients/delete/{id}(id=${client.id})}" method="post" style="display:inline;"
+                        <form th:action="@{/client/delete/{id}(id=${client.id})}" method="post" style="display:inline;"
                               onsubmit="return confirm('Are you sure? This will delete associated packages too!');">
                             <button type="submit" class="btn-sm btn-delete">
                                 <i class="fa-solid fa-trash"></i>

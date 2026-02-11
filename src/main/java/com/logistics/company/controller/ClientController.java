@@ -6,6 +6,7 @@ import com.logistics.company.service.CustomerService;
 import com.logistics.company.service.PackageService;
 import com.logistics.company.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.logistics.company.data.Package;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -114,10 +116,19 @@ public class ClientController {
     }
 
     // DELETE
-    @PostMapping("/clients/delete/{id}")
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OFFICE_EMPLOYEE')")
     public String deleteClient(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-        return "redirect:/clients";
+        return "redirect:/client";
+    }
+
+    @PostMapping("/packages/receive/{id}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String confirmReceipt(@PathVariable Long id, Principal principal) {
+        packageService.markPackageAsReceived(id, principal.getName());
+
+        return "redirect:/client/incoming";
     }
 
 }

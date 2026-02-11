@@ -89,4 +89,5 @@ public class Package {
 
     @Column(name = "received_at")
     private Instant receivedAt;
+
 }

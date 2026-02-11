@@ -226,27 +226,36 @@ public class PackageServiceImpl implements PackageService {
     }
 
     private Customer getOrCreateCustomer(String phoneNumber, String name) {
-        // първо търси дали вече съществува такъв клиент
+        // 1. Търсим дали вече има Клиент с този телефон
         Optional<Customer> existingCustomer = customerRepository.findByPhoneNumber(phoneNumber);
         if (existingCustomer.isPresent()) {
             return existingCustomer.get();
         }
 
-        // ако не, проверява дали има User с този телефон, за да ги свърже
         Customer newCustomer = new Customer();
         newCustomer.setPhoneNumber(phoneNumber);
 
+        // 2. Търсим дали има Потребител (User) с този телефон
         Optional<User> existingUser = userRepository.findByPhoneNumber(phoneNumber);
+
         if (existingUser.isPresent()) {
             User user = existingUser.get();
+
+            // Преди да създадем нов клиент, проверяваме дали този User вече няма Customer профил!
+            Optional<Customer> customerByUser = customerRepository.findByUser(user);
+            if (customerByUser.isPresent()) {
+                return customerByUser.get(); // Връщаме съществуващия, вместо да гърмим с грешка
+            }
+
             newCustomer.setUser(user);
-            // използва името от User профила, ако не е подадено друго
+            // Използва името от User профила, ако не е подадено друго
             newCustomer.setName((name != null && !name.isEmpty()) ? name : user.getFirstName() + " " + user.getLastName());
         } else {
-            // гост клиент (без регистрация)
+            // Гост клиент (без регистрация)
             newCustomer.setUser(null);
             newCustomer.setName(name != null && !name.isEmpty() ? name : "Guest Customer");
         }
+
         return customerRepository.save(newCustomer);
     }
 
@@ -258,5 +267,48 @@ public class PackageServiceImpl implements PackageService {
     @Override
     public List<Package> findPackagesReceivedBy(Customer customer) {
         return packageRepository.findAllByReceiver(customer);
+    }
+
+    @Override
+    @Transactional
+    public void updatePackageDetails(Long id, String description, double weight, String deliveryAddress) {
+        Package pkg = packageRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Package not found with id: " + id));
+
+        pkg.setDescription(description);
+        pkg.setWeightKg(weight);
+
+        BigDecimal newPrice = pricingService.calculatePrice(weight, pkg.getDeliveryType());
+        pkg.setPrice(newPrice);
+
+        if (pkg.getDestinationOffice() == null && deliveryAddress != null) {
+            pkg.setDeliveryAddress(deliveryAddress);
+        }
+
+        packageRepository.save(pkg);
+    }
+
+    @Override
+    @Transactional
+    public void deletePackage(Long id) {
+        if (!packageRepository.existsById(id)) {
+            throw new IllegalArgumentException("Package not found with id: " + id);
+        }
+        packageRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void markPackageAsReceived(Long packageId, String username) {
+        Package pkg = packageRepository.findById(packageId)
+                .orElseThrow(() -> new IllegalArgumentException("Package not found"));
+
+        if (pkg.getReceiver() == null || pkg.getReceiver().getUser() == null ||
+                !pkg.getReceiver().getUser().getUsername().equals(username)) {
+            throw new SecurityException("You are not authorized to receive this package.");
+        }
+
+        pkg.setStatus(PackageStatus.RECEIVED);
+        packageRepository.save(pkg);
     }
 }

@@ -50,4 +50,9 @@ public interface PackageService {
 
     List<Package> findPackagesSentBy(Customer customer);
     List<Package> findPackagesReceivedBy(Customer customer);
+
+    void updatePackageDetails(Long id, String description, double weight, String deliveryAddress);
+    void deletePackage(Long id);
+
+    void markPackageAsReceived(Long packageId, String username);
 }

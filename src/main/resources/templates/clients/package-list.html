@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:text="${pageTitle} + ' - LogiTrace'">Packages</title>
@@ -29,6 +30,27 @@
         .tracking-badge { font-family: monospace; background: var(--color-btn-secondary-bg); padding: 2px 6px; border-radius: 4px; font-weight: 600; }
 
         .empty-msg { text-align: center; padding: 3rem; color: #6b7280; }
+
+        .deleted-user { color: #9ca3af; font-style: italic; font-size: 0.9rem; }
+
+        /* Styles for the Receive Button */
+        .btn-receive {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.2s;
+        }
+        .btn-receive:hover {
+            background-color: #059669;
+        }
     </style>
 </head>
 <body>
@@ -51,20 +73,30 @@
                 <th>Destination</th>
                 <th>Price</th>
                 <th>Status</th>
-            </tr>
+                <th style="text-align: right;">Action</th> </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}">
                 <td><span class="tracking-badge" th:text="${pkg.trackingNumber}">#123</span></td>
 
                 <td>
-                    <span th:if="${pkg.sender.user != null}" th:text="${pkg.sender.user.firstName} + ' ' + ${pkg.sender.user.lastName}"></span>
-                    <span th:if="${pkg.sender.user == null}">Unknown</span>
+                    <div th:if="${pkg.sender != null}">
+                        <span th:if="${pkg.sender.user != null}" th:text="${pkg.sender.user.firstName} + ' ' + ${pkg.sender.user.lastName}">Name</span>
+                        <span th:if="${pkg.sender.user == null}">Unknown Sender</span>
+                    </div>
+                    <div th:if="${pkg.sender == null}" class="deleted-user">
+                        <i class="fa-solid fa-user-slash"></i> Deleted
+                    </div>
                 </td>
 
                 <td>
-                    <span th:if="${pkg.receiver.user != null}" th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}"></span>
-                    <span th:if="${pkg.receiver.user == null}">Unknown</span>
+                    <div th:if="${pkg.receiver != null}">
+                        <span th:if="${pkg.receiver.user != null}" th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">Name</span>
+                        <span th:if="${pkg.receiver.user == null}">Unknown Receiver</span>
+                    </div>
+                    <div th:if="${pkg.receiver == null}" class="deleted-user">
+                        <i class="fa-solid fa-user-slash"></i> Deleted
+                    </div>
                 </td>
 
                 <td>
@@ -82,6 +114,27 @@
 
                 <td>
                     <span class="status-badge" th:classappend="'status-' + ${pkg.status}" th:text="${pkg.status}">STATUS</span>
+                </td>
+
+                <td style="text-align: right;">
+                    <form th:if="${pkg.receiver != null
+                                   and pkg.receiver.user.username == #authentication.name
+                                   and pkg.status.name() == 'DELIVERED'}"
+                              th:action="@{/client/packages/receive/{id}(id=${pkg.id})}"
+                              method="post">
+                        <button type="submit" class="btn-receive" title="Confirm Receipt">
+                            <i class="fa-solid fa-check"></i> Receive
+                        </button>
+                    </form>
+
+                    <span th:if="${pkg.status.name() == 'RECEIVED'}" style="color: #6b7280; font-size: 0.9rem;">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Done
+                    </span>
+
+                    <span th:if="${pkg.status.name() != 'DELIVERED' and pkg.status.name() != 'RECEIVED'}"
+                          style="color: #9ca3af; font-size: 0.85rem; font-style: italic;">
+                        On the way...
+                    </span>
                 </td>
             </tr>
             </tbody>
