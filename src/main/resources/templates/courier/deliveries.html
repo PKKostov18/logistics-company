@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Deliveries</title>
+    <title>My Deliveries - LogiTrace</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -160,6 +160,8 @@
             padding: 3rem;
             color: var(--color-text-card-desc);
         }
+
+        .deleted-user { color: #9ca3af; font-style: italic; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -213,7 +215,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="pkg : ${packages}">
+            <tr th:each="pkg : ${packages}" th:if="${pkg.status.name() != 'RECEIVED'}">
                 <td>
                     <span class="tracking-badge" th:text="${pkg.trackingNumber}">#TRACK123</span>
                 </td>
@@ -221,12 +223,18 @@
                     <span class="status-badge" th:text="${pkg.status}">IN TRANSIT</span>
                 </td>
                 <td>
-                    <div style="font-weight: 500;"
-                         th:if="${pkg.receiver.user != null}"
-                         th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">
-                        John Doe
+                    <div th:if="${pkg.receiver != null}">
+                        <div style="font-weight: 500;"
+                             th:if="${pkg.receiver.user != null}"
+                             th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}">
+                            John Doe
+                        </div>
+                        <div th:if="${pkg.receiver.user == null}" th:text="${pkg.receiver.name}">Guest Name</div>
                     </div>
-                    <div th:if="${pkg.receiver.user == null}">Guest User</div>
+
+                    <div th:if="${pkg.receiver == null}" class="deleted-user">
+                        <i class="fa-solid fa-user-slash"></i> Deleted Receiver
+                    </div>
                 </td>
                 <td>
                     <div th:if="${pkg.destinationOffice != null}">

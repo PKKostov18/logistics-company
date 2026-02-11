@@ -3,10 +3,12 @@ package com.logistics.company.service.impl;
 import com.logistics.company.data.Customer;
 import com.logistics.company.data.User;
 import com.logistics.company.repository.CustomerRepository;
+import com.logistics.company.repository.PackageRepository;
 import com.logistics.company.repository.UserRepository;
 import com.logistics.company.service.CustomerService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.logistics.company.data.Package;
 
 import java.util.List;
 
@@ -15,10 +17,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    private final PackageRepository packageRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, UserRepository userRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, UserRepository userRepository, PackageRepository packageRepository) {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
+        this.packageRepository = packageRepository;
     }
 
     @Override
@@ -62,6 +66,25 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public void deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + id));
+
+        List<Package> sentPackages = packageRepository.findAllBySender(customer);
+        for (Package pkg : sentPackages) {
+            pkg.setSender(null);
+        }
+
+        List<Package> receivedPackages = packageRepository.findAllByReceiver(customer);
+        for (Package pkg : receivedPackages) {
+            pkg.setReceiver(null);
+        }
+
+        User userToDelete = customer.getUser();
+
+        customerRepository.delete(customer);
+
+        if (userToDelete != null) {
+            userRepository.delete(userToDelete);
+        }
     }
 }

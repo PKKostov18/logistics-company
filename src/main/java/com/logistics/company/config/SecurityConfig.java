@@ -49,10 +49,11 @@ public class SecurityConfig {
 
                         // КУРИЕРИ
                         .requestMatchers("/courier/**").hasAnyRole("COURIER", "ADMIN")
-
+                        .requestMatchers("/packages/**").hasAnyRole("OFFICE_EMPLOYEE", "ADMIN", "COURIER")
                         // ПРАТКИ (Create/Edit/Delete)
                         .requestMatchers("/packages/create", "/packages/edit/**",
                                 "/packages/delete/**")
+
                         .hasAnyRole("OFFICE_EMPLOYEE", "COURIER", "ADMIN")
 
                         .requestMatchers("/clients/**").hasAnyRole("OFFICE_EMPLOYEE", "ADMIN")
