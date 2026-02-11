@@ -11,12 +11,14 @@ import com.logistics.company.dto.CreateOfficeRequest;
 import com.logistics.company.data.EmployeeType;
 import com.logistics.company.service.PackageService;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,7 +54,9 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public String manageOffices(Model model) {
         model.addAttribute("offices", officeService.getAllOffices());
-        model.addAttribute("newOffice", new CreateOfficeRequest());
+        if (!model.containsAttribute("officeRequest")) {
+            model.addAttribute("officeRequest", new CreateOfficeRequest());
+        }
         return "admin/offices";
     }
 
@@ -76,10 +80,36 @@ public class AdminController {
         return "redirect:/admin/offices";
     }
 
-    @PostMapping("/offices/delete/{id}")
+    @PostMapping("/offices/update/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteOffice(@PathVariable Long id) {
-        officeService.deleteOffice(id);
+    public String updateOffice(@PathVariable Long id,
+                               @RequestParam String name,
+                               @RequestParam String address,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            CreateOfficeRequest request = new CreateOfficeRequest();
+            request.setName(name);
+            request.setAddress(address);
+            officeService.updateOffice(id, request);
+            redirectAttributes.addFlashAttribute("successMessage", "Office updated successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating office.");
+        }
+        return "redirect:/admin/offices";
+    }
+
+    @PostMapping("/offices/delete/{id}")
+    public String deleteOffice(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            officeService.deleteOffice(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Office deleted successfully.");
+        } catch (IllegalStateException e) {
+            // Хващаме нашата грешка за пратките
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            // Хващаме всякакви други грешки (напр. база данни)
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting office. It might be referenced elsewhere.");
+        }
         return "redirect:/admin/offices";
     }
 
@@ -95,18 +125,47 @@ public class AdminController {
 
     @PostMapping("/employees/save")
     @PreAuthorize("hasRole('ADMIN')")
-    public String saveEmployee(@Valid @ModelAttribute("employeeRequest") CreateEmployeeRequest request,
+    public String saveEmployee(@Valid @ModelAttribute("employeeRequest") CreateEmployeeRequest employeeRequest,
                                BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes,
                                Model model) {
 
         if (bindingResult.hasErrors()) {
+            // При грешка връщаме страницата, но трябва да заредим отново списъците
             model.addAttribute("employees", employeeService.getAllEmployees());
             model.addAttribute("offices", officeService.getAllOffices());
-            // връща изгледа, където е формата за служители
+            model.addAttribute("employeeTypes", EmployeeType.values());
             return "admin/employees";
         }
 
-        employeeService.createEmployee(request);
+        try {
+            employeeService.createEmployee(employeeRequest);
+            redirectAttributes.addFlashAttribute("successMessage", "Employee registered successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "User with this email or username already exists!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error creating employee: " + e.getMessage());
+        }
+
+        return "redirect:/admin/employees";
+    }
+
+    @PostMapping("/employees/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateEmployee(@PathVariable Long id,
+                                 @RequestParam String firstName,
+                                 @RequestParam String lastName,
+                                 @RequestParam String email,
+                                 @RequestParam EmployeeType employeeType,
+                                 @RequestParam(required = false) Long officeId,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            // Тук викаме update метод в сървиса (ще го добавим след малко)
+            employeeService.updateEmployee(id, firstName, lastName, email, employeeType, officeId);
+            redirectAttributes.addFlashAttribute("successMessage", "Employee updated successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error updating employee: " + e.getMessage());
+        }
         return "redirect:/admin/employees";
     }
 

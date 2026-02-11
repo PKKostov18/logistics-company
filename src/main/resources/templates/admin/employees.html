@@ -7,10 +7,91 @@
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .table-input { width: 100%; padding: 0.5rem; border: 1px solid transparent; background: transparent; color: var(--text-color); border-radius: 4px; }
-        .table-input:focus { border-color: var(--primary-color); background: var(--bg-color); outline: none; }
-        .row-form { margin: 0; }
-        .select-input { width: 100%; border: 1px solid transparent; background: transparent; color: var(--text-color); cursor: pointer; }
+        /* Table Input Styles */
+        .table-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--color-text);
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        .table-input:focus, .select-input:focus {
+            border-color: #2563eb; /* Blue focus */
+            background: var(--color-bg);
+            outline: none;
+        }
+
+        .select-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid transparent;
+            background: transparent;
+            color: var(--color-text);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* За Dark Mode четимост */
+        .select-input option {
+            background-color: var(--color-bg-card);
+            color: var(--color-text);
+        }
+
+        /* Form styling */
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .input-styled {
+            padding: 0.5rem;
+            border: 1px solid var(--color-border-nav);
+            border-radius: 0.375rem;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        /* Alert styles */
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 1px solid #bbf7d0;
+        }
     </style>
 </head>
 <body>
@@ -19,61 +100,71 @@
 <main class="main-container">
     <h1 class="page-title">Manage Employees</h1>
 
-    <div class="card" style="margin-bottom: 2rem; border-left: 5px solid var(--primary-color);">
-        <h2 class="card-title">Register New Employee</h2>
-        <form th:action="@{/admin/employees/save}" th:object="${employeeRequest}" method="post"
-              style="display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 1rem; align-items: end;">
-            <div>
-                <label>First Name</label>
-                <input type="text" th:field="*{firstName}" class="button-secondary" style="width:100%" required>
+    <div th:if="${errorMessage}" class="alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span th:text="${errorMessage}">Error!</span>
+    </div>
+
+    <div th:if="${successMessage}" class="alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span th:text="${successMessage}">Success!</span>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem; border-left: 5px solid #2563eb;">
+        <h2 class="card-title" style="margin-bottom: 1.5rem;">Register New Employee</h2>
+        <form th:action="@{/admin/employees/save}" th:object="${employeeRequest}" method="post" class="grid-form">
+            <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" th:field="*{firstName}" class="input-styled" required>
             </div>
-            <div>
-                <label>Last Name</label>
-                <input type="text" th:field="*{lastName}" class="button-secondary" style="width:100%" required>
+            <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" th:field="*{lastName}" class="input-styled" required>
             </div>
-            <div>
-                <label>Username</label>
-                <input type="text" th:field="*{username}" class="button-secondary" style="width:100%" required>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" th:field="*{username}" class="input-styled" required>
             </div>
-            <div>
-                <label>Email</label>
-                <input type="email" th:field="*{email}" class="button-secondary" style="width:100%" required>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" th:field="*{email}" class="input-styled" required>
             </div>
-            <div>
-                <label>Password</label>
-                <input type="password" th:field="*{password}" class="button-secondary" style="width:100%" required>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" th:field="*{password}" class="input-styled" required>
             </div>
-            <div>
-                <label>Type</label>
-                <select th:field="*{employeeType}" class="button-secondary" style="width:100%">
+            <div class="form-group">
+                <label class="form-label">Type</label>
+                <select th:field="*{employeeType}" class="input-styled">
                     <option th:each="type : ${employeeTypes}" th:value="${type}" th:text="${type}"></option>
                 </select>
             </div>
-            <div>
-                <label>Assign to Office</label>
-                <select th:field="*{officeId}" class="button-secondary" style="width:100%">
+            <div class="form-group">
+                <label class="form-label">Assign to Office</label>
+                <select th:field="*{officeId}" class="input-styled">
+                    <option value="" selected>Choose Office...</option>
                     <option th:each="office : ${offices}" th:value="${office.id}" th:text="${office.name}"></option>
                 </select>
             </div>
-            <button type="submit" class="button button-primary"><i class="fa-solid fa-plus"></i> Add</button>
+            <button type="submit" class="button button-primary" style="height: 38px;"><i class="fa-solid fa-plus"></i> Add</button>
         </form>
     </div>
 
     <div class="card" style="padding: 0; overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
-            <tr style="background-color: var(--card-bg); border-bottom: 2px solid var(--border-color);">
-                <th style="padding: 1rem;">Full Name</th>
-                <th style="padding: 1rem;">Email</th>
-                <th style="padding: 1rem;">Type</th>
-                <th style="padding: 1rem;">Office</th>
-                <th style="padding: 1rem; text-align: right;">Actions</th>
+            <tr style="background-color: var(--color-bg); border-bottom: 2px solid var(--color-border-nav);">
+                <th style="padding: 1rem; text-align: left; color: var(--color-text);">Full Name</th>
+                <th style="padding: 1rem; text-align: left; color: var(--color-text);">Email</th>
+                <th style="padding: 1rem; text-align: left; color: var(--color-text);">Type</th>
+                <th style="padding: 1rem; text-align: left; color: var(--color-text);">Office</th>
+                <th style="padding: 1rem; text-align: right; color: var(--color-text);">Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="emp : ${employees}" style="border-bottom: 1px solid var(--border-color);">
+            <tr th:each="emp : ${employees}" style="border-bottom: 1px solid var(--color-border-nav);">
                 <td colspan="5" style="padding: 0;">
-                    <form th:action="@{/admin/employees/save(id=${emp.id})}" method="post" class="row-form">
+                    <form th:action="@{/admin/employees/update/{id}(id=${emp.id})}" method="post" style="margin: 0;">
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
                                 <td style="padding: 0.8rem; width: 25%;">
@@ -92,13 +183,24 @@
                                 </td>
                                 <td style="padding: 0.8rem; width: 20%;">
                                     <select name="officeId" class="select-input">
-                                        <option th:each="office : ${offices}" th:value="${office.id}" th:text="${office.name}" th:selected="${office.id == emp.office.id}"></option>
+                                        <option value="" th:selected="${emp.office == null}">Choose Office...</option>
+                                        <option th:each="office : ${offices}"
+                                                th:value="${office.id}"
+                                                th:text="${office.name}"
+                                                th:selected="${emp.office != null && office.id == emp.office.id}">
+                                        </option>
                                     </select>
                                 </td>
                                 <td style="padding: 0.8rem; text-align: right; width: 20%;">
                                     <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                        <button type="submit" class="button" style="background-color: #27ae60; color: white;"><i class="fa-solid fa-floppy-disk"></i></button>
-                                        <button type="button" th:onclick="'document.getElementById(\'del-emp-' + ${emp.id} + '\').submit()'" class="button" style="background-color: #ff4d4d; color: white;"><i class="fa-solid fa-trash"></i></button>
+                                        <button type="submit" class="button" style="background-color: #10b981; color: white; border: none; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                        </button>
+
+                                        <button type="button" th:onclick="|document.getElementById('del-emp-${emp.id}').submit()|"
+                                                class="button" style="background-color: #ef4444; color: white; border: none; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -112,10 +214,24 @@
     </div>
 </main>
 
-
 <div th:replace="~{layout/common-layout :: footer}"></div>
 
 <script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/menu.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const alerts = document.querySelectorAll('.alert-error, .alert-success');
+        if (alerts.length > 0) {
+            setTimeout(function() {
+                alerts.forEach(el => {
+                    el.style.transition = "opacity 0.5s ease";
+                    el.style.opacity = "0";
+                    setTimeout(() => el.style.display = "none", 500);
+                });
+            }, 3000); // Изчезва след 3 секунди
+        }
+    });
+</script>
+
 </body>
 </html>

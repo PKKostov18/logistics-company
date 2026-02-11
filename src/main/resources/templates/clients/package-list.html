@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} + ' - LogiTrace'">Packages</title>
+    <div th:replace="~{layout/common-layout :: head-content}"></div>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            background-color: var(--color-bg-card);
+            border-radius: 0.5rem;
+            border: 1px solid var(--color-border-nav);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .pkg-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .pkg-table th { background: var(--color-bg); padding: 1rem; border-bottom: 2px solid var(--color-border-nav); }
+        .pkg-table td { padding: 1rem; border-bottom: 1px solid var(--color-border-nav); vertical-align: middle; }
+
+        /* Status Badges */
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .status-REGISTERED { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .status-IN_TRANSIT { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .status-DELIVERED { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .status-RECEIVED { background-color: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+
+        .tracking-badge { font-family: monospace; background: var(--color-btn-secondary-bg); padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+
+        .empty-msg { text-align: center; padding: 3rem; color: #6b7280; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{layout/common-layout :: navigation}"></div>
+
+<main class="main-container">
+    <div style="margin-bottom: 1.5rem;">
+        <h1 class="page-title" th:text="${pageTitle}">Packages</h1>
+        <p class="page-description" th:text="${pageDesc}">List of packages.</p>
+    </div>
+
+    <div class="table-responsive">
+        <table class="pkg-table" th:unless="${packages.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Tracking #</th>
+                <th>Sender</th>
+                <th>Receiver</th>
+                <th>Destination</th>
+                <th>Price</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pkg : ${packages}">
+                <td><span class="tracking-badge" th:text="${pkg.trackingNumber}">#123</span></td>
+
+                <td>
+                    <span th:if="${pkg.sender.user != null}" th:text="${pkg.sender.user.firstName} + ' ' + ${pkg.sender.user.lastName}"></span>
+                    <span th:if="${pkg.sender.user == null}">Unknown</span>
+                </td>
+
+                <td>
+                    <span th:if="${pkg.receiver.user != null}" th:text="${pkg.receiver.user.firstName} + ' ' + ${pkg.receiver.user.lastName}"></span>
+                    <span th:if="${pkg.receiver.user == null}">Unknown</span>
+                </td>
+
+                <td>
+                    <div th:if="${pkg.destinationOffice != null}">
+                        <i class="fa-solid fa-building" style="color: #2563eb;"></i>
+                        <span th:text="${pkg.destinationOffice.name}">Office</span>
+                    </div>
+                    <div th:if="${pkg.destinationOffice == null}">
+                        <i class="fa-solid fa-house" style="color: #10b981;"></i>
+                        <span th:text="${pkg.deliveryAddress}">Address</span>
+                    </div>
+                </td>
+
+                <td style="font-weight: 600; color: #10b981;" th:text="${pkg.price} + ' BGN'">20.00</td>
+
+                <td>
+                    <span class="status-badge" th:classappend="'status-' + ${pkg.status}" th:text="${pkg.status}">STATUS</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${packages.isEmpty()}" class="empty-msg">
+            <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.3;"></i>
+            <h3>No packages found in this category.</h3>
+            <p>Once you send or receive a shipment, it will appear here.</p>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{layout/common-layout :: footer}"></div>
+<script th:src="@{/js/theme.js}"></script>
+<script th:src="@{/js/menu.js}"></script>
+</body>
+</html>

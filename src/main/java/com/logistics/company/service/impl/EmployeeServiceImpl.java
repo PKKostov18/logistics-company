@@ -78,22 +78,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public void updateEmployee(Long id, CreateEmployeeRequest request) {
+    public void updateEmployee(Long id, String firstName, String lastName, String email, EmployeeType type, Long officeId) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
+        // Обновяваме User данните
         User user = employee.getUser();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-
-        Office office = officeRepository.findById(request.getOfficeId())
-                .orElseThrow(() -> new EntityNotFoundException("Office not found"));
-
-        employee.setEmployeeType(request.getEmployeeType());
-        employee.setOffice(office);
-
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
         userRepository.save(user);
+
+        employee.setEmployeeType(type);
+
+        if (officeId != null) {
+            Office office = officeRepository.findById(officeId)
+                    .orElseThrow(() -> new IllegalArgumentException("Office not found"));
+            employee.setOffice(office);
+        } else {
+            employee.setOffice(null);
+        }
+
         employeeRepository.save(employee);
     }
 

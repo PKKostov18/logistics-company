@@ -249,4 +249,14 @@ public class PackageServiceImpl implements PackageService {
         }
         return customerRepository.save(newCustomer);
     }
+
+    @Override
+    public List<Package> findPackagesSentBy(Customer customer) {
+        return packageRepository.findAllBySender(customer);
+    }
+
+    @Override
+    public List<Package> findPackagesReceivedBy(Customer customer) {
+        return packageRepository.findAllByReceiver(customer);
+    }
 }

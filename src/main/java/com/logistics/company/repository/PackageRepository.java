@@ -1,9 +1,7 @@
 package com.logistics.company.repository;
 
-import com.logistics.company.data.Employee;
+import com.logistics.company.data.*;
 import com.logistics.company.data.Package;
-import com.logistics.company.data.PackageStatus;
-import com.logistics.company.data.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -78,4 +76,9 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
     // Търсене по номер
     Optional<Package> findByTrackingNumberAndAssignedCourier_User(String trackingNumber, User user);
     Optional<Package> findByTrackingNumber(String trackingNumber);
+
+    List<Package> findAllBySender(Customer sender);
+    List<Package> findAllByReceiver(Customer receiver);
+
+    List<Package> findAllByDestinationOffice(Office destinationOffice);
 }

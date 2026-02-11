@@ -21,15 +21,7 @@ public class PageController {
 
     @GetMapping("/")
     public String showHomePage(@RequestParam(required = false) String trackingNumber, Model model) {
-        if (trackingNumber != null && !trackingNumber.trim().isEmpty()) {
-            Package pkg = packageService.findPackageByTrackingNumber(trackingNumber.trim());
-            model.addAttribute("searchedPackage", pkg);
-            model.addAttribute("trackingNumber", trackingNumber);
-
-            if (pkg == null) {
-                model.addAttribute("error", "Package with this tracking number was not found.");
-            }
-        }
+        ClientController.searchPackage(trackingNumber, model, packageService);
         return "index";
     }
 

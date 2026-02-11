@@ -1,8 +1,7 @@
 package com.logistics.company.service;
 
-import com.logistics.company.data.DeliveryType;
+import com.logistics.company.data.*;
 import com.logistics.company.data.Package;
-import com.logistics.company.data.User;
 import com.logistics.company.dto.CreatePackageRequest;
 
 import java.math.BigDecimal;
@@ -48,4 +47,7 @@ public interface PackageService {
 
     // --- ЦЕНООБРАЗУВАНЕ ---
     BigDecimal calculatePrice(double weight, DeliveryType deliveryType);
+
+    List<Package> findPackagesSentBy(Customer customer);
+    List<Package> findPackagesReceivedBy(Customer customer);
 }
