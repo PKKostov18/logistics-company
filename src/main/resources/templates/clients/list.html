@@ -32,7 +32,7 @@
                 <th style="width: 30%;">Name</th>
                 <th style="width: 25%;">Phone Number</th>
                 <th style="width: 20%;">Username</th>
-                <th style="width: 20%; text-align: right;">Actions</th>
+                <th style="width: 20%; text-align: center;">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -52,6 +52,11 @@
                 <td>
                     <span class="username-badge"
                           th:text="${client.user != null ? '@' + client.user.username : 'Guest'}">@user</span>
+
+                    <input type="text" class="edit-field edit-input" name="username"
+                           th:value="${client.user != null ? client.user.username : ''}"
+                           placeholder="Username"
+                           style="display: none;">
                 </td>
 
                 <td style="text-align: right;">

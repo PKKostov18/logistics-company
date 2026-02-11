@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(
                                 "/",
@@ -47,12 +47,18 @@ public class SecurityConfig {
                         .requestMatchers("/home").authenticated()
                         .requestMatchers(HttpMethod.GET, "/packages").authenticated()
 
+                        // КУРИЕРИ
                         .requestMatchers("/courier/**").hasAnyRole("COURIER", "ADMIN")
 
+                        // ПРАТКИ (Create/Edit/Delete)
                         .requestMatchers("/packages/create", "/packages/edit/**",
                                 "/packages/delete/**")
                         .hasAnyRole("OFFICE_EMPLOYEE", "COURIER", "ADMIN")
+
+                        .requestMatchers("/clients/**").hasAnyRole("OFFICE_EMPLOYEE", "ADMIN")
                         .anyRequest().authenticated())
+
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(successHandler)

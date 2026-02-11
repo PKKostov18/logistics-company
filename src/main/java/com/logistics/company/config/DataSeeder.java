@@ -146,6 +146,7 @@ public class DataSeeder implements CommandLineRunner {
                     .email("office1@logitrace.com")
                     .firstName("Maria")
                     .lastName("Ivanova")
+                    .phoneNumber("0889019875")
                     .role(role)
                     .build();
             userRepository.save(user);
@@ -174,6 +175,7 @@ public class DataSeeder implements CommandLineRunner {
                     .email("courier1@logitrace.com")
                     .firstName("Ivan")
                     .lastName("Petrov")
+                    .phoneNumber("0887963214")
                     .role(role)
                     .build();
             userRepository.save(user);
@@ -232,6 +234,7 @@ public class DataSeeder implements CommandLineRunner {
                 .email("client1@gmail.com")
                 .firstName("Georgi")
                 .lastName("Georgiev")
+                .phoneNumber("0888123456")
                 .role(role)
                 .build();
         userRepository.save(user);
@@ -240,7 +243,7 @@ public class DataSeeder implements CommandLineRunner {
         Customer customer = Customer.builder()
                 .user(user)
                 .name(user.getFirstName() + " " + user.getLastName())
-                .phoneNumber("0888123456")
+                .phoneNumber(user.getPhoneNumber())
                 .build();
 
         customerRepository.save(customer);

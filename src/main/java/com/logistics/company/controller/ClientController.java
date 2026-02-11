@@ -5,6 +5,7 @@ import com.logistics.company.data.User;
 import com.logistics.company.service.CustomerService;
 import com.logistics.company.service.PackageService;
 import com.logistics.company.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import com.logistics.company.data.Package;
 
 import java.util.List;
+import java.util.Map;
 
-@Controller
 @RequestMapping("/client")
+@Controller
 public class ClientController {
 
     private final CustomerService customerService;
@@ -28,6 +30,7 @@ public class ClientController {
         this.userService = userService;
     }
 
+    // --- КЛИЕНТСКА ЗОНА (DASHBOARD) ---
     @GetMapping("/dashboard")
     public String dashboard(@RequestParam(required = false) String trackingNumber,
                             @AuthenticationPrincipal UserDetails userDetails,
@@ -87,24 +90,33 @@ public class ClientController {
         return "clients/package-list";
     }
 
+    // --- АДМИНИСТРАТИВНА ЧАСТ (Управление на клиенти) ---
     @GetMapping
     public String listClients(Model model) {
         model.addAttribute("clients", customerService.getAllCustomers());
         return "clients/list";
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model) {
-        Customer customer = customerService.getCustomerById(id);
-        model.addAttribute("client", customer);
-        return "clients/edit";
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public String updateClient(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        try {
+            String name = payload.get("name");
+            String phoneNumber = payload.get("phoneNumber");
+            String username = payload.get("username");
+
+            customerService.updateCustomer(id, name, phoneNumber, username);
+
+        } catch (Exception e) {
+            return ("Error updating client: " + e.getMessage());
+        }
+        return "redirect:/clients";
     }
 
-    @PostMapping("/update/{id}")
-    public String updateClient(@PathVariable Long id,
-                               @RequestParam String name,
-                               @RequestParam String phoneNumber) {
-        customerService.updateCustomer(id, name, phoneNumber);
+    // DELETE
+    @PostMapping("/clients/delete/{id}")
+    public String deleteClient(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
         return "redirect:/clients";
     }
 

@@ -1,51 +1,59 @@
-function enableEdit(button) {
-    const row = button.closest('tr');
-    row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = 'none');
-    row.querySelectorAll('.edit-field, .edit-actions').forEach(el => el.style.display = '');
+function enableEdit(btn) {
+    const row = btn.closest('tr');
+
+    // Скрива текстовете, показва инпутите
+    row.querySelectorAll('.view-field').forEach(el => el.style.display = 'none');
+    row.querySelectorAll('.edit-field').forEach(el => el.style.display = 'block'); // Вече включва и username
+
+    // Сменя бутоните
+    row.querySelector('.view-actions').style.display = 'none';
+    row.querySelector('.edit-actions').style.display = 'inline-block';
 }
 
-function cancelEdit(button) {
-    const row = button.closest('tr');
-    row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = '');
-    row.querySelectorAll('.edit-field, .edit-actions').forEach(el => el.style.display = 'none');
+function cancelEdit(btn) {
+    const row = btn.closest('tr');
+
+    // Връща обратно
+    row.querySelectorAll('.edit-field').forEach(el => el.style.display = 'none');
+    row.querySelectorAll('.view-field').forEach(el => el.style.display = 'inline-block'); // или block
+
+    // Връща бутоните
+    row.querySelector('.edit-actions').style.display = 'none';
+    row.querySelector('.view-actions').style.display = 'inline-block';
 }
 
-function updateClient(button) {
-    const row = button.closest('tr');
-    const id = row.getAttribute('data-id');
-    const name = row.querySelector('input[name="name"]').value;
-    const phoneNumber = row.querySelector('input[name="phoneNumber"]').value;
+function updateClient(btn) {
+    const row = btn.closest('tr');
+    const clientId = row.getAttribute('data-id');
 
-    const formData = new URLSearchParams();
-    formData.append('name', name);
-    formData.append('phoneNumber', phoneNumber);
+    const updatedData = {
+        name: row.querySelector('input[name="name"]').value,
+        phoneNumber: row.querySelector('input[name="phoneNumber"]').value,
+        username: row.querySelector('input[name="username"]').value
+    };
 
-    fetch('/clients/update/' + id, {
+    fetch(`/client/update/${clientId}`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         },
-        body: formData
+        body: JSON.stringify(updatedData)
     })
         .then(response => {
             if (response.ok) {
-                // Обновяваме текста в "view" режима
-                row.querySelector('.name-text').innerText = name;
-                row.querySelector('.phone-text').innerText = phoneNumber;
+                row.querySelector('.name-text').textContent = updatedData.name;
+                row.querySelector('.phone-text').textContent = updatedData.phoneNumber;
 
-                // Връщаме изгледа към "четене"
-                row.querySelectorAll('.view-field, .view-actions').forEach(el => el.style.display = '');
-                row.querySelectorAll('.edit-field, .edit-actions').forEach(el => el.style.display = 'none');
+                const userBadge = row.querySelector('.username-badge');
+                userBadge.textContent = updatedData.username ? '@' + updatedData.username : 'Guest';
 
-                // Зелен ефект за успех
-                row.style.backgroundColor = 'rgba(16, 185, 129, 0.2)'; // #d1fae5 с прозрачност
-                setTimeout(() => row.style.backgroundColor = '', 500);
+                cancelEdit(btn);
             } else {
-                alert('Error updating client. Please check the data.');
+                return response.text().then(text => { alert('Error: ' + text); });
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('A network error occurred.');
+            alert('Failed to update.');
         });
 }
