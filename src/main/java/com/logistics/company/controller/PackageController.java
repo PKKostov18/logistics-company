@@ -100,7 +100,7 @@ public class PackageController {
     public String updatePackage(@PathVariable Long id,
                                 @RequestParam String description,
                                 @RequestParam double weight,
-                                @RequestParam String deliveryAddress) {
+                                @RequestParam(required = false) String deliveryAddress) {
         packageService.updatePackageDetails(id, description, weight, deliveryAddress);
         return "redirect:/packages";
     }

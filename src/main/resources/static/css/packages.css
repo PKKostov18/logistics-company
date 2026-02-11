@@ -193,3 +193,68 @@
     color: #f59e0b;
     margin-right: 10px;
 }
+
+/* --- INLINE EDITING STYLES --- */
+
+/* Базов стил за input, който прилича на текст */
+.editable-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: inherit;                /* Наследява цвета на родителя (напр. зелено за цената) */
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    padding: 0;                    /* Без padding, за да не размества текста */
+    margin: 0;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+/* Когато полето е активно (disabled е махнато) */
+.editable-input:not(:disabled) {
+    background-color: #ffffff;
+    border: 1px solid #2563eb;     /* Синя рамка при редакция */
+    padding: 2px 5px;
+    color: #5b5b5b !important;
+    font-weight: 500;
+}
+
+/* Специфични ширини за малките полета */
+.input-sm {
+    width: 60px;
+    display: inline-block;
+    text-align: right; /* Числата обикновено се подравняват вдясно или до текста */
+}
+
+/* Бутони за действия (Икони) */
+.btn-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 6px;
+    font-size: 1rem;
+    transition: transform 0.2s, background-color 0.2s;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon:hover {
+    background-color: rgba(0,0,0,0.05);
+    transform: scale(1.1);
+}
+
+.btn-edit { color: #2563eb; }
+.btn-save { color: #10b981; display: none; } /* Скрито по подразбиране */
+.btn-delete { color: #ef4444; }
+
+/* Wrapper за бутоните, за да не се чупят */
+.actions-cell {
+    white-space: nowrap;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}

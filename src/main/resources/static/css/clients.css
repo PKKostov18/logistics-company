@@ -1,23 +1,52 @@
 /* --- LAYOUT & CONTAINER --- */
 .main-content {
-    max-width: 900px; /* Ограничава ширината */
-    margin: 0 auto;    /* Центрира */
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 2rem;
     width: 100%;
 }
 
-/* --- CARD WRAPPER (Бялата кутия около таблицата) --- */
+/* --- PAGE HEADER --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+    min-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-icon {
+    color: #373c73;
+    font-size: 0.9em;
+}
+
+/* --- CARD WRAPPER --- */
 .table-responsive {
     overflow-x: auto;
-    background-color: var(--color-bg-card); /* Бял фон */
+    background-color: var(--color-bg-card);
     border-radius: 0.75rem;
     border: 1px solid var(--color-border-nav);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    margin: 0 auto;
 }
 
 /* --- TABLE STYLES --- */
 .clients-table {
-    width: 100%;
+    width: auto;
+    min-width: 800px;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.95rem;
@@ -26,7 +55,7 @@
 
 .clients-table th {
     background-color: var(--color-bg);
-    color: var(--color-text);         /* Бял текст */
+    color: var(--color-text);
     padding: 0.75rem 1rem;
     font-weight: 600;
     border-bottom: 2px solid var(--color-border-nav);
@@ -43,56 +72,93 @@
     color: var(--color-text);
 }
 
-/* --- TYPOGRAPHY --- */
-.name-text {
-    font-weight: 600;
-    color: var(--color-text);
-    display: block;
+/* --- INLINE EDITING STYLES (New) --- */
+
+.editable-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 2px 5px; /* Лек padding за удобство */
+    margin: 0;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 0.2s;
 }
 
-/* --- BADGES --- */
-.username-badge {
-    font-size: 0.85rem;
-    color: #6b7280;
-    background-color: #f3f4f6;
-    padding: 4px 8px;
+/* Когато полето е активно */
+.editable-input:not(:disabled) {
+    background-color: #ffffff;
+    border: 1px solid #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    color: #111827 !important; /* Тъмен текст при редакция */
+    font-weight: 500;
+}
+
+/* Wrapper за username (за да стои @ отпред) */
+.username-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #f3f4f6; /* Запазваме badge визията */
     border-radius: 6px;
     border: 1px solid #e5e7eb;
-    display: inline-block;
+    padding: 2px 8px;
+    width: fit-content;
 }
 
-/* --- BUTTONS & INPUTS --- */
-.edit-input {
-    width: 100%;
-    padding: 0.4rem;
-    border-radius: 4px;
-    border: 1px solid #d1d5db;
-    background-color: var(--color-bg-card);
-    color: var(--color-text);
-}
-
-.btn-sm {
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+.username-symbol {
+    color: #6b7280;
+    margin-right: 2px;
     font-size: 0.85rem;
-    font-weight: 600;
+}
+
+.username-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.85rem;
+    color: #4b5563;
+    width: 100px; /* Фиксирана ширина за username */
+}
+.username-input:not(:disabled) {
+    /* При редакция на username махаме badge фона, за да стане бяло */
+    background-color: white;
+}
+
+/* --- ACTION BUTTONS (Icons) --- */
+.btn-icon {
+    border: none;
+    background: none;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 6px;
+    font-size: 1rem;
+    transition: transform 0.2s, background-color 0.2s;
+    border-radius: 4px;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    color: white;
+    justify-content: center;
 }
 
-.btn-edit { background-color: #f59e0b; }
-.btn-edit:hover { background-color: #d97706; transform: translateY(-1px); }
+.btn-icon:hover {
+    background-color: rgba(0,0,0,0.05);
+    transform: scale(1.1);
+}
 
-.btn-save { background-color: #10b981; }
-.btn-save:hover { background-color: #059669; }
+.btn-edit { color: #2563eb; }
+.btn-save { color: #10b981; display: none; }
+.btn-delete { color: #ef4444; }
 
-.btn-delete { background-color: #ef4444; }
-.btn-delete:hover { background-color: #dc2626; transform: translateY(-1px); }
+.actions-cell {
+    white-space: nowrap;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
 
-.btn-cancel { background-color: #9ca3af; }
-.btn-cancel:hover { background-color: #6b7280; }
+/* --- COLUMN WIDTHS --- */
+.id-column { width: 1%; white-space: nowrap; color: #6b7280; font-family: monospace; }
+.action-col { width: 1%; white-space: nowrap; text-align: right; }
+
+.name-text { font-weight: 600; color: var(--color-text); }

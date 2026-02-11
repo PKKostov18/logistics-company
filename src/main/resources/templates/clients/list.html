@@ -15,70 +15,66 @@
 
 <main class="main-content">
 
-    <div class="page-header" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--color-text);">
-            <i class="fa-solid fa-users" style="color: #373c73; margin-right: 10px;"></i>
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fa-solid fa-users header-icon"></i>
             Clients Management
         </h1>
-        <div class="actions">
-        </div>
     </div>
 
     <div class="table-responsive">
         <table class="clients-table">
             <thead>
             <tr>
-                <th style="width: 5%;">ID</th>
-                <th style="width: 30%;">Name</th>
-                <th style="width: 25%;">Phone Number</th>
-                <th style="width: 20%;">Username</th>
-                <th style="width: 20%; text-align: center;">Actions</th>
+                <th class="id-column">ID</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Username</th>
+                <th class="action-col">Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="client : ${clients}" th:data-id="${client.id}">
-                <td th:text="${client.id}" style="color: #6b7280; font-family: monospace;">1</td>
+            <tr th:each="client : ${clients}" th:id="'row-' + ${client.id}" th:data-id="${client.id}">
+                <td th:text="${client.id}" class="id-column">1</td>
 
                 <td>
-                    <span class="view-field name-text" th:text="${client.name}">Client Name</span>
-                    <input type="text" class="edit-field edit-input" name="name" th:value="${client.name}" style="display: none;">
+                    <input type="text" name="name" th:value="${client.name}"
+                           class="editable-input name-text" disabled>
                 </td>
 
                 <td>
-                    <span class="view-field phone-text" th:text="${client.phoneNumber}">0888123456</span>
-                    <input type="text" class="edit-field edit-input" name="phoneNumber" th:value="${client.phoneNumber}" style="display: none;">
+                    <input type="text" name="phoneNumber" th:value="${client.phoneNumber}"
+                           class="editable-input" disabled>
                 </td>
 
                 <td>
-                    <span class="username-badge"
-                          th:text="${client.user != null ? '@' + client.user.username : 'Guest'}">@user</span>
-
-                    <input type="text" class="edit-field edit-input" name="username"
-                           th:value="${client.user != null ? client.user.username : ''}"
-                           placeholder="Username"
-                           style="display: none;">
+                    <div class="username-wrapper">
+                        <span class="username-symbol">@</span>
+                        <input type="text" name="username"
+                               th:value="${client.user != null ? client.user.username : ''}"
+                               placeholder="Guest"
+                               class="editable-input username-input" disabled>
+                    </div>
                 </td>
 
-                <td style="text-align: right;">
-                    <div class="view-actions">
-                        <button type="button" class="btn-sm btn-edit" onclick="enableEdit(this)">
-                            <i class="fa-solid fa-pen"></i> Edit
+                <td class="action-col">
+                    <div class="actions-cell">
+                        <button type="button" class="btn-icon btn-edit"
+                                th:onclick="'enableEdit(' + ${client.id} + ')'" title="Edit">
+                            <i class="fa-solid fa-pen"></i>
                         </button>
-                        <form th:action="@{/client/delete/{id}(id=${client.id})}" method="post" style="display:inline;"
+
+                        <button type="button" class="btn-icon btn-save"
+                                th:onclick="'updateClient(' + ${client.id} + ')'" title="Save">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+
+                        <form th:action="@{/client/clients/delete/{id}(id=${client.id})}" method="post"
                               onsubmit="return confirm('Are you sure? This will delete associated packages too!');">
-                            <button type="submit" class="btn-sm btn-delete">
+                            <button type="submit" class="btn-icon btn-delete" title="Delete">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </form>
-                    </div>
-
-                    <div class="edit-actions" style="display: none;">
-                        <button type="button" class="btn-sm btn-save" onclick="updateClient(this)">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button type="button" class="btn-sm btn-cancel" onclick="cancelEdit(this)">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
                     </div>
                 </td>
             </tr>

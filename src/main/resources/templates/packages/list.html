@@ -9,23 +9,6 @@
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/packages.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* CSS за Inline Editing */
-        .editable-input {
-            background: transparent; border: 1px solid transparent; color: inherit; width: 100%;
-            font-family: inherit; font-size: inherit; padding: 2px; border-radius: 4px;
-        }
-        .editable-input:not(:disabled) {
-            background-color: var(--color-bg); border: 1px solid #2563eb; padding: 4px 8px;
-        }
-        .btn-icon {
-            border: none; background: none; cursor: pointer; padding: 5px; font-size: 1.1rem;
-        }
-        .btn-edit { color: #2563eb; }
-        .btn-save { color: #10b981; display: none; }
-        .btn-delete { color: #ef4444; }
-    </style>
 </head>
 <body class="theme-light">
 
@@ -48,73 +31,95 @@
                 <th>Tracking #</th>
                 <th>Sender</th>
                 <th>Receiver</th>
-                <th>Destination / Address</th> <th>Weight & Price</th>        <th class="text-center">Status</th>
+                <th>Destination</th> <th>Details</th>     <th class="text-center">Status</th>
                 <th style="text-align: right;">Actions</th> </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}" th:id="'row-' + ${pkg.id}">
                 <td>
                     <span class="tracking-badge" th:text="${pkg.trackingNumber}">TRK-123</span>
-                    <div class="sub-text">
+                    <div class="sub-text pkg-description">
                         <input type="text" name="description" th:value="${pkg.description}"
-                               class="editable-input" th:form="'form-' + ${pkg.id}" disabled placeholder="Description">
+                               class="editable-input" th:form="'form-' + ${pkg.id}" disabled>
                     </div>
                 </td>
 
                 <td>
                     <div class="user-name" th:text="${pkg.senderName}">Sender</div>
-                    <div class="sub-text"><i class="fa-solid fa-phone"></i> <span th:text="${pkg.senderPhone}"></span></div>
+                    <div class="sub-text">
+                        <i class="fa-solid fa-phone icon-phone"></i>
+                        <span th:text="${pkg.senderPhone}">0888</span>
+                    </div>
                 </td>
 
                 <td>
                     <div class="user-name" th:text="${pkg.receiverName}">Receiver</div>
-                    <div class="sub-text"><i class="fa-solid fa-phone"></i> <span th:text="${pkg.receiverPhone}"></span></div>
+                    <div class="sub-text">
+                        <i class="fa-solid fa-phone icon-phone"></i>
+                        <span th:text="${pkg.receiverPhone}">0888</span>
+                    </div>
                 </td>
 
                 <td>
                     <div th:if="${pkg.destinationOffice != null}">
-                        <div class="pkg-location-title"><i class="fa-solid fa-building"></i> <span th:text="${pkg.destinationOffice}">Office</span></div>
+                        <div class="pkg-location-title">
+                            <i class="fa-solid fa-building icon-office"></i>
+                            <span th:text="${pkg.destinationOffice}">Office</span>
+                        </div>
+                        <div class="sub-text" th:text="${pkg.destinationOfficeAddress}">Address</div>
                     </div>
+
                     <div th:if="${pkg.destinationOffice == null}">
-                        <div class="pkg-location-title"><i class="fa-solid fa-location-dot"></i> To Address</div>
-                        <input type="text" name="deliveryAddress" th:value="${pkg.deliveryAddress}"
-                               class="editable-input" th:form="'form-' + ${pkg.id}" disabled>
+                        <div class="pkg-location-title">
+                            <i class="fa-solid fa-location-dot icon-address"></i>
+                            <span>To Address</span>
+                        </div>
+                        <div class="sub-text">
+                            <input type="text" name="deliveryAddress" th:value="${pkg.deliveryAddress}"
+                                   class="editable-input" th:form="'form-' + ${pkg.id}" disabled>
+                        </div>
                     </div>
                 </td>
 
                 <td>
                     <div class="pkg-weight">
                         <input type="number" step="0.1" name="weight" th:value="${pkg.weightKg}"
-                               class="editable-input" th:form="'form-' + ${pkg.id}" disabled style="width: 50px;"> kg
+                               class="editable-input input-sm" th:form="'form-' + ${pkg.id}" disabled> kg
                     </div>
                     <div class="pkg-price">
                         <input type="number" step="0.01" name="price" th:value="${pkg.price}"
-                               class="editable-input" th:form="'form-' + ${pkg.id}" disabled style="width: 60px;"> BGN
+                               class="editable-input input-sm" th:form="'form-' + ${pkg.id}" disabled> BGN
                     </div>
                 </td>
 
                 <td class="text-center">
                     <span class="status-badge" th:classappend="'status-' + ${pkg.status}" th:text="${pkg.status}">STATUS</span>
+                    <div th:if="${pkg.courierName != null}" class="pkg-courier-info">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span th:text="${pkg.courierName}">Courier</span>
+                    </div>
                 </td>
 
-                <td style="text-align: right; white-space: nowrap;">
-                    <form th:id="'form-' + ${pkg.id}" th:action="@{/packages/update/{id}(id=${pkg.id})}" method="post" style="display: inline;">
+                <td>
+                    <div class="actions-cell">
+                        <form th:id="'form-' + ${pkg.id}" th:action="@{/packages/update/{id}(id=${pkg.id})}" method="post" style="display: flex; gap: 5px;">
 
-                        <button type="button" class="btn-icon btn-edit" th:onclick="'enableEdit(' + ${pkg.id} + ')'" title="Edit">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
+                            <button type="button" class="btn-icon btn-edit" th:onclick="'enableEdit(' + ${pkg.id} + ')'" title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
 
-                        <button type="submit" class="btn-icon btn-save" title="Save">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                    </form>
+                            <button type="submit" class="btn-icon btn-save" title="Save changes">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </form>
 
-                    <form th:action="@{/packages/delete/{id}(id=${pkg.id})}" method="post" style="display: inline;"
-                          onsubmit="return confirm('Are you sure you want to delete this package?');">
-                        <button type="submit" class="btn-icon btn-delete" title="Delete">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </form>
+                        <form th:action="@{/packages/delete/{id}(id=${pkg.id})}" method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this package?');">
+                            <button type="submit" class="btn-icon btn-delete" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -136,11 +141,11 @@
         // Намираме реда
         const row = document.getElementById('row-' + id);
 
-        // Намираме всички input полета
+        // Намираме всички input полета, които са заключени
         const inputs = row.querySelectorAll('input[disabled]');
 
         inputs.forEach(input => {
-            // Разрешаваме писането САМО ако полето НЕ Е 'price'
+        // ВАЖНО: Не отключваме полето 'price', то се изчислява автоматично!
             if (input.name !== 'price') {
                 input.disabled = false;
             }
@@ -152,8 +157,11 @@
 
         // Скриваме Edit бутона, показваме Save бутона
         const form = document.getElementById('form-' + id);
-        form.querySelector('.btn-edit').style.display = 'none';
-        form.querySelector('.btn-save').style.display = 'inline-block';
+        const editBtn = form.querySelector('.btn-edit');
+        const saveBtn = form.querySelector('.btn-save');
+
+        if(editBtn) editBtn.style.display = 'none';
+        if(saveBtn) saveBtn.style.display = 'inline-flex';
     }
 </script>
 
