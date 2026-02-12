@@ -73,7 +73,8 @@
                 <th>Destination</th>
                 <th>Price</th>
                 <th>Status</th>
-                <th style="text-align: right;">Action</th> </tr>
+                <th style="text-align: right;" th:if="${#strings.contains(pageTitle, 'Incoming')}">Action</th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="pkg : ${packages}">
@@ -116,12 +117,12 @@
                     <span class="status-badge" th:classappend="'status-' + ${pkg.status}" th:text="${pkg.status}">STATUS</span>
                 </td>
 
-                <td style="text-align: right;">
+                <td style="text-align: right;" th:if="${#strings.contains(pageTitle, 'Incoming')}">
                     <form th:if="${pkg.receiver != null
                                    and pkg.receiver.user.username == #authentication.name
                                    and pkg.status.name() == 'DELIVERED'}"
-                              th:action="@{/client/packages/receive/{id}(id=${pkg.id})}"
-                              method="post">
+                          th:action="@{/client/packages/receive/{id}(id=${pkg.id})}"
+                          method="post">
                         <button type="submit" class="btn-receive" title="Confirm Receipt">
                             <i class="fa-solid fa-check"></i> Receive
                         </button>
