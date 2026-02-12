@@ -27,14 +27,14 @@
 
         <div id="map"></div>
 
-        <div class="header-actions" style="margin-bottom: 1rem;">
+        <div class="header-actions" style="margin-bottom: 1rem; text-align: center">
             <h2 style="font-size: 1.5rem; color: var(--color-text);">Available Offices</h2>
         </div>
 
-        <div class="content-grid">
+        <div class="content-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;">
             <div th:each="office : ${offices}"
-                 class="card"
-                 style="padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; max-width: 380px; width: 100%;">
+                 class="card office-card"
+                 style="flex: 0 1 400px; min-width: 300px;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
                         <div style="background-color: #f3f4f6; padding: 8px; border-radius: 8px;">
