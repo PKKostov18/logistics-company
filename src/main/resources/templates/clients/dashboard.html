@@ -4,90 +4,25 @@
     <meta charset="UTF-8">
     <title>Dashboard - LogiTrace</title>
     <div th:replace="~{layout/common-layout :: head-content}"></div>
+
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* --- STICKY FOOTER FIX --- */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        body.theme-loaded {
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .content-wrapper {
-            flex: 1;
-        }
-
-        /* --- EXISTING STYLES --- */
-        .hero-section {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            color: white;
-            padding: 3rem 1.5rem 5rem;
-            text-align: center;
-            border-radius: 0 0 50% 50% / 4rem;
-            margin-bottom: 3rem;
-        }
-        .tracking-box {
-            background: white;
-            max-width: 600px;
-            margin: -4rem auto 3rem;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
-        }
-        .tracking-form { display: flex; gap: 10px; flex-wrap: wrap; }
-        .tracking-input {
-            flex-grow: 1; padding: 1rem 1.5rem; font-size: 1.1rem;
-            border: 2px solid #e5e7eb; border-radius: 0.5rem;
-        }
-        .search-btn {
-            background-color: #1d4ed8; color: white; padding: 0 2rem;
-            font-size: 1.1rem; font-weight: 600; border: none; border-radius: 0.5rem; cursor: pointer;
-        }
-        .result-card {
-            background: white; border-radius: 1rem; padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: 0 auto 3rem; border: 1px solid #e5e7eb;
-        }
-
-        /* --- DARK MODE STYLES --- */
-        body.dark {
-            background-color: #111827;
-            color: #f3f4f6;
-        }
-        body.dark .hero-section { background: linear-gradient(135deg, #111827 0%, #1f2937 100%); }
-        body.dark .tracking-box, body.dark .result-card { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
-        body.dark .tracking-input { background-color: #111827; border-color: #374151; color: white; }
-        body.dark h2 { color: #f3f4f6 !important; }
-        body.dark .tracking-input::placeholder { color: #9ca3af; }
-    </style>
-
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        })();
-    </script>
 </head>
 <body>
 
+<script>
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+    } else {
+        document.body.classList.remove('dark');
+    }
+</script>
+
 <div th:replace="~{layout/common-layout :: navigation}"></div>
 
-<div class="content-wrapper">
+<div class="content-wrapper" style="flex: 1;">
+
     <div class="hero-section">
         <h1 class="hero-title" style="font-size: 2.5rem; margin-bottom: 0.5rem;">
             Welcome back, <span th:text="${user.firstName}">Client</span>!
@@ -97,8 +32,8 @@
         </p>
     </div>
 
-    <div class="tracking-box">
-        <h2 style="margin-top: 0; margin-bottom: 1rem; color: var(--color-text);">Quick Track</h2>
+    <div class="tracking-box" style="max-width: 550px; margin: -5rem auto 3rem;">
+        <h2 class="tracking-title">Quick Track</h2>
         <form action="/client/dashboard" method="get" class="tracking-form">
             <input type="text" name="trackingNumber" class="tracking-input"
                    placeholder="Enter Tracking Number (e.g. TRACK123)"
@@ -108,51 +43,37 @@
             </button>
         </form>
 
-        <div th:if="${error}" style="margin-top: 1rem; color: #ef4444; font-weight: 500; text-align: center;">
+        <div th:if="${error}" class="error-message">
             <i class="fa-solid fa-circle-exclamation"></i> <span th:text="${error}"></span>
         </div>
     </div>
 
-    <div th:if="${searchedPackage}" class="result-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border-nav); padding-bottom: 1rem; margin-bottom: 1rem;">
+    <div th:if="${searchedPackage}" class="result-card" style="max-width: 550px; margin: 0 auto 3rem;">
+        <div class="result-header">
             <div>
-                <span style="color: #6b7280; font-size: 0.9rem;">Tracking Number:</span>
-                <div style="font-size: 1.5rem; font-weight: 700; color: var(--color-text-link-active);"
-                     th:text="${searchedPackage.trackingNumber}">TRACK123</div>
+                <span class="result-label">Tracking Number:</span>
+                <div class="result-tracking-number" th:text="${searchedPackage.trackingNumber}">TRACK123</div>
             </div>
-            <div style="text-align: right;">
-                <span style="color: #6b7280; font-size: 0.9rem;">Current Status:</span>
-                <div style="font-weight: 700; color: #10b981; text-transform: uppercase;"
-                     th:text="${searchedPackage.status}">IN TRANSIT</div>
+            <div class="text-right">
+                <span class="result-label">Current Status:</span>
+                <div class="result-status" th:text="${searchedPackage.status}">IN TRANSIT</div>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.95rem;">
+        <div class="result-details-grid">
             <div>
-                <div style="margin-bottom: 0.5rem;">
-                    <strong>From:</strong>
-                    <span th:if="${searchedPackage.sender != null && searchedPackage.sender.user != null}"
-                          th:text="${searchedPackage.sender.user.firstName} + ' ' + ${searchedPackage.sender.user.lastName}">
-                    </span>
-                    <span th:if="${searchedPackage.sender == null || searchedPackage.sender.user == null}"
-                          style="color: #9ca3af; font-style: italic;">
-                        Unknown Sender
-                    </span>
-                </div>
+                <strong>From:</strong>
+                <span th:if="${searchedPackage.sender != null && searchedPackage.sender.user != null}"
+                      th:text="${searchedPackage.sender.user.firstName} + ' ' + ${searchedPackage.sender.user.lastName}">Sender</span>
+                <span th:if="${searchedPackage.sender == null}" style="color: #9ca3af;">Unknown</span>
+                <br>
 
-                <div>
-                    <strong>To:</strong>
-                    <span th:if="${searchedPackage.receiver != null && searchedPackage.receiver.user != null}"
-                          th:text="${searchedPackage.receiver.user.firstName} + ' ' + ${searchedPackage.receiver.user.lastName}">
-                    </span>
-                    <span th:if="${searchedPackage.receiver == null || searchedPackage.receiver.user == null}"
-                          style="color: #9ca3af; font-style: italic;">
-                        Unknown Receiver
-                    </span>
-                </div>
+                <strong>To:</strong>
+                <span th:if="${searchedPackage.receiver != null && searchedPackage.receiver.user != null}"
+                      th:text="${searchedPackage.receiver.user.firstName} + ' ' + ${searchedPackage.receiver.user.lastName}">Receiver</span>
+                <span th:if="${searchedPackage.receiver == null}" style="color: #9ca3af;">Unknown</span>
             </div>
-
-            <div style="text-align: right;">
+            <div class="text-right">
                 <strong>Destination:</strong><br>
                 <span th:if="${searchedPackage.destinationOffice != null}">
                     <i class="fa-solid fa-building" style="color: #6b7280; margin-right: 4px;"></i>
@@ -164,44 +85,30 @@
                 </span>
             </div>
         </div>
+
+        <div class="status-timeline">
+            <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'REGISTERED' or searchedPackage.status.name() == 'IN_TRANSIT' or searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+                <div class="step-circle"><i class="fa-solid fa-file-pen"></i></div>
+                <div class="step-label">Registered</div>
+            </div>
+
+            <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'IN_TRANSIT' or searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+                <div class="step-circle"><i class="fa-solid fa-truck-fast"></i></div>
+                <div class="step-label">In Transit</div>
+            </div>
+
+            <div class="timeline-step" th:classappend="${searchedPackage.status.name() == 'DELIVERED' or searchedPackage.status.name() == 'RECEIVED'} ? 'active'">
+                <div class="step-circle"><i class="fa-solid fa-box-open"></i></div>
+                <div class="step-label">Delivered</div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div th:replace="~{layout/common-layout :: footer}"></div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const body = document.body;
-
-        // Включваме CSS транзишъните след кратко забавяне
-        setTimeout(() => body.classList.add('theme-loaded'), 100);
-
-        // 2. Синхронизиране (ако HTML е dark, правим и body dark)
-        if (document.documentElement.classList.contains('dark')) {
-            body.classList.add('dark');
-        }
-
-        // 3. Глобален слушател за кликвания (Event Delegation)
-        document.body.addEventListener('click', function(event) {
-
-            // ТУК БЕШЕ ПРОБЛЕМА: Търсим клас 'theme-toggle-button', а не 'btn'
-            // closest() проверява дали кликнатият елемент ИЛИ негов родител има този клас
-            const toggleBtn = event.target.closest('.theme-toggle-button');
-
-            if (toggleBtn) {
-                // Спираме стандартното действие (за да не презарежда ако е линк)
-                event.preventDefault();
-
-                const isDark = document.documentElement.classList.toggle('dark');
-                document.body.classList.toggle('dark');
-
-                localStorage.setItem('theme', isDark ? 'dark' : 'light');
-                console.log("Theme switched to:", isDark ? 'dark' : 'light');
-            }
-        });
-    });
-</script>
-
+<script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/menu.js}"></script>
+
 </body>
 </html>
