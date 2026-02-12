@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Преобразува Package обект в PackageResponse DTO, който се използва за връщане на данни към клиента.
+ * Компонент за преобразуване (Mapping) на данни.
+ * Превръща ентита (Package) в DTO (PackageResponse), за да скрие вътрешната структура
+ * на базата данни и да улесни визуализацията във frontend-а.
  */
 
 @Component
@@ -66,6 +68,7 @@ public class PackageMapper {
         return builder.build();
     }
 
+    // Помощен метод за преобразуване на списък от пратки.
     public List<PackageResponse> toResponseList(List<Package> packages) {
         if (packages == null) return List.of();
         return packages.stream().map(this::toResponse).collect(Collectors.toList());

@@ -7,6 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+/**
+ * DTO за създаване на нов служител заедно с потребителските данни
+ * Използва се при POST заявка за създаване на служител и съдържа всички полета
+ * за създаване както на User, така и на Employee обектите в базата данни
+ */
+
 @Data // Getters, Setters, ToString, EqualsAndHashCode
 public class CreateEmployeeRequest {
 
@@ -28,7 +34,7 @@ public class CreateEmployeeRequest {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    // Employee fields
+    // Employee полета
     @NotNull(message = "Office ID is required")
     private Long officeId;
 

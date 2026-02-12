@@ -18,6 +18,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Контролер за клиентската зона и управление на клиенти.
+ * Позволява на клиентите да виждат своите пратки и да управляват профила си,
+ * както и на администраторите и офис служителите да управляват клиентите.
+ */
+
 @RequestMapping("/client")
 @Controller
 public class ClientController {

@@ -3,6 +3,11 @@ package com.logistics.company.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * DTO за създаване на нов офис в системата.
+ * Използва се от администратори или служители при добавяне на нова локация.
+ */
+
 @Data // Getters, Setters, ToString, EqualsAndHashCode
 public class CreateOfficeRequest {
 

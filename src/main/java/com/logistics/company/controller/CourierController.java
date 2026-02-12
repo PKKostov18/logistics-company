@@ -13,6 +13,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+/**
+ * Контролер за куриерската зона и управление на куриери.
+ * Позволява на куриерите да виждат своите доставки, да приемат нови пратки и да маркират пратки като доставени.
+ */
+
 @Controller
 @RequestMapping("/courier")
 public class CourierController {

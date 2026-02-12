@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+// Сервис за изчисляване на цената на пратка въз основа на тегло и тип доставка.
+// Цената се изчислява като базова цена + (цена на кг * тегло) + доп. такса за доставка до адрес.
+
 @Service
 public class PricingService {
     private static final BigDecimal BASE_PRICE = BigDecimal.valueOf(5.00);

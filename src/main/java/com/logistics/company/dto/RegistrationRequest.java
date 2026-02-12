@@ -7,6 +7,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object за заявка за регистрация на нов потребител.
+ * Този клас приема данните от формата за регистрация и извършва валидация
+ * (напр. дали полетата са попълнени, дали имейлът е валиден и т.н.).
+ */
+
 @Data // Getters, Setters, ToString, EqualsAndHashCode
 public class RegistrationRequest {
 
@@ -25,6 +31,10 @@ public class RegistrationRequest {
 
     private String phoneNumber;
 
+    /**
+     * Парола в plain text, която потребителят въвежда при регистрация.
+     * Преди да бъде записана в базата данни, тя ще бъде криптирана (hashing).
+     */
     @NotBlank(message = "Password is required.")
     @Size(min = 6, message = "The password must be at least 6 characters.")
     private String password;

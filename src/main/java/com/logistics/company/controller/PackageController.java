@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * Контролер за управление на пратки.
+ * Позволява на администраторите и офис служителите да създават, преглеждат, актуализират и изтриват пратки,
+ * както и на куриерите да виждат и актуализират статуса на пратките си.
+ */
+
 @Controller
 @RequestMapping("/packages")
 public class PackageController {

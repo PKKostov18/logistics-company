@@ -11,6 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Контролер за офис служителите.
+ * Позволява им да виждат информация за офиса, в който работят
+ * и да управляват пратките, свързани с този офис.
+ */
+
 @Controller
 @RequestMapping("/office-employee")
 public class EmployeeController {

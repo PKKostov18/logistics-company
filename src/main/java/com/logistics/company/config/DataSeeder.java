@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Зарежда и инициализира начални данни в базата.
+ * Създава основни роли, компания, офиси, потребители (администратор, служители, куриери) и клиенти.
+ * Също така добавя няколко ръчни пратки за демонстрация.
+ */
+
 @Component
 @Transactional
 public class DataSeeder implements CommandLineRunner {

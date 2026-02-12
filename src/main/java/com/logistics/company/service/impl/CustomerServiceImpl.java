@@ -12,6 +12,8 @@ import com.logistics.company.data.Package;
 
 import java.util.List;
 
+// Имплементация на CustomerService, която предоставя бизнес логиката за управлението на клиенти
+
 @Service
 public class CustomerServiceImpl implements CustomerService {
 

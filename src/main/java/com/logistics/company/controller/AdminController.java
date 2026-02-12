@@ -25,6 +25,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Контролер за административни функции, достъпни само за потребители с роля ADMIN.
+ * Предоставя възможности за управление на офиси, служители и генериране на различни справки.
+ */
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {

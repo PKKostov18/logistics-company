@@ -1,12 +1,17 @@
 package com.logistics.company.controller;
 
-import com.logistics.company.data.Package;
 import com.logistics.company.service.OfficeService;
 import com.logistics.company.service.PackageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+/**
+ * Контролер за общите страници на уеб приложението.
+ * Позволява на потребителите да виждат началната страница, страницата с офиси,
+ * информация за компанията, както и формите за регистрация и вход.
+ */
 
 @Controller
 public class PageController {

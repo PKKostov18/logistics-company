@@ -6,6 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
+/**
+ * DTO за създаване на нов пакет
+ * Използва се при POST заявка за създаване на пакет и съдържа всички полета
+ * необходими за създаване на Package обект в базата данни
+ */
+
 @Data // Getters, Setters, ToString, EqualsAndHashCode
 public class CreatePackageRequest {
 

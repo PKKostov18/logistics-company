@@ -13,11 +13,18 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Репозитори за управление на пратките (Packages) в базата данни.
+ * Съдържа оптимизирани JPQL заявки за справки, отчети и филтриране по статус/потребител.
+ */
+
 @Repository
 public interface PackageRepository extends JpaRepository<Package, Long> {
 
-    // ОПТИМИЗАЦИЯ (N+1 FIX) - зарежда всички свързани данни наведнъж, когато се извиква findAll
-    // Всички пратки (LEFT JOIN навсякъде, за да не крие Guest пратки)
+    // Извлича всички пратки от базата данни заедно с техните свързани обекти.
+    // ОПТИМИЗАЦИЯ (N+1 FIX с JOIN FETCH), за да зареди подателя, получателя, офиса
+    // и куриера в ЕДНА заявка, вместо Hibernate да прави стотици отделни заявки за всяка пратка.
+
     @Override
     @Query("SELECT p FROM Package p " +
             "LEFT JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
@@ -27,13 +34,14 @@ public interface PackageRepository extends JpaRepository<Package, Long> {
             "LEFT JOIN FETCH p.assignedCourier ac LEFT JOIN FETCH ac.user")
     List<Package> findAll();
 
-    // Оптимизирана версия за клиент (подател ИЛИ получател) - използва се в "My Packages"
+    // Оптимизирана версия за клиент (подател ИЛИ получател) - използва се в My Packages
     @Query("SELECT p FROM Package p " +
             "JOIN FETCH p.sender s LEFT JOIN FETCH s.user " +
             "JOIN FETCH p.receiver r LEFT JOIN FETCH r.user " +
             "LEFT JOIN FETCH p.destinationOffice " +
             "WHERE s.user.username = :username OR r.user.username = :username")
     List<Package> findAllByUserInvolvement(@Param("username") String username);
+
 
     // --- МЕТОДИ ЗА СПРАВКИ (REPORTS) ЗА АДМИН ПАНЕЛА ---
 

@@ -15,6 +15,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 
+/** Бизнес логика за управление на пратките
+    Вътре се реализират всички методи от интерфейса, включително регистрация на пратки, обновяване на статус, справки и куриерска логика.
+    Важно: Използва се @Transactional за методите, които променят данни за атомарност на операциите.
+ */
+
 @Service
 public class PackageServiceImpl implements PackageService {
 

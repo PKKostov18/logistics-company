@@ -15,6 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+   Сервиз за управление на служители.
+   Използва репозиторитата за достъп до данните и
+   осигурява бизнес логиката, свързана със служителите.
+ */
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
